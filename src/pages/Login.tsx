@@ -6,7 +6,7 @@ export default function Login() {
     password: string;
   }>({ username: "", password: "" });
 
-  function handleChange(e) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData((data) => {
       return {
         ...data,
@@ -15,7 +15,26 @@ export default function Login() {
     });
   }
 
-  function submitForm() {}
+  function submitForm(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    fetch("http://localhost:3007/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+        if (data.token) {
+          // redirect to /chat
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
   return (
     <div className="w-full max-w-xs">
       <form
@@ -67,7 +86,7 @@ export default function Login() {
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold
             py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="button"
+            type="submit"
           >
             Sign In
           </button>
