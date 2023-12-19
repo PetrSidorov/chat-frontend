@@ -1,10 +1,21 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import pickProperties from "../../utils/pickProperties";
 export default function Login() {
   const [isNewUser, setIsNewUser] = useState<boolean>(false);
   const [formData, setFormData] = useState<{
+    name: string;
     username: string;
     password: string;
-  }>({ username: "", password: "" });
+    email: string;
+    verifyPassword: string;
+  }>({
+    name: "",
+    username: "",
+    password: "",
+    email: "",
+    verifyPassword: "",
+  });
 
   function toggleNewUser(shouldBeNewUser: boolean) {
     if (shouldBeNewUser != isNewUser) {
@@ -12,9 +23,10 @@ export default function Login() {
     }
   }
 
-  useEffect(() => {
-    console.log(isNewUser);
-  }, [isNewUser]);
+  const containerVariants = {
+    hidden: { opacity: 0, height: 0 },
+    visible: { opacity: 1, height: "auto" },
+  };
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData((data) => {
@@ -25,43 +37,50 @@ export default function Login() {
     });
   }
 
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+
   function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    fetch("http://localhost:3007/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Success:", data);
-        if (data.token) {
-          // redirect to /chat
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    let dataToSend = null;
+    if (!isNewUser) {
+      dataToSend = pickProperties(formData, "username", "password");
+    } else {
+      dataToSend = pickProperties(
+        formData,
+        "name",
+        "username",
+        "password",
+        "email"
+      );
+    }
+    console.log(dataToSend);
+    // fetch("http://localhost:3007/login", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(formData),
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     console.log("Success:", data);
+    //     if (data.token) {
+    //       // redirect to /chat
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error:", error);
+    //   });
   }
   return (
     <div className="flex justify-center content-center h-screen flex-wrap">
-      <div className="w-full max-w-xs bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <motion.div
+        layout
+        className="w-full max-w-xs bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+      >
         <div className="flex justify-between pb-8">
-          <button
-            onClick={() => toggleNewUser(false)}
-            className={
-              !isNewUser
-                ? `bg-blue-500 hover:bg-blue-700 text-white font-bold
-            py-2 px-4 rounded focus:outline-none focus:shadow-outline`
-                : `font-bold align-baseline
-            text-blue-500 hover:text-blue-800 py-2 px-4 `
-            }
-            type="button"
-          >
-            Sign in
-          </button>
           <button
             onClick={() => toggleNewUser(true)}
             className={
@@ -75,10 +94,23 @@ export default function Login() {
           >
             Register
           </button>
+          <button
+            onClick={() => toggleNewUser(false)}
+            className={
+              !isNewUser
+                ? `bg-blue-500 hover:bg-blue-700 text-white font-bold
+            py-2 px-4 rounded focus:outline-none focus:shadow-outline`
+                : `font-bold align-baseline
+            text-blue-500 hover:text-blue-800 py-2 px-4 `
+            }
+            type="button"
+          >
+            Sign in
+          </button>
         </div>
 
         <form onSubmit={submitForm}>
-          <div className="mb-4">
+          <div className="mb-6">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="username"
@@ -97,6 +129,70 @@ export default function Login() {
               onChange={handleChange}
             />
           </div>
+          <AnimatePresence>
+            {isNewUser && (
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                variants={containerVariants}
+                transition={{ duration: 0.5, ease: [0.6, -0.28, 0.735, 0.045] }}
+                className="mb-6 "
+                layout
+                key="nameField"
+              >
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="name"
+                >
+                  Name
+                </label>
+                <input
+                  className="shadow appearance-none borderrounded w-full py-2 px-3
+            text-gray-700 leading-tight focus:outline-none
+            focus:shadow-outline"
+                  id="name"
+                  type="text"
+                  placeholder="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <AnimatePresence>
+            {isNewUser && (
+              <motion.div
+                layout
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                variants={containerVariants}
+                transition={{ duration: 0.5, ease: [0.6, -0.28, 0.735, 0.045] }}
+                className="mb-6"
+              >
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="email"
+                >
+                  Email
+                </label>
+                <input
+                  className="shadow appearance-none borderrounded w-full py-2 px-3
+            text-gray-700 leading-tight focus:outline-none
+            focus:shadow-outline"
+                  id="email"
+                  type="email"
+                  placeholder="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <div className="mb-6">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -115,17 +211,47 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
             />
-            <p className="text-red-500 text-xs italic">
+            {/* <p className="text-red-500 text-xs italic">
               Please choose a password.
-            </p>
+            </p> */}
           </div>
+          <AnimatePresence>
+            {isNewUser && (
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                variants={containerVariants}
+                transition={{ duration: 0.5, ease: [0.6, -0.28, 0.735, 0.045] }}
+                className="mb-6"
+              >
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="verifyPassword"
+                >
+                  Verify password
+                </label>
+                <input
+                  className="shadow appearance-none borderrounded w-full py-2 px-3
+            text-gray-700 leading-tight focus:outline-none
+            focus:shadow-outline"
+                  id="verifyPassword"
+                  type="password"
+                  placeholder="verifyPassword"
+                  name="verifyPassword"
+                  value={formData.verifyPassword}
+                  onChange={handleChange}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
           <div className="flex items-center justify-between">
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold
             py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
-              Sign In
+              Let's go!
             </button>
             <a
               className="inline-block align-baseline font-bold text-sm
@@ -136,7 +262,7 @@ export default function Login() {
             </a>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 }
