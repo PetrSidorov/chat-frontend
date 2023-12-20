@@ -1,9 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import fetchDB from "../../utils/fetchDB";
 import pickProperties from "../../utils/pickProperties";
+import { AuthContext } from "../../context/AuthContext";
+import LoginFormField from "./components/LoginFormField";
+
 export default function Login() {
+  const [user, setUser] = useContext(AuthContext);
   const [isNewUser, setIsNewUser] = useState<boolean>(false);
   const [formData, setFormData] = useState<{
     name: string;
@@ -26,10 +30,9 @@ export default function Login() {
     }
   }
 
-  const containerVariants = {
-    hidden: { opacity: 0, height: 0 },
-    visible: { opacity: 1, height: "auto" },
-  };
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData((data) => {
@@ -39,10 +42,6 @@ export default function Login() {
       };
     });
   }
-
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
 
   function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -61,7 +60,6 @@ export default function Login() {
       body: formData,
     })
       .then((data) => {
-        console.log("Success:", data);
         if (data.token) {
           navigate("/chat");
         }
@@ -106,139 +104,63 @@ export default function Login() {
         </div>
 
         <form onSubmit={submitForm}>
-          <div className="mb-6">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="username"
-            >
-              Username
-            </label>
-            <input
-              className="shadow appearance-none borderrounded w-full py-2 px-3
-            text-gray-700 leading-tight focus:outline-none
-            focus:shadow-outline"
-              id="username"
-              type="text"
-              placeholder="Username"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-            />
-          </div>
+          <LoginFormField
+            value={formData.username}
+            handleChange={handleChange}
+            placeholder="Username"
+            name="username"
+            type="string"
+          />
           <AnimatePresence>
             {isNewUser && (
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                variants={containerVariants}
-                transition={{ duration: 0.5, ease: [0.6, -0.28, 0.735, 0.045] }}
-                className="mb-6 "
-                layout
-                key="nameField"
-              >
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="name"
-                >
-                  Name
-                </label>
-                <input
-                  className="shadow appearance-none borderrounded w-full py-2 px-3
-            text-gray-700 leading-tight focus:outline-none
-            focus:shadow-outline"
-                  id="name"
-                  type="text"
-                  placeholder="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                />
-              </motion.div>
+              <LoginFormField
+                value={formData.username}
+                handleChange={handleChange}
+                placeholder="Username"
+                name="username"
+                animations={true}
+                type="string"
+              />
             )}
           </AnimatePresence>
           <AnimatePresence>
             {isNewUser && (
-              <motion.div
-                layout
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                variants={containerVariants}
-                transition={{ duration: 0.5, ease: [0.6, -0.28, 0.735, 0.045] }}
-                className="mb-6"
-              >
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="email"
-                >
-                  Email
-                </label>
-                <input
-                  className="shadow appearance-none borderrounded w-full py-2 px-3
-            text-gray-700 leading-tight focus:outline-none
-            focus:shadow-outline"
-                  id="email"
-                  type="email"
-                  placeholder="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </motion.div>
+              <LoginFormField
+                value={formData.email}
+                handleChange={handleChange}
+                placeholder="Email"
+                name="email"
+                animations={true}
+                type="email"
+              />
             )}
           </AnimatePresence>
-
-          <div className="mb-6">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-              className="shadow appearance-none border border-red-500 rounded
-            w-full py-2 px-3 text-gray-700 mb-3
-            leading-tight focus:outline-none focus:shadow-outline"
-              id="password"
-              type="password"
-              placeholder="******************"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            {/* <p className="text-red-500 text-xs italic">
+          <LoginFormField
+            value={formData.password}
+            handleChange={handleChange}
+            placeholder="Password"
+            name="password"
+            animations={true}
+            type="password"
+          />
+          {/* <p className="text-red-500 text-xs italic mb-3">
               Please choose a password.
             </p> */}
-          </div>
           <AnimatePresence>
             {isNewUser && (
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                variants={containerVariants}
-                transition={{ duration: 0.5, ease: [0.6, -0.28, 0.735, 0.045] }}
-                className="mb-6"
-              >
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="verifyPassword"
-                >
-                  Verify password
-                </label>
-                <input
-                  className="shadow appearance-none borderrounded w-full py-2 px-3
-            text-gray-700 leading-tight focus:outline-none
-            focus:shadow-outline"
-                  id="verifyPassword"
-                  type="password"
-                  placeholder="verifyPassword"
-                  name="verifyPassword"
-                  value={formData.verifyPassword}
-                  onChange={handleChange}
-                />
-              </motion.div>
+              <LoginFormField
+                value={formData.verifyPassword}
+                handleChange={handleChange}
+                placeholder="Verify password"
+                name="verifyPassword"
+                animations={true}
+                type="password"
+              />
+            )}
+            {formData.password !== formData.verifyPassword && (
+              <p className="text-red-500 text-xs italic mb-3">
+                Passwords mismatch.
+              </p>
             )}
           </AnimatePresence>
           <div className="flex items-center justify-between">
