@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import fetchDB from "../../utils/fetchDB";
 import pickProperties from "../../utils/pickProperties";
 export default function Login() {
   const [isNewUser, setIsNewUser] = useState<boolean>(false);
@@ -16,6 +18,7 @@ export default function Login() {
     email: "",
     verifyPassword: "",
   });
+  const navigate = useNavigate();
 
   function toggleNewUser(shouldBeNewUser: boolean) {
     if (shouldBeNewUser != isNewUser) {
@@ -47,32 +50,25 @@ export default function Login() {
     if (!isNewUser) {
       dataToSend = pickProperties(formData, "username", "password");
     } else {
-      dataToSend = pickProperties(
-        formData,
-        "name",
-        "username",
-        "password",
-        "email"
-      );
+      dataToSend = pickProperties(formData, "username", "password", "email");
     }
-    console.log(dataToSend);
-    // fetch("http://localhost:3007/login", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(formData),
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     console.log("Success:", data);
-    //     if (data.token) {
-    //       // redirect to /chat
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error:", error);
-    //   });
+
+    fetchDB({
+      url: isNewUser
+        ? "http://localhost:3007/register"
+        : "http://localhost:3007/login",
+      method: "POST",
+      body: formData,
+    })
+      .then((data) => {
+        console.log("Success:", data);
+        if (data.token) {
+          navigate("/chat");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }
   return (
     <div className="flex justify-center content-center h-screen flex-wrap">
