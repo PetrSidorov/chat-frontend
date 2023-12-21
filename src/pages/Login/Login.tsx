@@ -60,7 +60,9 @@ export default function Login() {
       body: formData,
     })
       .then((data) => {
+        console.log(data);
         if (data.token) {
+          setUser(data.token);
           navigate("/chat");
         }
       })
@@ -114,10 +116,10 @@ export default function Login() {
           <AnimatePresence>
             {isNewUser && (
               <LoginFormField
-                value={formData.username}
+                value={formData.name}
                 handleChange={handleChange}
-                placeholder="Username"
-                name="username"
+                placeholder="Name"
+                name="name"
                 animations={true}
                 type="string"
               />
