@@ -31,8 +31,8 @@ export default function Login() {
   }
 
   useEffect(() => {
-    console.log(formData);
-  }, [formData]);
+    user;
+  }, [user]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData((data) => {
@@ -60,9 +60,9 @@ export default function Login() {
       body: formData,
     })
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         if (data.token) {
-          setUser(data.token);
+          setUser(data.user);
           navigate("/chat");
         }
       })

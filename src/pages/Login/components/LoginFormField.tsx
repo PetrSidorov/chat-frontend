@@ -45,7 +45,7 @@ export default function LoginFormField({
     text-gray-700 leading-tight focus:outline-none
     focus:shadow-outline"
         id={name}
-        type="text"
+        type={type}
         placeholder={placeholder}
         name={name}
         value={value}
