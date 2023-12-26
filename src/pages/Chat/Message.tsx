@@ -1,13 +1,36 @@
 import Avatar from "./Avatar";
-export default function Message() {
+import { ActiveConvoContext } from "../../context/ActiveConvoContext";
+import { useContext, useEffect } from "react";
+
+export default function Message({
+  content,
+  createdAt,
+  username,
+  convoId,
+}: {
+  content: string;
+  createdAt: string;
+  username: string;
+  convoId?: string;
+}) {
+  const date = new Date(createdAt).toDateString();
+  const [activeConvo, setActiveConvo] = useContext(ActiveConvoContext);
+
+  useEffect(() => {
+    console.log("activeConvo?", activeConvo);
+  }, [activeConvo]);
+
   return (
-    <li className="flex items-center">
+    <li
+      onClick={() => setActiveConvo(convoId)}
+      className="flex items-center m-2 p-2 bg-gray-200 rounded"
+    >
       <Avatar />
       <div className="ml-2">
         <div className="flex justify-between mb-3">
-          <span>Name</span> <span>date</span>
+          <span>{username}</span> <span>{date}</span>
         </div>
-        <div>The messsage starts with...</div>
+        <div>{content}</div>
       </div>
     </li>
   );
