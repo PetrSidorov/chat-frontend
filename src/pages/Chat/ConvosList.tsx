@@ -1,9 +1,37 @@
 import { useEffect, useState } from "react";
 import fetchDB from "../../utils/fetchDB";
 import Convo from "./Convo";
+import { socket } from "../../utils/socket";
 
 export default function ConvosList({ setActiveConvo }) {
+  const [isConnected, setIsConnected] = useState(socket.connected);
   const [convosData, setConvosData] = useState(null);
+
+  useEffect(() => {
+    // function onConnect() {
+    //   console.log("socket connect");
+    //   setIsConnected(true);
+    // }
+
+    // function onDisconnect() {
+    //   console.log("socket disconnect");
+    //   setIsConnected(false);
+    // }
+
+    // socket.on("connect_error", (error) => {
+    //   console.log("Connection Error:", error);
+    // });
+
+    // socket.on("connect", onConnect);
+    // socket.on("disconnect", onDisconnect);
+
+    socket.on("hi", () => console.log("server says hi"));
+
+    return () => {
+      // socket.off("connect", onConnect);
+      // socket.off("disconnect", onDisconnect);
+    };
+  }, []);
 
   useEffect(() => {
     fetchDB({

@@ -3,35 +3,9 @@ import { AuthContext } from "../../context/AuthContext";
 import ConvosList from "./ConvosList";
 import ActiveConvo from "./ActiveConvo";
 import ActiveConvoProvider from "../../context/ActiveConvoContext";
-import { socket } from "../../utils/socket";
 
 export default function Chat() {
   const [user, setUser] = useContext(AuthContext);
-  const [isConnected, setIsConnected] = useState(socket.connected);
-
-  useEffect(() => {
-    function onConnect() {
-      console.log("socket connect");
-      setIsConnected(true);
-    }
-
-    function onDisconnect() {
-      console.log("socket disconnect");
-      setIsConnected(false);
-    }
-
-    socket.on("connect_error", (error) => {
-      console.log("Connection Error:", error);
-    });
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-    };
-  }, []);
 
   useEffect(() => {
     // console.log("user: ", user);
