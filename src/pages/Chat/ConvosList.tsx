@@ -8,28 +8,28 @@ export default function ConvosList({ setActiveConvo }) {
   const [convosData, setConvosData] = useState(null);
 
   useEffect(() => {
-    // function onConnect() {
-    //   console.log("socket connect");
-    //   setIsConnected(true);
-    // }
+    function onConnect() {
+      console.log("socket connect");
+      setIsConnected(true);
+    }
 
-    // function onDisconnect() {
-    //   console.log("socket disconnect");
-    //   setIsConnected(false);
-    // }
+    function onDisconnect() {
+      console.log("socket disconnect");
+      setIsConnected(false);
+    }
 
-    // socket.on("connect_error", (error) => {
-    //   console.log("Connection Error:", error);
-    // });
+    socket.on("connect_error", (error) => {
+      console.log("Connection Error:", error);
+    });
 
-    // socket.on("connect", onConnect);
-    // socket.on("disconnect", onDisconnect);
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
 
-    socket.on("hi", () => console.log("server says hi"));
+    socket.on("hi", (id) => console.log("server says hi ", id));
 
     return () => {
-      // socket.off("connect", onConnect);
-      // socket.off("disconnect", onDisconnect);
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
     };
   }, []);
 
