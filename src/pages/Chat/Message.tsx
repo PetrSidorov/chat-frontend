@@ -7,22 +7,42 @@ export default function Message({
   createdAt,
   username,
   convoId,
+  initiator,
+  joiner,
+  initiatorId,
+  joinerId,
+  currUserId,
 }: {
   content: string;
   createdAt: string;
   username: string;
   convoId?: string;
+  initiator?: string;
+  joiner?: string;
+  initiatorId: string;
+  joinerId: string;
+  currUserId: string;
 }) {
   const date = new Date(createdAt).toDateString();
   const [activeConvo, setActiveConvo] = useContext(ActiveConvoContext);
 
   useEffect(() => {
-    console.log("activeConvo?", activeConvo);
+    // console.log("activeConvo?", activeConvo);
+    console.log("hey: ", currUserId);
   }, [activeConvo]);
 
   return (
     <li
-      onClick={() => setActiveConvo(convoId)}
+      onClick={() =>
+        setActiveConvo({
+          id: convoId,
+          initiator,
+          joiner,
+          initiatorId,
+          joinerId,
+          currUserId,
+        })
+      }
       className="flex items-center m-2 p-2 bg-gray-200 rounded"
     >
       <Avatar />

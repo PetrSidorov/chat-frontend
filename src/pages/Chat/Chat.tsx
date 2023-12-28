@@ -3,6 +3,7 @@ import { AuthContext } from "../../context/AuthContext";
 import ConvosList from "./ConvosList";
 import ActiveConvo from "./ActiveConvo";
 import ActiveConvoProvider from "../../context/ActiveConvoContext";
+import MessageManager from "./MessageManager";
 
 export default function Chat() {
   const [user, setUser] = useContext(AuthContext);
@@ -27,19 +28,7 @@ export default function Chat() {
           </div>
 
           {/* Message Input Area */}
-          <div className="p-4 bg-gray-100 flex">
-            <input
-              type="text"
-              className="w-full p-2 rounded border border-gray-300"
-              placeholder="Type a message..."
-            />
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold
-            py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2"
-            >
-              Send
-            </button>
-          </div>
+          <MessageManager />
         </div>
       </div>
     </ActiveConvoProvider>

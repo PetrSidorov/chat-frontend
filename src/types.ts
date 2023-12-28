@@ -10,3 +10,10 @@ export type TAuthContext = [
   TUser | null,
   Dispatch<SetStateAction<TUser | null>>
 ];
+
+export type MessageT = {
+  content: string;
+  senderId: string;
+  receiverId: string;
+  convoId: string;
+};

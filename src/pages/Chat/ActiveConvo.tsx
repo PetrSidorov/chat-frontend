@@ -9,7 +9,7 @@ export default function ActiveConvo(data) {
   useEffect(() => {
     fetchDB({
       method: "GET",
-      url: `http://localhost:3007/api/messages/${activeConvo}`,
+      url: `http://localhost:3007/api/messages/${activeConvo?.id}`,
     }).then((data) => setMessages(data.data));
   }, [activeConvo]);
   //   const messages = "test";
