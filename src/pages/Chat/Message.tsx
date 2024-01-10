@@ -11,7 +11,7 @@ export default function Message({
   joiner,
   initiatorId,
   joinerId,
-  currUserId,
+  currUserId: senderId,
 }: {
   content: string;
   createdAt: string;
@@ -28,7 +28,7 @@ export default function Message({
 
   useEffect(() => {
     // console.log("activeConvo?", activeConvo);
-    console.log("hey: ", currUserId);
+    console.log("hey: ", senderId);
   }, [activeConvo]);
 
   return (
@@ -40,7 +40,7 @@ export default function Message({
           joiner,
           initiatorId,
           joinerId,
-          currUserId,
+          senderId,
         })
       }
       className="flex items-center m-2 p-2 bg-gray-200 rounded"
