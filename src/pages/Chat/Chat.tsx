@@ -4,6 +4,7 @@ import ConvosList from "./ConvosList";
 import ActiveConvo from "./ActiveConvo";
 import ActiveConvoProvider from "../../context/ActiveConvoContext";
 import MessageManager from "./MessageManager";
+import ConvoProvider from "../../context/ConvoContext";
 
 export default function Chat() {
   const [user, setUser] = useContext(AuthContext);

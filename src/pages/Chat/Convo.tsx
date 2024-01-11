@@ -1,22 +1,53 @@
+import { useContext, useEffect, useState } from "react";
 import Message from "./Message";
+import { socket } from "../../utils/socket";
+import { MessageT } from "../../types";
+import { ConvoContext } from "../../context/ConvoContext";
 export default function Convo({ data }) {
-  console.log("convoz data", data);
+  const [isConnected, setIsConnected] = useState(socket.connected);
+
+  useEffect(() => {
+    function onConnect() {
+      console.log("socket connect");
+      setIsConnected(true);
+    }
+
+    function onDisconnect() {
+      console.log("socket disconnect");
+      setIsConnected(false);
+    }
+
+    socket.on("connect_error", (error) => {
+      console.log("Connection Error:", error);
+    });
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+
+    socket.emit("id:send", data.id);
+
+    socket.on("msg:get", (data) => {
+      console.log("server says hi ", data);
+    });
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+    };
+  }, []);
+
+  console.log(data, "data fetch");
+
   if (data && data.messages && data.messages.length > 0) {
-    const { initiator, joiner, currUserId } = data;
-    const { content, createdAt, sender, id } =
+    let { content, createdAt, sender, id } =
       data.messages[data.messages.length - 1];
+
     return (
       <Message
         key={id}
-        convoId={data.id}
         content={content}
         createdAt={createdAt}
         username={sender?.username}
-        initiator={initiator.username}
-        joiner={joiner.username}
-        initiatorId={initiator.id}
-        joinerId={joiner.id}
-        currUserId={currUserId}
       />
     );
   } else {

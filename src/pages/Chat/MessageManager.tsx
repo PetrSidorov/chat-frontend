@@ -9,10 +9,12 @@ import { socket } from "../../utils/socket";
 //     "joiner": "peter3",
 //     "initiatorId": "clq0oftzf0001rcqrads0mxtp",
 //     "joinerId": "clq0oh6oz0004rcqrvu8p8tzg",
-//     "currUserId": "clq0oftzf0001rcqrads0mxtp"
+//     "userId": "clq0oftzf0001rcqrads0mxtp"
 // }
 export default function MessageManager() {
-  const [activeConvoContext, _] = useContext(ActiveConvoContext);
+  // TODO: push message (optimistic ui)
+  const [activeConvoContext, setActiveConvoContet] =
+    useContext(ActiveConvoContext);
   const [message, setMessage] = useState<MessageT>({
     content: "",
     senderId: "",
@@ -27,16 +29,18 @@ export default function MessageManager() {
   function sendMessage() {
     socket.emit("msg:send", message);
   }
+
+  console.log(activeConvoContext);
   function messageHandler(e) {
     const receiverId =
-      activeConvoContext.joinerId == activeConvoContext.currUserid
+      activeConvoContext.joinerId == activeConvoContext.userId
         ? activeConvoContext.senderId
         : activeConvoContext.joinerId;
     setMessage((prevMessage) => ({
       ...prevMessage,
       content: e.target.value,
       convoId: activeConvoContext.id,
-      senderId: activeConvoContext.currUserId,
+      senderId: activeConvoContext.userId,
       receiverId,
     }));
   }
