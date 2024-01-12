@@ -13,7 +13,7 @@ export type TAuthContext = [
 
 export type MessageT = {
   content: string;
-  senderId: string;
-  receiverId: string;
   convoId: string;
+  createdAt: string;
+  sender?: { username: string | "user" };
 };

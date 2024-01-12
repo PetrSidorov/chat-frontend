@@ -7,7 +7,7 @@ import MessageManager from "./MessageManager";
 import ConvoProvider from "../../context/ConvoContext";
 
 export default function Chat() {
-  const [user, setUser] = useContext(AuthContext);
+  const [user, _] = useContext(AuthContext);
 
   useEffect(() => {
     // console.log("user: ", user);

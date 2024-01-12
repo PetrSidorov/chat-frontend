@@ -18,7 +18,7 @@ export default function ConvosList() {
   }, []);
 
   const convos = convosData?.map((convoData: any) => {
-    const { initiator, joiner, userId, initiatorId, joinerId, id, messages } =
+    const { initiator, joiner, initiatorId, joinerId, id, messages } =
       convoData;
 
     return (
@@ -30,7 +30,6 @@ export default function ConvosList() {
             joiner,
             initiatorId,
             joinerId,
-            userId,
             messages,
           });
         }}

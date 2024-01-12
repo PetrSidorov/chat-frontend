@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { MessageT } from "../../types";
 import { ActiveConvoContext } from "../../context/ActiveConvoContext";
 import { socket } from "../../utils/socket";
+import { AuthContext } from "../../context/AuthContext";
 
 // {
 //     "id": "clq0pqkro0001glekpi3c4ylx",
@@ -12,36 +13,77 @@ import { socket } from "../../utils/socket";
 //     "userId": "clq0oftzf0001rcqrads0mxtp"
 // }
 export default function MessageManager() {
-  // TODO: push message (optimistic ui)
-  const [activeConvoContext, setActiveConvoContet] =
-    useContext(ActiveConvoContext);
-  const [message, setMessage] = useState<MessageT>({
+  const [user, _] = useContext(AuthContext);
+  const initialMesssage = {
     content: "",
-    senderId: "",
-    receiverId: "",
     convoId: "",
-  });
+    createdAt: "",
+    sender: {
+      username: user?.username || "user",
+    },
+  };
+
+  // TODO: push message (optimistic ui)
+  const [activeConvoContext, setActiveConvoContext] =
+    useContext(ActiveConvoContext);
+  const [message, setMessage] = useState<MessageT>(initialMesssage);
+
   useEffect(() => {
     console.log("active context in msg mng: ", activeConvoContext);
     console.log(message);
   }, [message]);
 
+  useEffect(() => {
+    if (message.createdAt) {
+      const { convoId, ...clientSideMessage } = message;
+
+      setActiveConvoContext((activeConvoContext) => {
+        return {
+          ...activeConvoContext,
+          messages: [...activeConvoContext.messages, clientSideMessage],
+        };
+      });
+
+      setMessage((msg) => {
+        const { sender, ...restOfTheMessage } = msg;
+        return restOfTheMessage;
+      });
+      console.log("msg", message);
+      socket.emit("msg:send", message);
+      setMessage(initialMesssage);
+    }
+  }, [message.createdAt]);
+
   function sendMessage() {
-    socket.emit("msg:send", message);
+    setMessage((msg) => {
+      return { ...msg, createdAt: new Date().toISOString() };
+    });
+
+    // const { convoId, ...clientSideMessage } = message;
+
+    // setActiveConvoContet((activeConvoContext) => {
+    //   return [...activeConvoContext.messages, clientSideMessage];
+    // });
+
+    // setMessage((msg) => {
+    //   const { sender, ...restOfTheMessage } = msg;
+    //   return restOfTheMessage;
+    // });
+    // console.log("msg", message);
+    // socket.emit("msg:send", message);
   }
 
-  console.log(activeConvoContext);
+  console.log("activeConvoContext: ", activeConvoContext);
   function messageHandler(e) {
-    const receiverId =
-      activeConvoContext.joinerId == activeConvoContext.userId
-        ? activeConvoContext.senderId
-        : activeConvoContext.joinerId;
+    // const receiverId =
+    //   activeConvoContext.joinerId == activeConvoContext.userId
+    //     ? activeConvoContext.senderId
+    //     : activeConvoContext.joinerId;
     setMessage((prevMessage) => ({
       ...prevMessage,
       content: e.target.value,
       convoId: activeConvoContext.id,
-      senderId: activeConvoContext.userId,
-      receiverId,
+      // receiverId,
     }));
   }
 

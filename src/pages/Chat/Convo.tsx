@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import Message from "./Message";
 import { socket } from "../../utils/socket";
-import { MessageT } from "../../types";
-import { ConvoContext } from "../../context/ConvoContext";
+// import { MessageT } from "../../types";
+// import { ConvoContext } from "../../context/ConvoContext";
+import { ActiveConvoContext } from "../../context/ActiveConvoContext";
 export default function Convo({ data }) {
   const [isConnected, setIsConnected] = useState(socket.connected);
-
+  const [activeConvoContext, setActiveConvoContext] =
+    useContext(ActiveConvoContext);
   useEffect(() => {
     function onConnect() {
       console.log("socket connect");
@@ -44,7 +46,7 @@ export default function Convo({ data }) {
 
     return (
       <Message
-        key={id}
+        key={createdAt}
         content={content}
         createdAt={createdAt}
         username={sender?.username}
