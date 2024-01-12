@@ -11,9 +11,20 @@ export type TAuthContext = [
   Dispatch<SetStateAction<TUser | null>>
 ];
 
-export type MessageT = {
+export type TMessage = {
   content: string;
   convoId: string;
   createdAt: string;
-  sender?: { username: string | "user" };
+  sender: { username: string };
 };
+
+export type TActiveConvoContextValue = {
+  id: string;
+  messages: TMessage[];
+  offset: number;
+};
+
+export type TActiveConvoContext = [
+  TActiveConvoContextValue | null,
+  Dispatch<SetStateAction<TActiveConvoContextValue | null>>
+];

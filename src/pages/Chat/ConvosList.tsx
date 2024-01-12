@@ -14,23 +14,22 @@ export default function ConvosList() {
       method: "GET",
       url: "http://localhost:3007/api/convo/last-ten-convos-with-ten-messages",
     }).then((data) => setConvosData(data));
-    console.log("convosData: ", convosData);
   }, []);
 
+  useEffect(() => {
+    console.log("convosData: ", convosData);
+  }, [convosData]);
+
   const convos = convosData?.map((convoData: any) => {
-    const { initiator, joiner, initiatorId, joinerId, id, messages } =
-      convoData;
+    const { id, messages } = convoData;
 
     return (
       <div
         onClick={() => {
           setActiveConvo({
             id,
-            initiator,
-            joiner,
-            initiatorId,
-            joinerId,
             messages,
+            offset: 10,
           });
         }}
       >

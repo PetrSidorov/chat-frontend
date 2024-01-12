@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { MessageT } from "../../types";
+import { TMessage } from "../../types";
 import { ActiveConvoContext } from "../../context/ActiveConvoContext";
 import { socket } from "../../utils/socket";
 import { AuthContext } from "../../context/AuthContext";
@@ -25,7 +25,7 @@ export default function MessageManager() {
 
   const [activeConvoContext, setActiveConvoContext] =
     useContext(ActiveConvoContext);
-  const [message, setMessage] = useState<MessageT>(initialMesssage);
+  const [message, setMessage] = useState<TMessage>(initialMesssage);
 
   useEffect(() => {
     console.log("active context in msg mng: ", activeConvoContext);
