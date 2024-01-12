@@ -29,7 +29,13 @@ export default function Convo({ data }) {
     socket.emit("id:send", data.id);
 
     socket.on("msg:get", (data) => {
-      console.log("server says hi ", data);
+      // console.log("server says hi ", data);
+      setActiveConvoContext((activeConvoContext) => {
+        return {
+          ...activeConvoContext,
+          messages: [...activeConvoContext.messages.slice(0, -1), data],
+        };
+      });
     });
 
     return () => {
@@ -41,7 +47,7 @@ export default function Convo({ data }) {
   console.log(data, "data fetch");
 
   if (data && data.messages && data.messages.length > 0) {
-    let { content, createdAt, sender, id } =
+    let { content, createdAt, sender } =
       data.messages[data.messages.length - 1];
 
     return (

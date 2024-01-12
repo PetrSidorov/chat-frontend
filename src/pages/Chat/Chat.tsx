@@ -5,12 +5,27 @@ import ActiveConvo from "./ActiveConvo";
 import ActiveConvoProvider from "../../context/ActiveConvoContext";
 import MessageManager from "./MessageManager";
 import ConvoProvider from "../../context/ConvoContext";
+import fetchDB from "../../utils/fetchDB";
 
 export default function Chat() {
-  const [user, _] = useContext(AuthContext);
+  const [user, setUser] = useContext(AuthContext);
 
   useEffect(() => {
-    // console.log("user: ", user);
+    if (!user) {
+      fetchDB({
+        url: "http://localhost:3007/api/user-data",
+        method: "GET",
+      })
+        .then((data) => {
+          // console.log("data user", data);
+          // if (data.token) {
+          setUser(data.user);
+          // }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
   }, [user]);
 
   return (

@@ -23,7 +23,6 @@ export default function MessageManager() {
     },
   };
 
-  // TODO: push message (optimistic ui)
   const [activeConvoContext, setActiveConvoContext] =
     useContext(ActiveConvoContext);
   const [message, setMessage] = useState<MessageT>(initialMesssage);
