@@ -2,9 +2,14 @@ import { ActiveConvoContext } from "../../context/ActiveConvoContext";
 import { useContext, useEffect, useRef } from "react";
 import Message from "./Message";
 export default function ActiveConvo() {
-  const [activeConvo, setActiveConvo] = useContext(ActiveConvoContext);
+  const [activeConvo, setActiveConvo] =
+    useContext(ActiveConvoContext).convoContext;
+  const [offset, setOffset] = useContext(ActiveConvoContext).offsetContext;
+  const [offsetLoading, setOffsetLoading] =
+    useContext(ActiveConvoContext).offsetLoading;
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  let offsetLoadingLocal = false;
 
   function* offsetGeneratorCreator(i: number) {
     while (true) {
@@ -13,24 +18,21 @@ export default function ActiveConvo() {
     }
   }
 
-  const offsetGenerator: Generator<number, void, unknown> =
+  let offsetGenerator: Generator<number, void, unknown> =
     offsetGeneratorCreator(10);
 
   useEffect(() => {
     const handleScroll = () => {
       if (
         scrollContainerRef.current &&
+        // !offsetLoading &&
+        !offsetLoadingLocal &&
         scrollContainerRef.current.scrollTop < 200
       ) {
-        setActiveConvo((prevConvo) => {
-          if (prevConvo === null) {
-            return null;
-          }
-          return {
-            ...prevConvo,
-            offset: offsetGenerator.next().value as number,
-          };
-        });
+        console.log("hi");
+        setOffset(2);
+        offsetLoadingLocal = true;
+        setOffsetLoading(true);
       }
     };
 

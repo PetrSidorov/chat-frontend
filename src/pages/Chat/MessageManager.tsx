@@ -24,7 +24,7 @@ export default function MessageManager() {
   };
 
   const [activeConvoContext, setActiveConvoContext] =
-    useContext(ActiveConvoContext);
+    useContext(ActiveConvoContext).convoContext;
   const [message, setMessage] = useState<TMessage>(initialMesssage);
 
   useEffect(() => {

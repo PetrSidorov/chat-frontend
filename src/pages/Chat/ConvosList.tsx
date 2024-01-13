@@ -4,7 +4,8 @@ import Convo from "./Convo";
 import { ActiveConvoContext } from "../../context/ActiveConvoContext";
 
 export default function ConvosList() {
-  const [activeConvo, setActiveConvo] = useContext(ActiveConvoContext);
+  const [activeConvo, setActiveConvo] =
+    useContext(ActiveConvoContext).convoContext;
 
   // const [isConnected, setIsConnected] = useState(socket.connected);
   const [convosData, setConvosData] = useState([]);
@@ -29,7 +30,7 @@ export default function ConvosList() {
           setActiveConvo({
             id,
             messages,
-            offset: 10,
+            // offset: 10,
           });
         }}
       >

@@ -1,13 +1,32 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { ConvoProps } from "../../types";
 import Message from "./Message";
 import { socket } from "../../utils/socket";
 // import { MessageT } from "../../types";
 // import { ConvoContext } from "../../context/ConvoContext";
 import { ActiveConvoContext } from "../../context/ActiveConvoContext";
-export default function Convo({ data }) {
+export default function Convo({ data }: ConvoProps) {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [activeConvoContext, setActiveConvoContext] =
-    useContext(ActiveConvoContext);
+    useContext(ActiveConvoContext).convoContext;
+
+  const [offset, setOffset] = useContext(ActiveConvoContext).offsetContext;
+  const [offsetLoading, setOffsetLoading] =
+    useContext(ActiveConvoContext).offsetLoading;
+
+  const hasLoggedRef = useRef(false);
+
+  useEffect(() => {
+    if (offsetLoading && !hasLoggedRef.current) {
+      console.log("test emit");
+      // socket.emit("msg:get-offset", {
+      //   offset,
+      //   convoId: activeConvoContext?.id,
+      // });
+      setOffsetLoading(false);
+      hasLoggedRef.current = true;
+    }
+  }, [offsetLoading]);
 
   useEffect(() => {
     function onConnect() {
@@ -33,9 +52,23 @@ export default function Convo({ data }) {
       // console.log("server says hi ", data);
 
       setActiveConvoContext((activeConvoContext) => {
+        if (!activeConvoContext) {
+          return null;
+        }
         return {
           ...activeConvoContext,
           messages: [...activeConvoContext.messages.slice(0, -1), data],
+        };
+      });
+    });
+
+    socket.on("msg:send-offset", (data) => {
+      // console.log("msg:send-offset", data.data);
+      console.log("hello there");
+      setActiveConvoContext((convoContext) => {
+        return {
+          ...convoContext,
+          messages: [...data.data, ...convoContext.messages],
         };
       });
     });
@@ -46,7 +79,7 @@ export default function Convo({ data }) {
     };
   }, []);
 
-  console.log(data, "data fetch");
+  // console.log(data, "data fetch");
 
   if (data && data.messages && data.messages.length > 0) {
     let { content, createdAt, sender } =

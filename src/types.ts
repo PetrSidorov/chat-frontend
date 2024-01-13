@@ -11,6 +11,8 @@ export type TAuthContext = [
   Dispatch<SetStateAction<TUser | null>>
 ];
 
+export type TConvo = TMessage[];
+
 export type TMessage = {
   content: string;
   convoId: string;
@@ -21,10 +23,18 @@ export type TMessage = {
 export type TActiveConvoContextValue = {
   id: string;
   messages: TMessage[];
-  offset: number;
+  // offset: number;
 };
 
-export type TActiveConvoContext = [
-  TActiveConvoContextValue | null,
-  Dispatch<SetStateAction<TActiveConvoContextValue | null>>
-];
+export type ConvoProps = {
+  data: TActiveConvoContextValue;
+};
+
+export type TActiveConvoContext = {
+  convoContext: [
+    TActiveConvoContextValue | null,
+    Dispatch<SetStateAction<TActiveConvoContextValue | null>>
+  ];
+  offsetContext: [number, Dispatch<SetStateAction<number>>];
+  offsetLoading: [boolean, Dispatch<SetStateAction<boolean>>];
+};

@@ -1,10 +1,11 @@
 import { ReactNode, createContext, useState } from "react";
 import { TActiveConvoContext, TActiveConvoContextValue } from "../types";
 
-export const ActiveConvoContext = createContext<TActiveConvoContext>([
-  null,
-  () => {},
-]);
+export const ActiveConvoContext = createContext<TActiveConvoContext>({
+  convoContext: [null, () => {}],
+  offsetContext: [0, () => {}],
+  offsetLoading: [false, () => {}],
+});
 
 export default function ActiveConvoProvider({
   children,
@@ -13,8 +14,16 @@ export default function ActiveConvoProvider({
 }) {
   const [activeConvo, setActiveConvo] =
     useState<TActiveConvoContextValue | null>(null);
+  const [offset, setOffset] = useState<number>(0);
+  const [offsetLoading, setOffsetLoading] = useState<boolean>(false);
   return (
-    <ActiveConvoContext.Provider value={[activeConvo, setActiveConvo]}>
+    <ActiveConvoContext.Provider
+      value={{
+        convoContext: [activeConvo, setActiveConvo],
+        offsetContext: [offset, setOffset],
+        offsetLoading: [offsetLoading, setOffsetLoading],
+      }}
+    >
       {children}
     </ActiveConvoContext.Provider>
   );

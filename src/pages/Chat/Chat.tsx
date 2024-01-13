@@ -8,28 +8,25 @@ import fetchDB from "../../utils/fetchDB";
 
 export default function Chat() {
   const [user, setUser] = useContext(AuthContext);
-  const scrollContainerRef = useRef(null); // Ref for the scrollable container
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Function to call when scroll event occurs
     const handleScroll = () => {
       console.log("Scroll event detected!");
-      // Log the current scroll position
-      console.log(scrollContainerRef.current.scrollTop);
+
+      // console.log(scrollContainerRef.current.scrollTop);
     };
 
-    // Add scroll event listener to the scrollable container
     if (scrollContainerRef.current) {
       scrollContainerRef.current.addEventListener("scroll", handleScroll);
     }
 
-    // Clean up: remove the event listener
     return () => {
       if (scrollContainerRef.current) {
         scrollContainerRef.current.removeEventListener("scroll", handleScroll);
       }
     };
-  }, []); // Empty dependency array means this runs on mount and unmount only
+  }, []);
 
   useEffect(() => {
     if (!user) {
