@@ -8,6 +8,7 @@ export default function Convo({ data }) {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [activeConvoContext, setActiveConvoContext] =
     useContext(ActiveConvoContext);
+
   useEffect(() => {
     function onConnect() {
       console.log("socket connect");
@@ -30,6 +31,7 @@ export default function Convo({ data }) {
 
     socket.on("msg:get", (data) => {
       // console.log("server says hi ", data);
+
       setActiveConvoContext((activeConvoContext) => {
         return {
           ...activeConvoContext,
