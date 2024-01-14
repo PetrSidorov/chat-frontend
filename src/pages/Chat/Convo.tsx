@@ -14,17 +14,15 @@ export default function Convo({ data }: ConvoProps) {
   const [offsetLoading, setOffsetLoading] =
     useContext(ActiveConvoContext).offsetLoading;
 
-  const hasLoggedRef = useRef(false);
-
   useEffect(() => {
-    if (offsetLoading && !hasLoggedRef.current) {
+    if (offsetLoading) {
       console.log("test emit");
       // socket.emit("msg:get-offset", {
       //   offset,
       //   convoId: activeConvoContext?.id,
       // });
-      setOffsetLoading(false);
-      hasLoggedRef.current = true;
+      // setOffsetLoading(false);
+      // hasLoggedRef.current = true;
     }
   }, [offsetLoading]);
 

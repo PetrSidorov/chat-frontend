@@ -26,6 +26,7 @@ export default function ConvosList() {
 
     return (
       <div
+        key={id}
         onClick={() => {
           setActiveConvo({
             id,

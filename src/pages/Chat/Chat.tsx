@@ -59,6 +59,7 @@ export default function Chat() {
           {/* Messages Area */}
           {/* <div className="flex-grow p-4 overflow-y-auto"> */}
           <ActiveConvo />
+          {/* <Convo active={true} /> */}
           {/* </div> */}
 
           {/* Message Input Area */}

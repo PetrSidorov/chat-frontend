@@ -1,52 +1,58 @@
 import { ActiveConvoContext } from "../../context/ActiveConvoContext";
 import { useContext, useEffect, useRef } from "react";
 import Message from "./Message";
+import { useInView } from "react-intersection-observer";
+import { socket } from "../../utils/socket";
+
 export default function ActiveConvo() {
   const [activeConvo, setActiveConvo] =
     useContext(ActiveConvoContext).convoContext;
   const [offset, setOffset] = useContext(ActiveConvoContext).offsetContext;
   const [offsetLoading, setOffsetLoading] =
     useContext(ActiveConvoContext).offsetLoading;
-  const endOfMessagesRef = useRef<HTMLDivElement>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  let offsetLoadingLocal = false;
+  const [activeConvoContext, setActiveConvoContext] =
+    useContext(ActiveConvoContext).convoContext;
 
-  function* offsetGeneratorCreator(i: number) {
-    while (true) {
-      yield i;
-      i += 10;
-    }
-  }
+  const [observeRef, inView, entry] = useInView({
+    onChange(inView) {
+      // console.log("onchange", inView);
+      if (inView) {
+        socket.emit("msg:get-offset", {
+          offset,
+          convoId: activeConvoContext?.id,
+        });
+      }
 
-  let offsetGenerator: Generator<number, void, unknown> =
-    offsetGeneratorCreator(10);
+      setOffsetLoading(inView);
+    },
+  });
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (
-        scrollContainerRef.current &&
-        // !offsetLoading &&
-        !offsetLoadingLocal &&
-        scrollContainerRef.current.scrollTop < 200
-      ) {
-        console.log("hi");
-        setOffset(2);
-        offsetLoadingLocal = true;
-        setOffsetLoading(true);
-      }
-    };
-
-    const currentRef = scrollContainerRef.current;
-    if (currentRef) {
-      currentRef.addEventListener("scroll", handleScroll);
-    }
-
-    return () => {
-      if (currentRef) {
-        currentRef.removeEventListener("scroll", handleScroll);
-      }
-    };
+    socket.on("msg:send-offset", (data) => {
+      // console.log("msg:send-offset", data.data);
+      console.log("hello there");
+      setActiveConvoContext((convoContext) => {
+        return {
+          ...convoContext,
+          messages: [...data.data, ...convoContext.messages],
+        };
+      });
+    });
   }, []);
+
+  const endOfMessagesRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  // let offsetLoadingLocal = false;
+  console.log("inView: ", inView);
+  // function* offsetGeneratorCreator(i: number) {
+  //   while (true) {
+  //     yield i;
+  //     i += 10;
+  //   }
+  // }
+
+  // let offsetGenerator: Generator<number, void, unknown> =
+  //   offsetGeneratorCreator(10);
 
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView();
@@ -63,7 +69,8 @@ export default function ActiveConvo() {
     )
   );
   return (
-    <div ref={scrollContainerRef} className="flex-grow p-4 overflow-y-auto">
+    <div className="flex-grow p-4 overflow-y-auto">
+      {messages && <div ref={observeRef} />}
       {messages || null}
       <div ref={endOfMessagesRef} />
     </div>
