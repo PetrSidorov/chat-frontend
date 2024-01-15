@@ -1,5 +1,5 @@
 import { ActiveConvoContext } from "../../context/ActiveConvoContext";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Message from "./Message";
 import { useInView } from "react-intersection-observer";
 import { socket } from "../../utils/socket";
@@ -12,31 +12,31 @@ export default function ActiveConvo() {
     useContext(ActiveConvoContext).offsetLoading;
   const [activeConvoContext, setActiveConvoContext] =
     useContext(ActiveConvoContext).convoContext;
-
+  const [render, setRender] = useState(0);
   const [observeRef, inView, entry] = useInView({
     onChange(inView) {
-      // console.log("onchange", inView);
-      if (inView) {
-        socket.emit("msg:get-offset", {
-          offset,
-          convoId: activeConvoContext?.id,
-        });
-      }
-
-      setOffsetLoading(inView);
+      setRender((prev) => prev + 1);
+      console.log("render", render);
+      // if (inView && render == 1) {
+      //   socket.emit("msg:get-offset", {
+      //     offset: 12,
+      //     convoId: activeConvoContext?.id,
+      //   });
+      // }
+      // setOffsetLoading(inView);
     },
   });
 
   useEffect(() => {
     socket.on("msg:send-offset", (data) => {
       // console.log("msg:send-offset", data.data);
-      console.log("hello there");
-      setActiveConvoContext((convoContext) => {
-        return {
-          ...convoContext,
-          messages: [...data.data, ...convoContext.messages],
-        };
-      });
+      console.log("hello there ", data);
+      // setActiveConvoContext((convoContext) => {
+      //   return {
+      //     ...convoContext,
+      //     messages: [...data.data, ...convoContext.messages],
+      //   };
+      // });
     });
   }, []);
 

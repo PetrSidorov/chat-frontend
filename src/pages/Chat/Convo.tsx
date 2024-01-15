@@ -14,17 +14,16 @@ export default function Convo({ data }: ConvoProps) {
   const [offsetLoading, setOffsetLoading] =
     useContext(ActiveConvoContext).offsetLoading;
 
-  useEffect(() => {
-    if (offsetLoading) {
-      console.log("test emit");
-      // socket.emit("msg:get-offset", {
-      //   offset,
-      //   convoId: activeConvoContext?.id,
-      // });
-      // setOffsetLoading(false);
-      // hasLoggedRef.current = true;
-    }
-  }, [offsetLoading]);
+  // useEffect(() => {
+  //   if (offsetLoading) {
+  //     console.log("test emit");
+  //     socket.emit("msg:get-offset", {
+  //       offset,
+  //       convoId: activeConvoContext?.id,
+  //     });
+  //     setOffsetLoading(false);
+  //   }
+  // }, [offsetLoading]);
 
   useEffect(() => {
     function onConnect() {
