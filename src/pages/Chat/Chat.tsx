@@ -12,8 +12,7 @@ export default function Chat() {
 
   useEffect(() => {
     const handleScroll = () => {
-      console.log("Scroll event detected!");
-
+      // console.log("Scroll event detected!");
       // console.log(scrollContainerRef.current.scrollTop);
     };
 

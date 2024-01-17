@@ -59,16 +59,16 @@ export default function Convo({ data }: ConvoProps) {
       });
     });
 
-    socket.on("msg:send-offset", (data) => {
-      // console.log("msg:send-offset", data.data);
-      console.log("hello there");
-      setActiveConvoContext((convoContext) => {
-        return {
-          ...convoContext,
-          messages: [...data.data, ...convoContext.messages],
-        };
-      });
-    });
+    // socket.on("msg:send-offset", (data) => {
+    //   // console.log("msg:send-offset", data.data);
+    //   console.log("hello there");
+    //   setActiveConvoContext((convoContext) => {
+    //     return {
+    //       ...convoContext,
+    //       messages: [...data.data, ...convoContext.messages],
+    //     };
+    //   });
+    // });
 
     return () => {
       socket.off("connect", onConnect);

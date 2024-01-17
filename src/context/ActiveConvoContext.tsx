@@ -14,7 +14,7 @@ export default function ActiveConvoProvider({
 }) {
   const [activeConvo, setActiveConvo] =
     useState<TActiveConvoContextValue | null>(null);
-  const [offset, setOffset] = useState<number>(0);
+  const [offset, setOffset] = useState<number>(2);
   const [offsetLoading, setOffsetLoading] = useState<boolean>(false);
   return (
     <ActiveConvoContext.Provider
