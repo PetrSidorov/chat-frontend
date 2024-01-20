@@ -1,14 +1,26 @@
 import { useState, useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import fetchDB from "../../utils/fetchDB";
+// import fetchDB from "../../utils/FetchDB";
 import pickProperties from "../../utils/pickProperties";
 import { AuthContext } from "../../context/AuthContext";
 import LoginFormField from "./components/LoginFormField";
+import useFetchDB from "../../utils/useFetchDB";
+import {
+  TAuthContext,
+  TDataBaseRequestData,
+  TLoginDataBaseResponse,
+  TUser,
+} from "../../types";
 
 export default function Login() {
-  const [user, setUser] = useContext(AuthContext);
+  const [user, setUser] = useContext<TAuthContext>(AuthContext);
   const [isNewUser, setIsNewUser] = useState<boolean>(false);
+  // const [submitData, setSubmitData] = useState<TDataBaseRequestData | null>(
+  //   null
+  // );
+  const [loading, data, setFetchData] =
+    useFetchDB<TLoginDataBaseResponse | null>();
   const [formData, setFormData] = useState<{
     name: string;
     username: string;
@@ -22,6 +34,7 @@ export default function Login() {
     email: "",
     verifyPassword: "",
   });
+
   const navigate = useNavigate();
 
   function toggleNewUser(shouldBeNewUser: boolean) {
@@ -31,8 +44,12 @@ export default function Login() {
   }
 
   useEffect(() => {
-    user;
-  }, [user]);
+    if (data && data.token) {
+      console.log("data resp: ", data);
+      setUser(data.user);
+      navigate("/chat");
+    }
+  }, [data]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData((data) => {
@@ -45,30 +62,18 @@ export default function Login() {
 
   function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    let dataToSend = null;
-    if (!isNewUser) {
-      dataToSend = pickProperties(formData, "username", "password");
-    } else {
-      dataToSend = pickProperties(formData, "username", "password", "email");
-    }
 
-    fetchDB({
+    const bodyData = isNewUser
+      ? pickProperties(formData, "username", "password", "email")
+      : pickProperties(formData, "username", "password");
+
+    setFetchData({
       url: isNewUser
         ? "http://localhost:3007/register"
         : "http://localhost:3007/login",
       method: "POST",
-      body: formData,
-    })
-      .then((data) => {
-        // console.log(data);
-        if (data.token) {
-          setUser(data.user);
-          navigate("/chat");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      body: bodyData,
+    });
   }
   return (
     <div className="flex justify-center content-center h-screen flex-wrap">

@@ -1,3 +1,3 @@
 export default function SettingsTab() {
-  return "FriendsTab";
+  return "SettingsTab";
 }

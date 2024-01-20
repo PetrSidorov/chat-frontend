@@ -4,13 +4,16 @@ import ConvosList from "./ConvosList";
 import ActiveConvo from "./ActiveConvo";
 import ActiveConvoProvider from "../../context/ActiveConvoContext";
 import MessageManager from "./MessageManager";
-import fetchDB from "../../utils/fetchDB";
+// import fetchDB from "../../utils/fetchDB";
 import SidebarFooter from "./SidebarFooter";
 import Sidebar from "./Sidebar";
+import useFetchDB from "../../utils/useFetchDB";
 
 export default function Chat() {
   const [user, setUser] = useContext(AuthContext);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const [loading, data, setFetchData] = useFetchDB<any>();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,21 +34,35 @@ export default function Chat() {
 
   useEffect(() => {
     if (!user) {
-      fetchDB({
+      setFetchData({
         url: "http://localhost:3007/api/user-data",
         method: "GET",
-      })
-        .then((data) => {
-          // console.log("data user", data);
-          // if (data.token) {
-          setUser(data.user);
-          // }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      });
     }
   }, [user]);
+
+  useEffect(() => {
+    if (data) {
+      setUser(data.user);
+    }
+  }, [data]);
+  // useEffect(() => {
+  //   if (!user) {
+  //     fetchDB({
+  //       url: "http://localhost:3007/api/user-data",
+  //       method: "GET",
+  //     })
+  //       .then((data) => {
+  //         // console.log("data user", data);
+  //         // if (data.token) {
+  //         setUser(data.user);
+  //         // }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error:", error);
+  //       });
+  //   }
+  // }, [user]);
 
   return (
     <ActiveConvoProvider>

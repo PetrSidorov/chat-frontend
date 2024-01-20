@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import fetchDB from "../../utils/fetchDB";
+// import fetchDB from "../../utils/fetchDB";
 import Convo from "./Convo";
 import { ActiveConvoContext } from "../../context/ActiveConvoContext";
+import useFetchDB from "../../utils/useFetchDB";
 
 export default function ConvosList() {
   const [activeConvo, setActiveConvo] =
@@ -9,17 +10,18 @@ export default function ConvosList() {
 
   // const [isConnected, setIsConnected] = useState(socket.connected);
   const [convosData, setConvosData] = useState([]);
+  const [loading, data, setFetchData] = useFetchDB<any>();
 
   useEffect(() => {
-    fetchDB({
+    setFetchData({
       method: "GET",
       url: "http://localhost:3007/api/convo/last-ten-convos-with-ten-messages",
-    }).then((data) => setConvosData(data));
+    });
   }, []);
 
   useEffect(() => {
-    console.log("convosData: ", convosData);
-  }, [convosData]);
+    setConvosData(data);
+  }, [data]);
 
   const convos = convosData?.map((convoData: any) => {
     const { id, messages } = convoData;

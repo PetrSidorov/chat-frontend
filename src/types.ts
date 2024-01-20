@@ -1,5 +1,9 @@
 import { SetStateAction, Dispatch } from "react";
 
+export type TLoginDataBaseResponse = {
+  token: string;
+  user: TUser;
+};
 export type TUser = {
   name: string;
   username: string;
@@ -44,3 +48,14 @@ export enum TSidebarTabs {
   SETTINGS,
   MESSAGES,
 }
+
+type TypeHttpHeaders = {
+  [key: string]: string;
+};
+export type TDataBaseRequestData = {
+  method: string;
+  url: string;
+  body?: Object | string;
+  serialize?: Function;
+  headers?: TypeHttpHeaders;
+};
