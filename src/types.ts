@@ -38,3 +38,9 @@ export type TActiveConvoContext = {
   offsetContext: [number, Dispatch<SetStateAction<number>>];
   offsetLoading: [boolean, Dispatch<SetStateAction<boolean>>];
 };
+
+export enum TSidebarTabs {
+  FRIENDS,
+  SETTINGS,
+  MESSAGES,
+}

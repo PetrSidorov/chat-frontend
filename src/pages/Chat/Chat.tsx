@@ -5,6 +5,8 @@ import ActiveConvo from "./ActiveConvo";
 import ActiveConvoProvider from "../../context/ActiveConvoContext";
 import MessageManager from "./MessageManager";
 import fetchDB from "../../utils/fetchDB";
+import SidebarFooter from "./SidebarFooter";
+import Sidebar from "./Sidebar";
 
 export default function Chat() {
   const [user, setUser] = useContext(AuthContext);
@@ -51,7 +53,7 @@ export default function Chat() {
         {/* User List Column */}
         <div className="flex flex-col w-1/3 bg-gray-800 text-white p-4">
           <h1 className="text-lg font-bold mb-3">Hi, {user?.username}</h1>
-          <ConvosList />
+          <Sidebar />
         </div>
         {/* Chat Column */}
         <div className="flex flex-col w-2/3">

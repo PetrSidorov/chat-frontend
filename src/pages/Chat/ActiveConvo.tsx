@@ -12,6 +12,7 @@ import { useInView } from "react-intersection-observer";
 import { socket } from "../../utils/socket";
 import { debounce } from "lodash";
 import { TMessage } from "../../types";
+import React from "react";
 
 export default function ActiveConvo() {
   const [activeConvo, setActiveConvo] =
@@ -21,7 +22,8 @@ export default function ActiveConvo() {
     useContext(ActiveConvoContext).offsetLoading;
   const [activeConvoContext, setActiveConvoContext] =
     useContext(ActiveConvoContext).convoContext;
-
+  const endOfMessagesRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   // function* offsetGeneratorCreator(i: number) {
   //   while (true) {
   //     yield i;
@@ -33,26 +35,32 @@ export default function ActiveConvo() {
   //   useRef(offsetGeneratorCreator(2));
   // console.log("offsetGenerator: ", offsetGenerator.current.next().value);
 
+  function emitGettingOffset() {
+    socket.emit("msg:get-offset", {
+      offset,
+      convoId: activeConvoContext?.id,
+    });
+
+    setOffset((prev) => prev + 1);
+  }
+
   const handleInView = useCallback(
     debounce((inView) => {
       console.log("offset: ", offset);
       if (inView) {
-        socket.emit("msg:get-offset", {
-          offset,
-          convoId: activeConvoContext?.id,
-        });
-
-        setOffset((prev) => prev + 1);
+        emitGettingOffset();
       }
     }, 300),
     [activeConvoContext]
   );
+
   const [observeRef, inView] = useInView({
     onChange: handleInView,
   });
 
   useEffect(() => {
     socket.on("msg:send-offset", (data) => {
+      const savedScrollPosition = scrollContainerRef.current.scrollTop;
       console.log("Received data from socket:", data);
       console.log(
         "Current activeConvoContext before update:",
@@ -69,11 +77,10 @@ export default function ActiveConvo() {
         console.log("Updated activeConvoContext:", updatedContext);
         return updatedContext;
       });
+      scrollContainerRef.current.scrollTop = savedScrollPosition;
     });
   }, []);
 
-  const endOfMessagesRef = useRef<HTMLDivElement>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   // let offsetLoadingLocal = false;
   console.log("inView: ", inView);
 
@@ -84,22 +91,21 @@ export default function ActiveConvo() {
   }, [activeConvoContext]);
 
   const messages = activeConvo?.messages?.map(
-    ({ content, createdAt, sender }, i: number, msgs: TMessage[]) => {
+    ({ content, createdAt, sender }, i: number) => {
       return (
-        <>
+        <React.Fragment key={createdAt}>
           {i == 2 ? <div ref={observeRef} /> : null}
           <Message
-            key={createdAt}
             content={content}
             createdAt={createdAt}
             username={sender.username}
           />
-        </>
+        </React.Fragment>
       );
     }
   );
   return (
-    <div className="flex-grow p-4 overflow-y-auto">
+    <div ref={scrollContainerRef} className="flex-grow p-4 overflow-y-auto">
       {/* {messages && <div ref={observeRef} />} */}
       {messages || null}
       <div ref={endOfMessagesRef} />
