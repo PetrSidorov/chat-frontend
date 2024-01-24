@@ -54,9 +54,9 @@ export default function Chat() {
   //     })
   //       .then((data) => {
   //         // console.log("data user", data);
-  //         // if (data.token) {
+  //         if (data.token) {
   //         setUser(data.user);
-  //         // }
+  //         }
   //       })
   //       .catch((error) => {
   //         console.error("Error:", error);

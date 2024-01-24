@@ -50,7 +50,7 @@ export default function ActiveConvo() {
       if (inView) {
         emitGettingOffset();
       }
-    }, 300),
+    }, 0),
     [activeConvoContext]
   );
 

@@ -38,7 +38,6 @@ export default function useFetchDB<T>(): [
         return response.json();
       })
       .then((data) => {
-        console.log("data in usefetch: ", data);
         setState(data);
         setLoading(false);
       })
@@ -48,6 +47,5 @@ export default function useFetchDB<T>(): [
       });
   }, [fetchData]);
 
-  console.log(state);
   return [loading, state, setFetchData];
 }
