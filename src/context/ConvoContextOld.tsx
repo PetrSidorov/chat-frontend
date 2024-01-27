@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useState } from "react";
-import { TActiveConvoContext, TActiveConvoContextValue } from "../types";
+import { TConvoContext, TConvos } from "../types";
 
-export const ActiveConvoContext = createContext<TActiveConvoContext>({
+export const ActiveConvoContext = createContext<TConvoContext>({
   convoContext: [null, () => {}],
   offsetContext: [0, () => {}],
   offsetLoading: [false, () => {}],
@@ -12,8 +12,9 @@ export default function ActiveConvoProvider({
 }: {
   children: ReactNode;
 }) {
-  const [activeConvo, setActiveConvo] =
-    useState<TActiveConvoContextValue | null>(null);
+  // const [activeConvo, setActiveConvo] =
+  //   useState<TActiveConvoContextValue | null>(null);
+  const [activeConvo, setActiveConvo] = useState<TConvos | null>(null);
   const [offset, setOffset] = useState<number>(2);
   const [offsetLoading, setOffsetLoading] = useState<boolean>(false);
   return (
