@@ -4,15 +4,16 @@ import { TDataBaseRequestData } from "../types";
 export default function useFetchDB<T>(): [
   boolean,
   T | null,
-  SetStateAction<Dispatch<any>>
+  string | Error,
+  Dispatch<SetStateAction<TDataBaseRequestData | null>>
 ] {
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string | Error>("");
   const [state, setState] = useState<T | null>(null);
   const [fetchData, setFetchData] = useState<TDataBaseRequestData | null>(null);
 
   useEffect(() => {
-    if (fetchData === null) {
+    if (fetchData == null) {
       return;
     }
     const {
@@ -24,28 +25,47 @@ export default function useFetchDB<T>(): [
         "Content-Type": "application/json",
       },
     } = fetchData;
-    console.log(fetchData);
-    fetch(url, {
-      method,
-      body: serialize(body),
-      credentials: "include",
-      headers,
-    })
-      .then((response) => {
+
+    // let data;
+
+    async function fetchStuff() {
+      try {
+        const response = await fetch(url, {
+          method,
+          body: serialize(body),
+          credentials: "include",
+          headers,
+        });
+
         if (response.status != 200) {
           throw new Error(`Error with ${url} and ${method}`);
         }
-        return response.json();
-      })
-      .then((data) => {
+
+        const data = await response.json();
         setState(data);
         setLoading(false);
-      })
-      .catch((error) => setError(error))
-      .finally(() => {
+      } catch (e) {
+        setError(String(e));
+        throw fetchData;
+      } finally {
         setLoading(false);
-      });
+      }
+    }
+
+    // function doStuff() {}
+
+    // fetchStuff().then(() => {
+    //   if (data) {
+    //     doStuff();
+    //   }
+    // });
+
+    fetchStuff();
+
+    // if (data) {
+    //   doStuff();
+    // }
   }, [fetchData]);
 
-  return [loading, state, setFetchData];
+  return [loading, state, error, setFetchData];
 }

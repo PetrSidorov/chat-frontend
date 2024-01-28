@@ -15,8 +15,6 @@ export type TAuthContext = [
   Dispatch<SetStateAction<TUser | null>>
 ];
 
-export type TConvo = TMessage[];
-
 export type TMessage = {
   content: string;
   convoId: string;
@@ -24,29 +22,21 @@ export type TMessage = {
   sender: { username: string };
 };
 
-export type TActiveConvoContextValue = {
-  id: string;
-  messages: TMessage[];
-  // offset: number;
-};
+export type TConvos = { [key: string]: TMessage[] };
 
 export type ConvoProps = {
-  data: TActiveConvoContextValue;
+  data: TConvos;
 };
 
-export type TActiveConvoContext = {
-  convoContext: [
-    TActiveConvoContextValue | null,
-    Dispatch<SetStateAction<TActiveConvoContextValue | null>>
-  ];
-  offsetContext: [number, Dispatch<SetStateAction<number>>];
-  offsetLoading: [boolean, Dispatch<SetStateAction<boolean>>];
+export type TConvoContext = {
+  convoContext: [TConvos | null, Function];
+  activeConvoId: [String | null, Dispatch<SetStateAction<String | null>>];
 };
 
 export enum TSidebarTabs {
-  FRIENDS,
-  SETTINGS,
-  MESSAGES,
+  FRIENDS = "FRIENDS",
+  SETTINGS = "SETTINGS",
+  MESSAGES = "MESSAGES",
 }
 
 type TypeHttpHeaders = {

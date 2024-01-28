@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login/Login";
-import Chat from "./pages/Chat/Chat";
+import ChatMain from "./pages/Chat/ChatMain";
 import AuthProvider from "./context/AuthContext";
 // import ActiveConvoProvider from "./context/ActiveConvoContext";
 function App() {
@@ -10,7 +10,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />}></Route>
           {/* <ActiveConvoProvider> */}
-          <Route path="/chat" element={<Chat />}></Route>
+          <Route path="/chat" element={<ChatMain />}></Route>
           {/* </ActiveConvoProvider> */}
         </Routes>
       </BrowserRouter>

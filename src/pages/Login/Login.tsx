@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 // import fetchDB from "../../utils/FetchDB";
 import pickProperties from "../../utils/pickProperties";
 import { AuthContext } from "../../context/AuthContext";
-import LoginFormField from "./components/LoginFormField";
-import useFetchDB from "../../utils/useFetchDB";
+import LoginFormField from "./LoginFormField";
+import useFetchDB from "../../hooks/useFetchDB";
 import {
   TAuthContext,
   TDataBaseRequestData,
@@ -19,7 +19,7 @@ export default function Login() {
   // const [submitData, setSubmitData] = useState<TDataBaseRequestData | null>(
   //   null
   // );
-  const [loading, data, setFetchData] =
+  const [loading, data, error, setFetchData] =
     useFetchDB<TLoginDataBaseResponse | null>();
 
   const [formData, setFormData] = useState<{

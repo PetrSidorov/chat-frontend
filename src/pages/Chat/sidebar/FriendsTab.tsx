@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { socket } from "../../utils/socket";
+import { socket } from "../../../utils/socket";
 
 export default function FriendsTab() {
   const [searchInput, setSearchInput] = useState<string>("");

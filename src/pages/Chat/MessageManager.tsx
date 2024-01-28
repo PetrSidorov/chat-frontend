@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { TMessage } from "../../types";
-import { ActiveConvoContext } from "../../context/ActiveConvoContext";
+import { AllConvoContext } from "../../context/AllConvoContext";
 import { socket } from "../../utils/socket";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -24,30 +24,25 @@ export default function MessageManager() {
   };
 
   const [activeConvoContext, setActiveConvoContext] =
-    useContext(ActiveConvoContext).convoContext;
+    useContext(AllConvoContext).convoContext;
   const [message, setMessage] = useState<TMessage>(initialMesssage);
-
-  useEffect(() => {
-    console.log("active context in msg mng: ", activeConvoContext);
-    console.log(message);
-  }, [message]);
 
   useEffect(() => {
     if (message.createdAt) {
       const { convoId, ...clientSideMessage } = message;
 
-      setActiveConvoContext((activeConvoContext) => {
-        return {
-          ...activeConvoContext,
-          messages: [...activeConvoContext.messages, clientSideMessage],
-        };
-      });
+      // setActiveConvoContext((activeConvoContext) => {
+      //   return {
+      //     ...activeConvoContext,
+      //     messages: [...activeConvoContext.messages, clientSideMessage],
+      //   };
+      // });
 
       setMessage((msg) => {
         const { sender, ...restOfTheMessage } = msg;
         return restOfTheMessage;
       });
-      console.log("msg", message);
+
       socket.emit("msg:send", message);
       setMessage(initialMesssage);
     }
@@ -72,7 +67,6 @@ export default function MessageManager() {
     // socket.emit("msg:send", message);
   }
 
-  console.log("activeConvoContext: ", activeConvoContext);
   function messageHandler(e) {
     // const receiverId =
     //   activeConvoContext.joinerId == activeConvoContext.userId
