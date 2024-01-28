@@ -1,21 +1,33 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { TDataBaseRequestData } from "../types";
 
+/**
+ * does bla bla bla
+ * @returns
+ */
 export default function useFetchDB<T>(): [
   boolean,
   T | null,
   string | Error,
   Dispatch<SetStateAction<TDataBaseRequestData | null>>
 ] {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | Error>("");
   const [state, setState] = useState<T | null>(null);
   const [fetchData, setFetchData] = useState<TDataBaseRequestData | null>(null);
+
+  function fetchStuff() {
+    ///
+  }
 
   useEffect(() => {
     if (fetchData == null) {
       return;
     }
+
+    let ignore = false;
+    const controller = new AbortController();
+
     const {
       url,
       method,
@@ -26,8 +38,6 @@ export default function useFetchDB<T>(): [
       },
     } = fetchData;
 
-    // let data;
-
     async function fetchStuff() {
       try {
         const response = await fetch(url, {
@@ -35,6 +45,7 @@ export default function useFetchDB<T>(): [
           body: serialize(body),
           credentials: "include",
           headers,
+          signal: controller.signal,
         });
 
         if (response.status != 200) {
@@ -42,30 +53,29 @@ export default function useFetchDB<T>(): [
         }
 
         const data = await response.json();
-        setState(data);
-        setLoading(false);
+        if (!ignore) {
+          setState(data);
+          setLoading(false);
+        }
       } catch (e) {
-        setError(String(e));
-        throw fetchData;
+        if (!ignore) {
+          setError(String(e));
+          throw fetchData;
+        }
       } finally {
-        setLoading(false);
+        if (!ignore) {
+          setLoading(false);
+        }
       }
     }
 
-    // function doStuff() {}
-
-    // fetchStuff().then(() => {
-    //   if (data) {
-    //     doStuff();
-    //   }
-    // });
-
     fetchStuff();
-
-    // if (data) {
-    //   doStuff();
-    // }
+    return () => {
+      ignore = true;
+      controller.abort();
+    };
   }, [fetchData]);
 
   return [loading, state, error, setFetchData];
+  // return { loading, data, error, refetch };
 }

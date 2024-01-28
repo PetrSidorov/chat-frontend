@@ -43,8 +43,8 @@ export default function ConvosList() {
     });
 
   return (
-    // <ErrorBoundary fallback={<p>Something went wrong</p>}>
-    <ul className="font-semibold">{ListOfConvoPreviews}</ul>
-    // </ErrorBoundary>
+    <ErrorBoundary fallback={<p>Something went wrong</p>}>
+      <ul className="font-semibold">{ListOfConvoPreviews}</ul>
+    </ErrorBoundary>
   );
 }

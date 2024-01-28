@@ -19,6 +19,11 @@ export default function ConvoPreview({ messages }: { messages: TMessage[] }) {
       />
     );
   } else {
-    return <Message content={"This convo is empty, start messaging now =)"} />;
+    return (
+      <Message
+        // createdAt={""}
+        content={"This convo is empty, start messaging now =)"}
+      />
+    );
   }
 }

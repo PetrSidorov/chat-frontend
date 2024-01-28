@@ -11,7 +11,7 @@ export default function Message({
   createdAt: string;
   username: string;
 }) {
-  const date = new Date(createdAt).toDateString();
+  const date = createdAt ? new Date(createdAt).toDateString() : "";
 
   return (
     <li className="flex items-center m-2 p-2 bg-gray-200 rounded">

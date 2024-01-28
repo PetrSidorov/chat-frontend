@@ -13,9 +13,8 @@ export default function ActiveConvo() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   function emitGettingOffset(currentlyInView: boolean) {
-    console.log("hello");
     if (!currentlyInView) return;
-    console.log(offset);
+
     socket.emit("msg:get-offset", {
       offset,
       convoId: activeConvoId,
