@@ -5,20 +5,18 @@ import { TDataBaseRequestData } from "../types";
  * does bla bla bla
  * @returns
  */
-export default function useFetchDB<T>(): [
-  boolean,
-  T | null,
-  string | Error,
-  Dispatch<SetStateAction<TDataBaseRequestData | null>>
-] {
+export default function useFetchDB<T>(): {
+  loading: boolean;
+  isLoaded: boolean;
+  data: T | null;
+  error: string | Error;
+  setFetchData: Dispatch<SetStateAction<TDataBaseRequestData | null>>;
+} {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | Error>("");
-  const [state, setState] = useState<T | null>(null);
+  const [data, setData] = useState<T | null>(null);
   const [fetchData, setFetchData] = useState<TDataBaseRequestData | null>(null);
-
-  function fetchStuff() {
-    ///
-  }
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     if (fetchData == null) {
@@ -39,6 +37,8 @@ export default function useFetchDB<T>(): [
     } = fetchData;
 
     async function fetchStuff() {
+      setLoading(true);
+      setIsLoaded(false);
       try {
         const response = await fetch(url, {
           method,
@@ -54,8 +54,9 @@ export default function useFetchDB<T>(): [
 
         const data = await response.json();
         if (!ignore) {
-          setState(data);
+          setData(data);
           setLoading(false);
+          setIsLoaded(true);
         }
       } catch (e) {
         if (!ignore) {
@@ -76,6 +77,6 @@ export default function useFetchDB<T>(): [
     };
   }, [fetchData]);
 
-  return [loading, state, error, setFetchData];
-  // return { loading, data, error, refetch };
+  // return [loading, state, error, setFetchData];
+  return { loading, isLoaded, data, error, setFetchData };
 }

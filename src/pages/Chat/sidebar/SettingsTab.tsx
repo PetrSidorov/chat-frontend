@@ -3,7 +3,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import useFetchDB from "../../../hooks/useFetchDB";
 export default function SettingsTab() {
   const [user, setUser] = useContext(AuthContext);
-  const [loading, data, error, setFetchData] = useFetchDB<any>();
+  const { loading, data, error, setFetchData } = useFetchDB<any>();
   useEffect(() => {
     if (!user) {
       setFetchData({

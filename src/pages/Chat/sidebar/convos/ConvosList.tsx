@@ -4,12 +4,14 @@ import ConvoPreview from "./ConvoPreview";
 import { AllConvoContext } from "../../../../context/AllConvoContext";
 import useFetchDB from "../../../../hooks/useFetchDB";
 import { ErrorBoundary } from "../../../../utils/ErrorBoundary";
+import useSockets from "../../../../hooks/useSockets";
 
 export default function ConvosList() {
   const [convos, addMessagesToConvo] = useContext(AllConvoContext).convoContext;
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
   const [convosData, setConvosData] = useState([]);
-  const [loading, data, error, setFetchData] = useFetchDB<any>();
+  const { loading, isLoaded, data, error, setFetchData } = useFetchDB<any>();
+  const [addToSocketPoll, handleSocketPoll] = useSockets();
 
   useEffect(() => {
     setFetchData({
@@ -19,9 +21,9 @@ export default function ConvosList() {
   }, []);
 
   useEffect(() => {
-    // console.log("error data ", data);
     for (let convoId in data) {
       addMessagesToConvo({ id: convoId, newMessages: data[convoId] });
+      handleSocketPoll(convoId);
     }
   }, [data]);
 
@@ -43,8 +45,8 @@ export default function ConvosList() {
     });
 
   return (
-    <ErrorBoundary fallback={<p>Something went wrong</p>}>
-      <ul className="font-semibold">{ListOfConvoPreviews}</ul>
-    </ErrorBoundary>
+    // <ErrorBoundary fallback={<p>Something went wrong</p>}>
+    <ul className="font-semibold">{ListOfConvoPreviews}</ul>
+    // </ErrorBoundary>
   );
 }

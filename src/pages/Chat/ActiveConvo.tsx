@@ -6,8 +6,9 @@ import MessageList from "./MessageList";
 
 export default function ActiveConvo() {
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
-  // const [offset, setOffset] = useContext(AllConvoContext).offsetContext;
+
   const [offset, setOffset] = useState(2);
+
   const [convos, addMessagesToConvo] = useContext(AllConvoContext).convoContext;
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -16,7 +17,7 @@ export default function ActiveConvo() {
     if (!currentlyInView) return;
 
     socket.emit("msg:get-offset", {
-      offset,
+      offset: offset,
       convoId: activeConvoId,
     });
 
@@ -29,26 +30,14 @@ export default function ActiveConvo() {
 
   useEffect(() => {
     socket.on("msg:send-offset", (data) => {
-      // if (!data || !scrollContainerRef.current) {
-      //   return;
-      // }
-      // const savedScrollPosition = scrollContainerRef.current.scrollTop;
-      // if (!data) {
-      //   return;
-      // }
-      console.log("data ", data);
-      // addMessagesToConvo(activeConvoId, data.data);
-      // setActiveConvoContext((convoContext) => {
-      //   const updatedContext = {
-      //     ...convoContext,
-      //     messages: [...data.data, ...convoContext.messages],
-      //   };
-      //   console.log("Updated activeConvoContext:", updatedContext);
-      //   return updatedContext;
-      // });
-      // scrollContainerRef.current.scrollTop = savedScrollPosition;
+      if (!data || !scrollContainerRef.current || !activeConvoId) {
+        return;
+      }
+      const savedScrollPosition = scrollContainerRef.current.scrollTop;
+      addMessagesToConvo({ id: activeConvoId, newMessages: data.data });
+      scrollContainerRef.current.scrollTop = savedScrollPosition;
     });
-  }, []);
+  }, [activeConvoId]);
 
   useEffect(() => {
     if (offset == 2) {
@@ -59,14 +48,7 @@ export default function ActiveConvo() {
   return (
     <div ref={scrollContainerRef} className="flex-grow p-4 overflow-y-auto">
       {convos?.[activeConvoId] ? (
-        <MessageList
-          ref={observeRef}
-          messages={convos?.[activeConvoId]}
-          // activeConvo={{
-          //   // id: activeConvo?.id,
-          //   messages: convos?.[activeConvoId],
-          // }}
-        />
+        <MessageList ref={observeRef} messages={convos?.[activeConvoId]} />
       ) : (
         "Please, try refresh the page"
       )}

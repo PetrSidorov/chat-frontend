@@ -19,7 +19,7 @@ export default function Login() {
   // const [submitData, setSubmitData] = useState<TDataBaseRequestData | null>(
   //   null
   // );
-  const [loading, data, error, setFetchData] =
+  const { loading, data, error, setFetchData } =
     useFetchDB<TLoginDataBaseResponse | null>();
 
   const [formData, setFormData] = useState<{

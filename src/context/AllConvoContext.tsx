@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useEffect, useState } from "react";
 import { TConvoContext, TConvos, TMessage } from "../types";
 
 export const AllConvoContext = createContext<TConvoContext>({
@@ -12,7 +12,7 @@ export default function ActiveConvoProvider({
   children: ReactNode;
 }) {
   const [convos, setConvos] = useState<TConvos | null>(null);
-  const [activeConvoId, setActiveConvoId] = useState<String | null>(null);
+  const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
 
   function addMessagesToConvo({
     id,
@@ -21,10 +21,12 @@ export default function ActiveConvoProvider({
     id: string;
     newMessages: TMessage[];
   }) {
+    if (!newMessages) return;
+
     setConvos((currentConvos) => {
-      if (currentConvos && currentConvos.id && currentConvos.id) {
-        const oldMessages = currentConvos.id;
-        newMessages = [...oldMessages, ...newMessages];
+      if (currentConvos && currentConvos[id]) {
+        const oldMessages = [...currentConvos[id]];
+        newMessages = [...newMessages, ...oldMessages];
       }
       return {
         ...currentConvos,
@@ -44,12 +46,6 @@ export default function ActiveConvoProvider({
     //   }
     // });
   }
-
-  // useEffect(() => {
-  //   console.log(activeConvoId);
-
-  //   return () => {};
-  // }, [activeConvoId]);
 
   return (
     <AllConvoContext.Provider

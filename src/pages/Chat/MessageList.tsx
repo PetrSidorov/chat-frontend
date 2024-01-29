@@ -7,7 +7,7 @@ const MessageList = forwardRef<HTMLDivElement, { messages: TMessage[] }>(
     return messages.map(({ content, createdAt, sender }, i: number) => {
       return (
         <React.Fragment key={createdAt}>
-          {i === 2 ? <div ref={ref} /> : null}
+          {i === 3 ? <div ref={ref} /> : null}
           <Message
             content={content}
             createdAt={createdAt}

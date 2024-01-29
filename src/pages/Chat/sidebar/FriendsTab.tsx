@@ -1,22 +1,37 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { socket } from "../../../utils/socket";
+import { debounce } from "lodash";
 
 export default function FriendsTab() {
   const [searchInput, setSearchInput] = useState<string>("");
 
-  function handleSearch(searchInput: string) {
-    socket.emit("search-users:get", searchInput);
-  }
+  const debouncedSearch = useCallback(
+    debounce((searchInput) => {
+      socket.emit("search-users:get", searchInput);
+    }, 500),
+    []
+  );
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => handleSearch(searchInput), 500);
+    socket.on("search-users:return", (data) => {
+      console.log("data ", data);
+    });
 
-    return () => clearTimeout(timeoutId);
-  }, [searchInput]);
+    return () => {
+      socket.off("search-users:return");
+      debouncedSearch.cancel();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!searchInput) return;
+    debouncedSearch(searchInput);
+  }, [searchInput, debouncedSearch]);
 
   return (
     <form>
       <input
+        required={true}
         type="text"
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}

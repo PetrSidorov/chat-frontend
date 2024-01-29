@@ -30,7 +30,7 @@ export type ConvoProps = {
 
 export type TConvoContext = {
   convoContext: [TConvos | null, Function];
-  activeConvoId: [String | null, Dispatch<SetStateAction<String | null>>];
+  activeConvoId: [String | null, Dispatch<SetStateAction<string | null>>];
 };
 
 export enum TSidebarTabs {

@@ -1,10 +1,7 @@
-import useSockets from "../../../../hooks/useSockets";
-import { ConvoProps, TMessage } from "../../../../types";
+import { TMessage } from "../../../../types";
 import Message from "../../message/Message";
 
 export default function ConvoPreview({ messages }: { messages: TMessage[] }) {
-  // useSockets(data);
-
   const notEmptyConvo = messages && messages.length > 0;
 
   if (notEmptyConvo) {
@@ -21,7 +18,7 @@ export default function ConvoPreview({ messages }: { messages: TMessage[] }) {
   } else {
     return (
       <Message
-        // createdAt={""}
+        createdAt={""}
         content={"This convo is empty, start messaging now =)"}
       />
     );
