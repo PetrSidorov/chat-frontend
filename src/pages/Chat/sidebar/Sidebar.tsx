@@ -5,11 +5,19 @@ import SettingsTab from "./SettingsTab";
 import ConvosList from "./convos/ConvosList";
 import { MessageSquare, Settings, User } from "lucide-react";
 import SidebarFooterButton from "../../../components/SidebarFooterButton";
+import { useNavigate } from "react-router-dom";
 
 export default function Sidebar() {
   const [activeTab, setActiveTab] = useState<TSidebarTabs>(
     TSidebarTabs.MESSAGES
   );
+  let navigate = useNavigate();
+
+  function handleActiveTab(tabToGo: TSidebarTabs) {
+    if (activeTab === tabToGo) return;
+    setActiveTab(tabToGo);
+    navigate("/" + tabToGo.toLowerCase());
+  }
 
   return (
     <>
@@ -19,17 +27,17 @@ export default function Sidebar() {
 
       <div className="mt-auto flex justify-evenly items-center bg-gray-200 p-4 text-black">
         <SidebarFooterButton
-          onHandle={() => setActiveTab(TSidebarTabs.MESSAGES)}
+          onHandle={() => handleActiveTab(TSidebarTabs.MESSAGES)}
           tabName={TSidebarTabs.MESSAGES}
           icon={MessageSquare}
         />
         <SidebarFooterButton
-          onHandle={() => setActiveTab(TSidebarTabs.SETTINGS)}
+          onHandle={() => handleActiveTab(TSidebarTabs.SETTINGS)}
           tabName={TSidebarTabs.SETTINGS}
           icon={Settings}
         />
         <SidebarFooterButton
-          onHandle={() => setActiveTab(TSidebarTabs.FRIENDS)}
+          onHandle={() => handleActiveTab(TSidebarTabs.FRIENDS)}
           tabName={TSidebarTabs.FRIENDS}
           icon={User}
         />

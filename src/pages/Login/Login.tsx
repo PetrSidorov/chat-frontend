@@ -48,7 +48,7 @@ export default function Login() {
     if (data && data.token) {
       console.log("data resp: ", data);
       setUser(data.user);
-      navigate("/chat");
+      navigate("/messages");
     }
   }, [data]);
 

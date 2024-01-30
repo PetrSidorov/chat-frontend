@@ -1,69 +1,47 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { socket } from "../utils/socket";
-// import ActiveConvoContext from "../context/ActiveConvoContext";
+import { debounce } from "lodash";
 
-export default function useSockets(): [
-  string[],
-  (convoId: string | string[]) => void
-] {
-  const [isConnected, setIsConnected] = useState(socket.connected);
-  const [socketPoll, setSocketPoll] = useState<string[]>([]);
-  //   const [activeConvoContext, setActiveConvoContext] =
-  //     useContext(ActiveConvoContext).convoContext;
+export default function useSockets<T, I>({
+  emitFlag,
+  onFlag,
+  initialState,
+  debounceFlag = false,
+  dependencies = [],
+  debounceTime = 500,
+}: {
+  emitFlag: string;
+  onFlag: string;
+  initialState: I;
+  debounceFlag?: boolean;
+  dependencies?: any[];
+  debounceTime?: number;
+}) {
+  const [data, setData] = useState<I | T>(initialState);
+  const [socketLoading, setSocketLoading] = useState(false);
 
-  useEffect(() => {
-    if (socketPoll.length == 0) return;
-    // setSocketPoll((currSocketPoll) => [...currSocketPoll, convoId]);
-
-    function onConnect() {
-      console.log("socket connect");
-      setIsConnected(true);
-    }
-    function onDisconnect() {
-      console.log("socket disconnect");
-      setIsConnected(false);
-    }
-    socket.on("connect_error", (error) => {
-      console.log("Connection Error:", error);
-    });
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    // console.log(convoId);
-    // if (!socketPoll.includes(convoId)) {
-    //   socket.emit("id:send", convoId);
-    // }
-
-    // socket.on("msg:get", (data) => {
-    //   console.log("get ", data);
-    //   setActiveConvoContext((activeConvoContext) => {
-    //     if (!activeConvoContext) {
-    //       return null;
-    //     }
-    //     return {
-    //       ...activeConvoContext,
-    //       messages: [...activeConvoContext.messages.slice(0, -1), data],
-    //     };
-    //   });
-    // });
-    //   return () => {
-    //     socket.off("connect", onConnect);
-    //     socket.off("disconnect", onDisconnect);
-    //   };
-  }, [socketPoll]);
-
-  function addToSocketPoll(convoId: string | string[]) {
-    if (typeof convoId == "string") {
-      if (!socketPoll.includes(convoId)) {
-        socket.emit("id:send", convoId);
-      }
-      const newSocketPoll = [...socketPoll, convoId];
-      setSocketPoll(newSocketPoll);
-    }
-
-    // if (Array.isArray(convoId)) {
-    //   setSocketPoll((currSocketPoll) => [...currSocketPoll, ...convoId]);
-    // }
+  function basicEmit(dataToEmit: T) {
+    setSocketLoading(true);
+    socket.emit(emitFlag, dataToEmit);
   }
 
-  return [socketPoll, addToSocketPoll];
+  const debounceEmit = useCallback(debounce(basicEmit, debounceTime), [
+    ...dependencies,
+  ]);
+
+  const emit = debounceFlag ? debounceEmit : basicEmit;
+
+  useEffect(() => {
+    socket.on(onFlag, (data: T) => {
+      setData(data);
+      setSocketLoading(false);
+    });
+
+    return () => {
+      socket.off(onFlag);
+      debounceFlag ? debounceEmit.cancel() : null;
+    };
+  }, []);
+
+  return { socketLoading, data, emit };
 }
