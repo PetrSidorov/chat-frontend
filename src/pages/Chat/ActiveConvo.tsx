@@ -7,7 +7,7 @@ import MessageList from "./MessageList";
 export default function ActiveConvo() {
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
 
-  const [convos, addOffsetMessagesToConvo] =
+  const { convos, addOffsetMessagesToConvo } =
     useContext(AllConvoContext).convoContext;
 
   const endOfMessagesRef = useRef<HTMLDivElement>(null);

@@ -29,7 +29,13 @@ export type ConvoProps = {
 };
 
 export type TConvoContext = {
-  convoContext: [TConvos | null, Function];
+  // convoContext: {TConvos | null, Function};
+  convoContext: {
+    convos: TConvos | null;
+    addOffsetMessagesToConvo: Function;
+    pushNewMessageToConvo: Function;
+    pushNewMessagesToConvo: Function;
+  };
   activeConvoId: [string | null, Dispatch<SetStateAction<string | null>>];
 };
 

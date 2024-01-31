@@ -17,7 +17,7 @@ export default function useMessage() {
   const [message, setMessage] = useState<TMessage>(initialMesssage);
   const [activeConvoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
-  const [convos, addOffsetMessagesToConvo] =
+  const { convos, pushNewMessageToConvo } =
     useContext(AllConvoContext).convoContext;
   const {
     socketLoading,
@@ -46,11 +46,8 @@ export default function useMessage() {
     if (!incomingMessage) return;
     // const [convoId, message] = Object.entries(incomingMessage);
     // console.log("convoId: ", convoId);
-    // console.log("message: ", message);
-    addOffsetMessagesToConvo({
-      id: incomingMessage.convoId,
-      messages: [incomingMessage.msg],
-    });
+    // console.log("message: ", incomingMessage);
+    pushNewMessageToConvo(incomingMessage.convoId, incomingMessage.message);
   }, [incomingMessage]);
 
   function sendMessage() {

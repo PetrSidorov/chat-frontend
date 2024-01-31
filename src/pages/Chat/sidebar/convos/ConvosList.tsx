@@ -7,7 +7,7 @@ import { ErrorBoundary } from "../../../../utils/ErrorBoundary";
 import useConvoSocketPoll from "../../../../hooks/useConvoSocketPoll";
 
 export default function ConvosList() {
-  const [convos, addOffsetMessagesToConvo] =
+  const { convos, addOffsetMessagesToConvo } =
     useContext(AllConvoContext).convoContext;
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
   const [convosData, setConvosData] = useState([]);

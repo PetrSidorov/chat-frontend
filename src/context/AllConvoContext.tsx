@@ -19,9 +19,37 @@ export default function ActiveConvoProvider({
     setActiveConvoId(id);
   }
 
-  useEffect(() => {
-    console.log();
-  }, []);
+  function pushNewMessagesToConvo(convoId: string, messages: TMessage[]) {
+    setConvos((currentConvos) => {
+      if (!currentConvos) return;
+      let convoWithNewMessage;
+      if (currentConvos[convoId]) {
+        convoWithNewMessage = [...currentConvos[convoId], ...messages];
+      } else {
+        convoWithNewMessage = { [convoId]: [...messages] };
+      }
+
+      console.log(convoWithNewMessage);
+      return { ...convoWithNewMessage };
+    });
+  }
+
+  function pushNewMessageToConvo(convoId: string, message: TMessage) {
+    setConvos((currentConvos) => {
+      if (!currentConvos) return;
+      let convoWithNewMessage;
+      if (currentConvos[convoId]) {
+        convoWithNewMessage = {
+          ...currentConvos,
+          [convoId]: [...currentConvos[convoId], message],
+        };
+      } else {
+        convoWithNewMessage = { [convoId]: [message] };
+      }
+
+      return { ...convoWithNewMessage };
+    });
+  }
 
   function addOffsetMessagesToConvo({
     id,
@@ -35,11 +63,7 @@ export default function ActiveConvoProvider({
     setConvos((currentConvos) => {
       if (currentConvos && currentConvos[id]) {
         const oldMessages = [...currentConvos[id]];
-        // if (Array.isArray(newMessages)) {
         newMessages = [...newMessages, ...oldMessages];
-        // } else {
-        //   newMessages = [newMessages.msg, ...oldMessages];
-        // }
       }
       return {
         ...currentConvos,
@@ -63,7 +87,12 @@ export default function ActiveConvoProvider({
   return (
     <AllConvoContext.Provider
       value={{
-        convoContext: [convos, addOffsetMessagesToConvo],
+        convoContext: {
+          convos,
+          addOffsetMessagesToConvo,
+          pushNewMessageToConvo,
+          pushNewMessagesToConvo,
+        },
         activeConvoId: [activeConvoId, handleActiveConvoId],
       }}
     >

@@ -12,7 +12,7 @@ import { TMessage } from "../../types";
 //     "userId": "clq0oftzf0001rcqrads0mxtp"
 // }
 export default function MessageManager() {
-  const [convos, addOffsetMessagesToConvo] =
+  const { convos, addOffsetMessagesToConvo } =
     useContext(AllConvoContext).convoContext;
   const [activeConvoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
