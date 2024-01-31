@@ -7,21 +7,17 @@ import MessageList from "./MessageList";
 export default function ActiveConvo() {
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
 
-  const [offset, setOffset] = useState(2);
-
   const [convos, addMessagesToConvo] = useContext(AllConvoContext).convoContext;
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
+  const offset = convos?.[activeConvoId]?.length / 6 || 2;
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
 
     socket.emit("msg:get-offset", {
-      offset: offset,
+      offset,
       convoId: activeConvoId,
     });
-
-    setOffset((prev) => prev + 1);
   }
 
   const [observeRef, inView] = useInView({

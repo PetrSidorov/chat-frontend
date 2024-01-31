@@ -1,13 +1,13 @@
-import { useEffect, useState, useCallback } from "react";
-import { socket } from "../../../utils/socket";
-import { debounce } from "lodash";
+import { useEffect, useState, useCallback, useContext } from "react";
 import { Loader } from "lucide-react";
 import useSockets from "../../../hooks/useSockets";
 import { MessageSquare } from "lucide-react";
+import { AllConvoContext } from "../../../context/AllConvoContext";
 
 export default function FriendsTab() {
   const [searchInput, setSearchInput] = useState<string>("");
   const [foundUsers, setFoundUsers] = useState([]);
+  const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
 
   const { socketLoading, data, emit } = useSockets({
     emitFlag: "search-users:get",
@@ -15,6 +15,10 @@ export default function FriendsTab() {
     initialState: [],
     debounceFlag: true,
   });
+
+  function createNewConvo(secondUserId: string) {
+    emit();
+  }
 
   useEffect(() => {
     if (!searchInput && foundUsers.length > 0) {
@@ -54,65 +58,21 @@ export default function FriendsTab() {
         <ul>
           {foundUsers.map((user) => (
             <li key={user.id}>
-              <button className="flex items-center">
+              <button
+                className="flex items-center"
+                onClick={() =>
+                  user.convos[0]?.id
+                    ? setActiveConvoId(user.convos[0].id)
+                    : createNewConvo(user)
+                }
+              >
                 <MessageSquare
                   color={user.convos.length > 0 ? "green" : "gray"}
                 />
-                {/* <svg
-                className="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 flex-shrink-0"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-              </svg> */}
                 {user.username}
               </button>
             </li>
-
-            // <li key={user.id}>
-            //   <button>{user.username}</button>
-            // </li>
           ))}
-          {/* <ul className="max-w-md space-y-1 text-gray-500 list-inside dark:text-gray-400"> */}
-          {/* <li className="flex items-center">
-            <svg
-              className="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 flex-shrink-0"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            At least 10 characters
-          </li> */}
-          {/* <li className="flex items-center">
-            <svg
-              className="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 flex-shrink-0"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            At least one lowercase character
-          </li>
-          <li className="flex items-center">
-            <svg
-              className="w-3.5 h-3.5 me-2 text-gray-500 dark:text-gray-400 flex-shrink-0"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            At least one special character, e.g., ! @ # ?
-          </li> */}
-          {/* </ul> */}
         </ul>
       )}
     </div>

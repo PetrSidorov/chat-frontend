@@ -14,6 +14,11 @@ export default function ActiveConvoProvider({
   const [convos, setConvos] = useState<TConvos | null>(null);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
 
+  function handleActiveConvoId(id: string) {
+    if (activeConvoId == id) return;
+    setActiveConvoId(id);
+  }
+
   function addMessagesToConvo({
     id,
     newMessages,
@@ -51,7 +56,7 @@ export default function ActiveConvoProvider({
     <AllConvoContext.Provider
       value={{
         convoContext: [convos, addMessagesToConvo],
-        activeConvoId: [activeConvoId, setActiveConvoId],
+        activeConvoId: [activeConvoId, handleActiveConvoId],
       }}
     >
       {children}
