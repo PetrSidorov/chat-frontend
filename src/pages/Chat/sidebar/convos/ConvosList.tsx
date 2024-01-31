@@ -7,7 +7,8 @@ import { ErrorBoundary } from "../../../../utils/ErrorBoundary";
 import useConvoSocketPoll from "../../../../hooks/useConvoSocketPoll";
 
 export default function ConvosList() {
-  const [convos, addMessagesToConvo] = useContext(AllConvoContext).convoContext;
+  const [convos, addOffsetMessagesToConvo] =
+    useContext(AllConvoContext).convoContext;
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
   const [convosData, setConvosData] = useState([]);
   const { loading, isLoaded, data, error, setFetchData } = useFetchDB<any>();
@@ -22,7 +23,7 @@ export default function ConvosList() {
 
   useEffect(() => {
     for (let convoId in data) {
-      addMessagesToConvo({ id: convoId, newMessages: data[convoId] });
+      addOffsetMessagesToConvo({ id: convoId, newMessages: data[convoId] });
       addConvoToSocketPoll(convoId);
     }
   }, [data]);

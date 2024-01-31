@@ -19,7 +19,11 @@ export default function ActiveConvoProvider({
     setActiveConvoId(id);
   }
 
-  function addMessagesToConvo({
+  useEffect(() => {
+    console.log();
+  }, []);
+
+  function addOffsetMessagesToConvo({
     id,
     newMessages,
   }: {
@@ -31,7 +35,11 @@ export default function ActiveConvoProvider({
     setConvos((currentConvos) => {
       if (currentConvos && currentConvos[id]) {
         const oldMessages = [...currentConvos[id]];
+        // if (Array.isArray(newMessages)) {
         newMessages = [...newMessages, ...oldMessages];
+        // } else {
+        //   newMessages = [newMessages.msg, ...oldMessages];
+        // }
       }
       return {
         ...currentConvos,
@@ -55,7 +63,7 @@ export default function ActiveConvoProvider({
   return (
     <AllConvoContext.Provider
       value={{
-        convoContext: [convos, addMessagesToConvo],
+        convoContext: [convos, addOffsetMessagesToConvo],
         activeConvoId: [activeConvoId, handleActiveConvoId],
       }}
     >

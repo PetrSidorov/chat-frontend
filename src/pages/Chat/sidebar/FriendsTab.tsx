@@ -3,11 +3,13 @@ import { Loader } from "lucide-react";
 import useSockets from "../../../hooks/useSockets";
 import { MessageSquare } from "lucide-react";
 import { AllConvoContext } from "../../../context/AllConvoContext";
+import useNewConvo from "../../../hooks/useNewConvo";
 
 export default function FriendsTab() {
   const [searchInput, setSearchInput] = useState<string>("");
   const [foundUsers, setFoundUsers] = useState([]);
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
+  const emitNewConvo = useNewConvo();
 
   const { socketLoading, data, emit } = useSockets({
     emitFlag: "search-users:get",
@@ -17,7 +19,7 @@ export default function FriendsTab() {
   });
 
   function createNewConvo(secondUserId: string) {
-    emit();
+    emitNewConvo(secondUserId);
   }
 
   useEffect(() => {
@@ -63,7 +65,7 @@ export default function FriendsTab() {
                 onClick={() =>
                   user.convos[0]?.id
                     ? setActiveConvoId(user.convos[0].id)
-                    : createNewConvo(user)
+                    : createNewConvo(user.id)
                 }
               >
                 <MessageSquare

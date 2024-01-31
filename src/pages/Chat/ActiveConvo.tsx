@@ -7,7 +7,9 @@ import MessageList from "./MessageList";
 export default function ActiveConvo() {
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
 
-  const [convos, addMessagesToConvo] = useContext(AllConvoContext).convoContext;
+  const [convos, addOffsetMessagesToConvo] =
+    useContext(AllConvoContext).convoContext;
+
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const offset = convos?.[activeConvoId]?.length / 6 || 2;
@@ -30,7 +32,7 @@ export default function ActiveConvo() {
         return;
       }
       const savedScrollPosition = scrollContainerRef.current.scrollTop;
-      addMessagesToConvo({ id: activeConvoId, newMessages: data.data });
+      addOffsetMessagesToConvo({ id: activeConvoId, newMessages: data.data });
       scrollContainerRef.current.scrollTop = savedScrollPosition;
     });
   }, [activeConvoId]);
