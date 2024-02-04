@@ -14,7 +14,7 @@ export default function Message({
   const date = createdAt ? new Date(createdAt).toDateString() : "";
 
   return (
-    <li className="flex items-center m-2 p-2 bg-gray-200 rounded">
+    <li className="flex items-center m-2 p-2 bg-gray-200 rounded w-2/3">
       <Avatar />
       <div className="ml-2">
         <div className="flex justify-between mb-3">

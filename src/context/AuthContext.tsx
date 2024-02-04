@@ -1,4 +1,12 @@
-import { ReactNode, createContext, useEffect, useState } from "react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  createContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { TAuthContext, TUser } from "../types.ts";
 import useFetchDB from "../hooks/useFetchDB.ts";
 
@@ -20,9 +28,12 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     setUser(data);
   }, [data]);
 
-  return (
-    <AuthContext.Provider value={[user, setUser]}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = useMemo(() => {
+    return [user, setUser] as [
+      TUser | null,
+      Dispatch<SetStateAction<TUser | null>>
+    ];
+  }, [user]);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

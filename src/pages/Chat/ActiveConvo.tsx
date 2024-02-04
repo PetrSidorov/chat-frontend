@@ -44,7 +44,10 @@ export default function ActiveConvo() {
   }, [activeConvoId]);
 
   return (
-    <div ref={scrollContainerRef} className="flex-grow p-4 overflow-y-auto">
+    <div
+      ref={scrollContainerRef}
+      className="flex flex-col flex-grow p-4 overflow-y-auto"
+    >
       {convos?.[activeConvoId] ? (
         <MessageList ref={observeRef} messages={convos?.[activeConvoId]} />
       ) : (
