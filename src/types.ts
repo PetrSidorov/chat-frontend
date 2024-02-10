@@ -32,11 +32,12 @@ export type TConvoContext = {
   // convoContext: {TConvos | null, Function};
   convoContext: {
     convos: TConvos | null;
-    addOffsetMessagesToConvo: Function;
+    unshiftMessagesToConvo: Function;
     pushNewMessageToConvo: Function;
     pushNewMessagesToConvo: Function;
   };
   activeConvoId: [string | null, Dispatch<SetStateAction<string | null>>];
+  socketPoll: [string[] | null, Dispatch<SetStateAction<string[] | null>>];
 };
 
 export enum TSidebarTabs {

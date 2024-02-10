@@ -5,7 +5,7 @@ import { AllConvoContext } from "../context/AllConvoContext";
 
 export default function useNewConvo() {
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
-  const { convos, addOffsetMessagesToConvo } =
+  const { convos, unshiftMessagesToConvo } =
     useContext(AllConvoContext).convoContext;
   const [addToSocketPoll, addConvoToSocketPoll] = useConvoSocketPoll();
 
@@ -16,11 +16,11 @@ export default function useNewConvo() {
   });
 
   useEffect(() => {
-    //TODO: wat. check if that's even working
-    if (!data) return;
-    const [convoId, messages] = Object.entries(data);
+    if (data && Object.keys(data).length === 0) return;
+    const [convoId, messages] = Object.entries(data)[0];
+
     setActiveConvoId(convoId);
-    addOffsetMessagesToConvo({ id: convoId, newMessages: messages });
+    unshiftMessagesToConvo({ id: convoId, newMessages: messages });
     addConvoToSocketPoll(convoId);
   }, [data]);
 

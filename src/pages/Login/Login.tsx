@@ -46,7 +46,6 @@ export default function Login() {
 
   useEffect(() => {
     if (data && data.token) {
-      console.log("data resp: ", data);
       setUser(data.user);
       navigate("/messages");
     }

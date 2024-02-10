@@ -1,18 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 
-import ConvoPreview from "./ConvoPreview";
 import { AllConvoContext } from "../../../../context/AllConvoContext";
-import useFetchDB from "../../../../hooks/useFetchDB";
-import { ErrorBoundary } from "../../../../utils/ErrorBoundary";
 import useConvoSocketPoll from "../../../../hooks/useConvoSocketPoll";
+import useFetchDB from "../../../../hooks/useFetchDB";
+import ConvoPreview from "./ConvoPreview";
 
 export default function ConvosList() {
-  const { convos, addOffsetMessagesToConvo } =
+  const { convos, unshiftMessagesToConvo } =
     useContext(AllConvoContext).convoContext;
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
-  const [convosData, setConvosData] = useState([]);
   const { loading, isLoaded, data, error, setFetchData } = useFetchDB<any>();
-  const [addToSocketPoll, addConvoToSocketPoll] = useConvoSocketPoll();
+  const [socketPoll, addConvoToSocketPoll] = useConvoSocketPoll();
 
   useEffect(() => {
     setFetchData({
@@ -23,7 +21,12 @@ export default function ConvosList() {
 
   useEffect(() => {
     for (let convoId in data) {
-      addOffsetMessagesToConvo({ id: convoId, newMessages: data[convoId] });
+      // if no convoid
+      if (socketPoll && socketPoll.includes(convoId)) {
+        break;
+      }
+
+      unshiftMessagesToConvo({ id: convoId, newMessages: data[convoId] });
       addConvoToSocketPoll(convoId);
     }
   }, [data]);
@@ -45,9 +48,5 @@ export default function ConvosList() {
       );
     });
 
-  return (
-    // <ErrorBoundary fallback={<p>Something went wrong</p>}>
-    <ul className="font-semibold">{ListOfConvoPreviews}</ul>
-    // </ErrorBoundary>
-  );
+  return <ul className="font-semibold">{ListOfConvoPreviews}</ul>;
 }

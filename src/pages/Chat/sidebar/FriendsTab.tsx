@@ -34,7 +34,6 @@ export default function FriendsTab() {
   useEffect(() => {
     if (data && data.users && data.users.length > 0) {
       setFoundUsers(data.users);
-      console.log(data.users);
     }
   }, [data]);
 

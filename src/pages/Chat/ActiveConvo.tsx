@@ -1,18 +1,20 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 import { AllConvoContext } from "../../context/AllConvoContext";
 import { socket } from "../../utils/socket";
 import MessageList from "./MessageList";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function ActiveConvo() {
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
-
-  const { convos, addOffsetMessagesToConvo } =
+  const [user] = useContext(AuthContext);
+  const { convos, unshiftMessagesToConvo } =
     useContext(AllConvoContext).convoContext;
 
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const offset = convos?.[activeConvoId]?.length / 6 || 2;
+
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
 
@@ -32,15 +34,13 @@ export default function ActiveConvo() {
         return;
       }
       const savedScrollPosition = scrollContainerRef.current.scrollTop;
-      addOffsetMessagesToConvo({ id: activeConvoId, newMessages: data.data });
+      unshiftMessagesToConvo({ id: activeConvoId, newMessages: data.data });
       scrollContainerRef.current.scrollTop = savedScrollPosition;
     });
   }, [activeConvoId]);
 
   useEffect(() => {
-    if (offset == 2) {
-      endOfMessagesRef.current?.scrollIntoView();
-    }
+    endOfMessagesRef.current?.scrollIntoView();
   }, [activeConvoId]);
 
   return (
@@ -48,10 +48,14 @@ export default function ActiveConvo() {
       ref={scrollContainerRef}
       className="flex flex-col flex-grow p-4 overflow-y-auto"
     >
-      {convos?.[activeConvoId] ? (
-        <MessageList ref={observeRef} messages={convos?.[activeConvoId]} />
+      {activeConvoId && convos?.[activeConvoId] ? (
+        <MessageList
+          ref={observeRef}
+          messages={convos?.[activeConvoId]}
+          currentUser={user?.username}
+        />
       ) : (
-        "Please, try refresh the page"
+        "Select convo to start messaging"
       )}
       <div ref={endOfMessagesRef} />
     </div>

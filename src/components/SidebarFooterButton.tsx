@@ -1,5 +1,7 @@
+// import { TargetIcon } from "lucide-react";
 import { TSidebarTabs } from "../types";
 import VisuallyHidden from "./VisuallyHidden";
+
 export default function SidebarFooterButton({
   onHandle,
   icon: Icon,

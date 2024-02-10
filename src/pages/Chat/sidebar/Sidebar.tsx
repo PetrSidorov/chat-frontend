@@ -6,18 +6,12 @@ import ConvosList from "./convos/ConvosList";
 import { MessageSquare, Settings, User } from "lucide-react";
 import SidebarFooterButton from "../../../components/SidebarFooterButton";
 import { useNavigate } from "react-router-dom";
+import useTabs from "../../../utils/useTabs";
 
 export default function Sidebar() {
-  const [activeTab, setActiveTab] = useState<TSidebarTabs>(
+  const [activeTab, handleActiveTab] = useTabs<TSidebarTabs>(
     TSidebarTabs.MESSAGES
   );
-  let navigate = useNavigate();
-
-  function handleActiveTab(tabToGo: TSidebarTabs) {
-    if (activeTab === tabToGo) return;
-    setActiveTab(tabToGo);
-    navigate("/" + tabToGo.toLowerCase());
-  }
 
   return (
     <>

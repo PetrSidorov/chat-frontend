@@ -19,5 +19,12 @@ export default function SettingsTab() {
   //     setUser(data.user);
   //   }
   // }, [data]);
-  return <h1 className="text-lg font-bold mb-3">Hi, {user?.username}</h1>;
+  function handleSettingsTab() {}
+  return (
+    <div onClick={handleSettingsTab}>
+      <h1 className="text-lg font-bold mb-3">Hi, {user?.username}</h1>
+      <p>{user.email}</p>
+      {user.name ?? <p>{user.name}</p>}
+    </div>
+  );
 }

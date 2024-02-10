@@ -4,6 +4,7 @@ import { TConvoContext, TConvos, TMessage } from "../types";
 export const AllConvoContext = createContext<TConvoContext>({
   convoContext: [null, () => {}],
   activeConvoId: [null, () => {}],
+  socketPoll: [null, () => {}],
 });
 
 export default function ActiveConvoProvider({
@@ -13,6 +14,7 @@ export default function ActiveConvoProvider({
 }) {
   const [convos, setConvos] = useState<TConvos | null>(null);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
+  const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
 
   function handleActiveConvoId(id: string) {
     if (activeConvoId == id) return;
@@ -51,7 +53,7 @@ export default function ActiveConvoProvider({
     });
   }
 
-  function addOffsetMessagesToConvo({
+  function unshiftMessagesToConvo({
     id,
     newMessages,
   }: {
@@ -70,6 +72,11 @@ export default function ActiveConvoProvider({
         [id]: [...newMessages],
       };
     });
+
+    // useEffect(() => {
+    //   console.log("convos: ", convos);
+    // }, []);
+
     // setConvos((currentConvos) => {
     //   if (currentConvos) {
     //     return currentConvos.map((convo) => {
@@ -89,11 +96,12 @@ export default function ActiveConvoProvider({
       value={{
         convoContext: {
           convos,
-          addOffsetMessagesToConvo,
+          unshiftMessagesToConvo,
           pushNewMessageToConvo,
           pushNewMessagesToConvo,
         },
         activeConvoId: [activeConvoId, handleActiveConvoId],
+        socketPoll: [socketPoll, setSocketPoll],
       }}
     >
       {children}
