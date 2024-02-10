@@ -8,6 +8,7 @@ export type TUser = {
   name: string;
   username: string;
   email: string;
+  avatarUrl?: string;
 };
 
 export type TAuthContext = [
