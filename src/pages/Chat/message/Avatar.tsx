@@ -17,9 +17,10 @@ export default function Avatar({
   avatarUrl,
   username,
 }: {
-  avatarUrl?: string;
+  avatarUrl?: string | null;
   username?: string;
 }) {
+  console.log("avatarUrl ", avatarUrl);
   if (!avatarUrl) return <CircleUserRound size={100} strokeWidth={1} />;
   if (avatarUrl)
     return (

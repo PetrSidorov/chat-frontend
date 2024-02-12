@@ -6,7 +6,7 @@ import useFetchDB from "../../../../hooks/useFetchDB";
 import ConvoPreview from "./ConvoPreview";
 
 export default function ConvosList() {
-  const { convos, unshiftMessagesToConvo } =
+  const { convos, unshiftMessagesToConvo, initConvo } =
     useContext(AllConvoContext).convoContext;
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
   const { loading, isLoaded, data, error, setFetchData } = useFetchDB<any>();
@@ -26,9 +26,10 @@ export default function ConvosList() {
       if (socketPoll && socketPoll.includes(convoId)) {
         break;
       }
-      unshiftMessagesToConvo({
+      initConvo({
         id: convoId,
         newMessages: data[convoId].messages,
+        actors: data[convoId].actors,
       });
       addConvoToSocketPoll(convoId);
     }

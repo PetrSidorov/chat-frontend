@@ -13,7 +13,7 @@ export default function ActiveConvo() {
 
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const offset = convos?.[activeConvoId]?.length / 6 || 2;
+  const offset = convos?.[activeConvoId]?.messages.length / 6 || 2;
 
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
@@ -51,8 +51,9 @@ export default function ActiveConvo() {
       {activeConvoId && convos?.[activeConvoId] ? (
         <MessageList
           ref={observeRef}
-          messages={convos?.[activeConvoId]}
+          messages={convos?.[activeConvoId].messages}
           currentUser={user?.username}
+          actors={convos?.[activeConvoId].actors}
         />
       ) : (
         "Select convo to start messaging"

@@ -23,7 +23,37 @@ export type TMessage = {
   sender: { username: string };
 };
 
-export type TConvos = { [key: string]: TMessage[] };
+export type Tactors = {
+  initiator: {
+    id: string;
+    username: string;
+    avatarUrl: string | null;
+  };
+  joiner: {
+    id: string;
+    username: string;
+    avatarUrl: string | null;
+  };
+};
+
+export type TConvos = {
+  [key: string]: {
+    messages: TMessage[];
+    actors: Tactors;
+    // actors: {
+    //   initiator: {
+    //     id: string;
+    //     username: string;
+    //     avatarUrl: string | null;
+    //   };
+    //   joiner: {
+    //     id: string;
+    //     username: string;
+    //     avatarUrl: string | null;
+    //   };
+    // };
+  };
+};
 
 export type ConvoProps = {
   data: TConvos;
@@ -35,6 +65,7 @@ export type TConvoContext = {
     unshiftMessagesToConvo: Function;
     pushNewMessageToConvo: Function;
     pushNewMessagesToConvo: Function;
+    initConvo: Function;
   };
   activeConvoId: [string | null, Function];
   socketPoll: [string[] | null, Dispatch<SetStateAction<string[] | null>>];

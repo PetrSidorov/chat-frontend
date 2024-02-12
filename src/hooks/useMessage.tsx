@@ -44,9 +44,6 @@ export default function useMessage() {
 
   useEffect(() => {
     if (!incomingMessage) return;
-    // const [convoId, message] = Object.entries(incomingMessage);
-    // console.log("convoId: ", convoId);
-    // console.log("message: ", incomingMessage);
     pushNewMessageToConvo(incomingMessage.convoId, incomingMessage.message);
   }, [incomingMessage]);
 
