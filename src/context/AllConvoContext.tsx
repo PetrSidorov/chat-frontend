@@ -1,5 +1,6 @@
-import { ReactNode, createContext, useState } from "react";
-import { TConvoContext, TConvos, TMessage } from "../types";
+import { ReactNode, createContext, useEffect, useState } from "react";
+import { TConvoContext, TConvos, TMessage, Tactors } from "../types";
+import { generateFetchAvatar } from "../utils/fetchAvatar";
 
 export const AllConvoContext = createContext<TConvoContext>({
   activeConvoId: [null, () => {}],
@@ -9,6 +10,7 @@ export const AllConvoContext = createContext<TConvoContext>({
     unshiftMessagesToConvo: () => {},
     pushNewMessageToConvo: () => {},
     pushNewMessagesToConvo: () => {},
+    initConvo: () => {},
   },
 });
 
@@ -21,6 +23,53 @@ export default function ActiveConvoProvider({
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
 
+  function initConvo({
+    id,
+    newMessages,
+    actors,
+  }: {
+    id: string;
+    newMessages: TMessage[];
+    actors: Tactors;
+  }) {
+    // console.log("id ", id);
+    // console.log("newMessages ", newMessages);
+    // console.log("actors ", actors);
+    unshiftMessagesToConvo({
+      id,
+      newMessages,
+    });
+    initActors(actors, id);
+  }
+
+  // useEffect(() => {
+  //   console.log("convos ", convos);
+  // }, [convos]);
+
+  const fetchAvatar = generateFetchAvatar();
+
+  // useEffect(() => {
+  //   const handleAvatar = async () => {
+  //     if (!user || !user.avatarUrl) return;
+  //     const signedUrl = await fetchAvatar(user.avatarUrl);
+  //     setAvatarUrl(signedUrl);
+  //   };
+  //   handleAvatar();
+  // }, [user]);
+
+  async function initActors(actors: Tactors, id: string) {
+    // console.log("actors ", actors);
+    const initiatorAvatarUrl = await fetchAvatar(actors.initiator.avatarUrl);
+    const joinerAvatarUrl = await fetchAvatar(actors.joiner.avatarUrl);
+    setConvos((currentConvos) => {
+      const newConvos = { ...currentConvos };
+      newConvos![id].actors = actors;
+      newConvos![id].actors.initiator.avatarUrl = initiatorAvatarUrl;
+      newConvos![id].actors.joiner.avatarUrl = joinerAvatarUrl;
+      return newConvos;
+    });
+  }
+
   function handleActiveConvoId(id: string) {
     if (activeConvoId == id) return;
     setActiveConvoId(id);
@@ -31,9 +80,15 @@ export default function ActiveConvoProvider({
       if (!currentConvos) return {};
       const updatedConvos = { ...currentConvos };
       if (updatedConvos[convoId]) {
-        updatedConvos[convoId] = [...updatedConvos[convoId], ...messages];
+        updatedConvos[convoId] = {
+          ...updatedConvos[convoId],
+          messages: { ...updatedConvos[convoId].messages, ...messages },
+        };
       } else {
-        updatedConvos[convoId] = [...messages];
+        updatedConvos[convoId] = {
+          ...updatedConvos[convoId],
+          messages: [...messages],
+        };
       }
 
       return updatedConvos;
@@ -45,31 +100,17 @@ export default function ActiveConvoProvider({
       if (!currentConvos) return {};
       const updatedConvos = { ...currentConvos };
       if (updatedConvos[convoId]) {
-        updatedConvos[convoId] = [...updatedConvos[convoId], message];
+        updatedConvos[convoId].messages = [
+          ...updatedConvos[convoId].messages,
+          message,
+        ];
       } else {
-        updatedConvos[convoId] = [message];
+        updatedConvos[convoId].messages = [message];
       }
 
       return updatedConvos;
     });
   }
-
-  // function pushNewMessageToConvo(convoId: string, message: TMessage) {
-  //   setConvos((currentConvos) => {
-  //     if (!currentConvos) return;
-  //     let convoWithNewMessage;
-  //     if (currentConvos[convoId]) {
-  //       convoWithNewMessage = {
-  //         ...currentConvos,
-  //         [convoId]: [...currentConvos[convoId], message],
-  //       };
-  //     } else {
-  //       convoWithNewMessage = { [convoId]: [message] };
-  //     }
-
-  //     return { ...convoWithNewMessage };
-  //   });
-  // }
 
   function unshiftMessagesToConvo({
     id,
@@ -81,32 +122,16 @@ export default function ActiveConvoProvider({
     if (!newMessages) return;
 
     setConvos((currentConvos) => {
+      // console.log("currentConvos ", currentConvos);
       if (currentConvos && currentConvos[id]) {
-        const oldMessages = [...currentConvos[id]];
+        const oldMessages = [...currentConvos[id].messages];
         newMessages = [...newMessages, ...oldMessages];
       }
       return {
         ...currentConvos,
-        [id]: [...newMessages],
+        [id]: { ...currentConvos![id], messages: [...newMessages] },
       };
     });
-
-    // useEffect(() => {
-    //   console.log("convos: ", convos);
-    // }, []);
-
-    // setConvos((currentConvos) => {
-    //   if (currentConvos) {
-    //     return currentConvos.map((convo) => {
-    //       if (convo.id == id) {
-    //         const updatedMessages = [...convo.messages, messages];
-    //         convo.messages = updatedMessages;
-    //       }
-    //     });
-    //   } else {
-    //     return [...messages];
-    //   }
-    // });
   }
 
   return (
@@ -117,6 +142,7 @@ export default function ActiveConvoProvider({
           unshiftMessagesToConvo,
           pushNewMessageToConvo,
           pushNewMessagesToConvo,
+          initConvo,
         },
         activeConvoId: [activeConvoId, handleActiveConvoId],
         socketPoll: [socketPoll, setSocketPoll],
