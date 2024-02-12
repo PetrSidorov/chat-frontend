@@ -61,11 +61,31 @@ export default function ActiveConvoProvider({
     // console.log("actors ", actors);
     const initiatorAvatarUrl = await fetchAvatar(actors.initiator.avatarUrl);
     const joinerAvatarUrl = await fetchAvatar(actors.joiner.avatarUrl);
+    if (initiatorAvatarUrl) {
+      var preloadedInitiatorAvatar = (
+        <img className="w-[100px]" src={initiatorAvatarUrl} />
+      );
+    }
+
+    //
+    if (joinerAvatarUrl) {
+      // var preloadedJoinerAvatar = new Image();
+      var preloadedJoinerAvatar = (
+        <img className="w-[100px]" src={joinerAvatarUrl} />
+      );
+      // preloadedJoinerAvatar.src = joinerAvatarUrl;
+      // console.log(preloadedJoinerAvatar);
+    }
+
     setConvos((currentConvos) => {
       const newConvos = { ...currentConvos };
       newConvos![id].actors = actors;
       newConvos![id].actors.initiator.avatarUrl = initiatorAvatarUrl;
       newConvos![id].actors.joiner.avatarUrl = joinerAvatarUrl;
+      //
+      newConvos![id].actors.initiator.avatar = preloadedInitiatorAvatar || null;
+      newConvos![id].actors.joiner.avatar = preloadedJoinerAvatar || null;
+      console.log("newConvos![id].actors. ", newConvos![id].actors);
       return newConvos;
     });
   }

@@ -28,11 +28,13 @@ export type Tactors = {
     id: string;
     username: string;
     avatarUrl: string | null;
+    avatar: HTMLImageElement;
   };
   joiner: {
     id: string;
     username: string;
     avatarUrl: string | null;
+    avatar: HTMLImageElement;
   };
 };
 
