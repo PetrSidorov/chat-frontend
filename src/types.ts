@@ -57,3 +57,5 @@ export type TDataBaseRequestData = {
   serialize?: Function;
   headers?: TypeHttpHeaders;
 };
+
+// export TNavigationContext = {[string | null, Dispatch<SetStateAction<string | null>>]}

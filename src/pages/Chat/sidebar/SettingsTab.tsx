@@ -1,36 +1,21 @@
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthProvider";
 import UploadAvatar from "./UploadAvatar";
+import { generateFetchAvatar } from "../../../utils/fetchAvatar";
+import Avatar from "../message/Avatar";
 
 export default function SettingsTab() {
   const [user, setUser] = useContext(AuthContext);
   const [avatarUrl, setAvatarUrl] = useState("");
+  const fetchAvatar = fetchAvatar();
 
   useEffect(() => {
-    const fetchSignedUrl = async () => {
-      if (user && user.avatarUrl) {
-        try {
-          // Now only sending the fileName parameter
-          const response = await fetch(
-            `http://localhost:3007/api/signed-url?fileName=${encodeURIComponent(
-              user.avatarUrl
-            )}`,
-            {
-              method: "GET",
-              credentials: "include",
-            }
-          );
-
-          const data = await response.json();
-          console.log(data);
-          setAvatarUrl(data.signedUrl);
-        } catch (error) {
-          console.error("Error fetching signed URL:", error);
-        }
-      }
+    const handleAvatar = async () => {
+      if (!user || !user.avatarUrl) return;
+      const signedUrl = await fetchAvatar(user.avatarUrl);
+      setAvatarUrl(signedUrl);
     };
-
-    fetchSignedUrl();
+    handleAvatar();
   }, [user]);
 
   return (
@@ -38,7 +23,10 @@ export default function SettingsTab() {
       <h1 className="text-lg font-bold mb-3">Hi, {user?.username}</h1>
       <p>{user.email}</p>
       {user.name && <p>{user.name}</p>}
-      {avatarUrl && <img src={avatarUrl} alt="User Avatar" />}
+      {avatarUrl && (
+        // <img className="w-[120px]" src={avatarUrl} alt="User Avatar" />
+        <Avatar username={user?.username} avatarUrl={avatarUrl} />
+      )}
       <UploadAvatar />
     </div>
   );

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 // import fetchDB from "../../utils/FetchDB";
 import pickProperties from "../../utils/pickProperties";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthProvider";
 import LoginFormField from "./LoginFormField";
 import useFetchDB from "../../hooks/useFetchDB";
 import {

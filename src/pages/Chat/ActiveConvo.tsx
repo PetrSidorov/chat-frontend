@@ -3,7 +3,7 @@ import { useInView } from "react-intersection-observer";
 import { AllConvoContext } from "../../context/AllConvoContext";
 import { socket } from "../../utils/socket";
 import MessageList from "./MessageList";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthProvider";
 
 export default function ActiveConvo() {
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;

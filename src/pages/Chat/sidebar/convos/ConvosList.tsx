@@ -20,13 +20,16 @@ export default function ConvosList() {
   }, []);
 
   useEffect(() => {
+    if (!data) return;
+    console.log("data ", data);
     for (let convoId in data) {
-      // if no convoid
       if (socketPoll && socketPoll.includes(convoId)) {
         break;
       }
-
-      unshiftMessagesToConvo({ id: convoId, newMessages: data[convoId] });
+      unshiftMessagesToConvo({
+        id: convoId,
+        newMessages: data[convoId].messages,
+      });
       addConvoToSocketPoll(convoId);
     }
   }, [data]);

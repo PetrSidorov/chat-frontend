@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { TMessage } from "../types";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthProvider";
 import { AllConvoContext } from "../context/AllConvoContext";
 import useSockets from "./useSockets";
 
@@ -52,6 +52,7 @@ export default function useMessage() {
 
   function sendMessage() {
     emit({ ...message, createdAt: new Date().toISOString() });
+    setMessage(initialMesssage);
   }
 
   function handleMessage(content: string) {

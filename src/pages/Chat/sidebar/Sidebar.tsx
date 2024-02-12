@@ -6,7 +6,7 @@ import ConvosList from "./convos/ConvosList";
 import { MessageSquare, Settings, User } from "lucide-react";
 import SidebarFooterButton from "../../../components/SidebarFooterButton";
 import { useNavigate } from "react-router-dom";
-import useTabs from "../../../utils/useTabs";
+import useTabs from "../../../hooks/useTabs";
 
 export default function Sidebar() {
   const [activeTab, handleActiveTab] = useTabs<TSidebarTabs>(

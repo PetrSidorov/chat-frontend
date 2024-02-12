@@ -1,10 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { TDataBaseRequestData } from "../types";
+import { useNavigate } from "react-router-dom";
 
-/**
- * does bla bla bla
- * @returns
- */
 export default function useFetchDB<T>(): {
   loading: boolean;
   isLoaded: boolean;
@@ -17,6 +14,7 @@ export default function useFetchDB<T>(): {
   const [data, setData] = useState<T | null>(null);
   const [fetchData, setFetchData] = useState<TDataBaseRequestData | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (fetchData == null) {
@@ -47,6 +45,10 @@ export default function useFetchDB<T>(): {
           headers,
           signal: controller.signal,
         });
+
+        if (!response.ok) {
+          // navigate("/");
+        }
 
         if (response.status != 200) {
           throw new Error(`Error with ${url} and ${method}`);

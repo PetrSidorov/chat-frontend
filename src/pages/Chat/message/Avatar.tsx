@@ -1,21 +1,30 @@
-export default function Avatar() {
-  return (
-    <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <clipPath id="circleView">
-          <circle cx="50" cy="50" r="50" />
-        </clipPath>
-      </defs>
-
-      <circle cx="50" cy="50" r="50" fill="#eeeeee" />
-
-      <g clipPath="url(#circleView)">
-        <circle cx="50" cy="30" r="20" fill="#999999" />
-        <path
-          d="M10 100c0-23.196 18.804-42 42-42s42 18.804 42 42H10z"
-          fill="#999999"
-        />
-      </g>
-    </svg>
-  );
+// export default function Avatar({ src, alt, children }) {
+//   if (src) {
+//     return (
+//       <div className="avatar">
+//         <img src={src} alt={alt} />
+//       </div>
+//     );
+//   }
+//   if (children) {
+//     return <div className="avatar avatar-letters">{children}</div>;
+//   } else {
+//     return <div className="avatar avatar-icon">{/* <IoPersonSharp /> */}</div>;
+//   }
+// }
+import { CircleUserRound } from "lucide-react";
+export default function Avatar({
+  avatarUrl,
+  username,
+}: {
+  avatarUrl?: string;
+  username?: string;
+}) {
+  if (!avatarUrl) return <CircleUserRound size={100} strokeWidth={1} />;
+  if (avatarUrl)
+    return (
+      <div className="w-[100px] h-[100px] border border-black rounded-full overflow-hidden">
+        <img className="w-[100px]" src={avatarUrl} alt={username} />
+      </div>
+    );
 }
