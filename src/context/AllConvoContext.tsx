@@ -2,9 +2,14 @@ import { ReactNode, createContext, useState } from "react";
 import { TConvoContext, TConvos, TMessage } from "../types";
 
 export const AllConvoContext = createContext<TConvoContext>({
-  convoContext: [null, () => {}],
   activeConvoId: [null, () => {}],
   socketPoll: [null, () => {}],
+  convoContext: {
+    convos: null,
+    unshiftMessagesToConvo: () => {},
+    pushNewMessageToConvo: () => {},
+    pushNewMessagesToConvo: () => {},
+  },
 });
 
 export default function ActiveConvoProvider({
@@ -23,35 +28,48 @@ export default function ActiveConvoProvider({
 
   function pushNewMessagesToConvo(convoId: string, messages: TMessage[]) {
     setConvos((currentConvos) => {
-      if (!currentConvos) return;
-      let convoWithNewMessage;
-      if (currentConvos[convoId]) {
-        convoWithNewMessage = [...currentConvos[convoId], ...messages];
+      if (!currentConvos) return {};
+      const updatedConvos = { ...currentConvos };
+      if (updatedConvos[convoId]) {
+        updatedConvos[convoId] = [...updatedConvos[convoId], ...messages];
       } else {
-        convoWithNewMessage = { [convoId]: [...messages] };
+        updatedConvos[convoId] = [...messages];
       }
 
-      console.log(convoWithNewMessage);
-      return { ...convoWithNewMessage };
+      return updatedConvos;
     });
   }
 
   function pushNewMessageToConvo(convoId: string, message: TMessage) {
     setConvos((currentConvos) => {
-      if (!currentConvos) return;
-      let convoWithNewMessage;
-      if (currentConvos[convoId]) {
-        convoWithNewMessage = {
-          ...currentConvos,
-          [convoId]: [...currentConvos[convoId], message],
-        };
+      if (!currentConvos) return {};
+      const updatedConvos = { ...currentConvos };
+      if (updatedConvos[convoId]) {
+        updatedConvos[convoId] = [...updatedConvos[convoId], message];
       } else {
-        convoWithNewMessage = { [convoId]: [message] };
+        updatedConvos[convoId] = [message];
       }
 
-      return { ...convoWithNewMessage };
+      return updatedConvos;
     });
   }
+
+  // function pushNewMessageToConvo(convoId: string, message: TMessage) {
+  //   setConvos((currentConvos) => {
+  //     if (!currentConvos) return;
+  //     let convoWithNewMessage;
+  //     if (currentConvos[convoId]) {
+  //       convoWithNewMessage = {
+  //         ...currentConvos,
+  //         [convoId]: [...currentConvos[convoId], message],
+  //       };
+  //     } else {
+  //       convoWithNewMessage = { [convoId]: [message] };
+  //     }
+
+  //     return { ...convoWithNewMessage };
+  //   });
+  // }
 
   function unshiftMessagesToConvo({
     id,
