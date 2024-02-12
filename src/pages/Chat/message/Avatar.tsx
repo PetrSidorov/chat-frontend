@@ -1,26 +1,36 @@
+// export default function Avatar({ src, alt, children }) {
+//   if (src) {
+//     return (
+//       <div className="avatar">
+//         <img src={src} alt={alt} />
+//       </div>
+//     );
+//   }
+//   if (children) {
+//     return <div className="avatar avatar-letters">{children}</div>;
+//   } else {
+//     return <div className="avatar avatar-icon">{/* <IoPersonSharp /> */}</div>;
+//   }
+// }
 import { CircleUserRound } from "lucide-react";
-
-// Renamed the component to avoid conflict with the <Avatar /> JSX element variable
-export default function AvatarComponent({
+export default function Avatar({
   avatarUrl,
   username,
   avatar,
 }: {
   avatarUrl?: string | null;
   username?: string;
-  avatar?: JSX.Element;
+  avatar?: JSX.Element | null;
 }) {
   console.log("avatar ", avatar);
-
-  // Directly return the avatar JSX if it's provided
-  if (avatar) {
+  // const Avatar = avatar ? avatar : null;
+  if (!avatar) return <CircleUserRound size={100} strokeWidth={1} />;
+  if (avatar)
     return (
       <div className="w-[100px] h-[100px] border border-black rounded-full overflow-hidden">
+        {/* <img className="w-[100px]" src={avatarUrl} alt={username} /> */}
+        {/* <Avatar /> */}
         {avatar}
       </div>
     );
-  } else {
-    // Fallback to a default avatar if none is provided
-    return <CircleUserRound size={100} strokeWidth={1} />;
-  }
 }
