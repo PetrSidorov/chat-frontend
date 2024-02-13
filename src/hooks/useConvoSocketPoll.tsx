@@ -55,6 +55,7 @@ export default function useConvoSocketPoll(): [
   function addConvoToSocketPoll(convoId: string | string[]) {
     if (typeof convoId == "string") {
       socket.emit("id:send", convoId);
+      console.log(convoId);
       setSocketPoll((currSocketPoll) => {
         return currSocketPoll ? [...currSocketPoll, convoId] : [convoId];
       });

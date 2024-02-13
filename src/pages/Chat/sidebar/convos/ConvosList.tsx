@@ -21,7 +21,7 @@ export default function ConvosList() {
 
   useEffect(() => {
     if (!data) return;
-    console.log("data ", data);
+
     for (let convoId in data) {
       if (socketPoll && socketPoll.includes(convoId)) {
         break;

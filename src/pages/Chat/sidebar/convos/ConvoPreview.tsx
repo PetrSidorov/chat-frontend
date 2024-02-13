@@ -13,6 +13,7 @@ export default function ConvoPreview({ messages }: { messages: TMessage[] }) {
         content={content}
         createdAt={createdAt}
         username={sender?.username}
+        // avatarUrl={}
       />
     );
   } else {

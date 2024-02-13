@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useContext } from "react";
-import { Loader } from "lucide-react";
+import { Loader, MessageSquareDashed } from "lucide-react";
 import useSockets from "../../../hooks/useSockets";
 import { MessageSquare } from "lucide-react";
 import { AllConvoContext } from "../../../context/AllConvoContext";
@@ -32,8 +32,9 @@ export default function FriendsTab() {
   }, [searchInput, emit]);
 
   useEffect(() => {
-    if (data && data.users && data.users.length > 0) {
-      setFoundUsers(data.users);
+    console.log("data.users ", data);
+    if (data && data.length > 0) {
+      setFoundUsers(data);
     }
   }, [data]);
 
@@ -57,23 +58,33 @@ export default function FriendsTab() {
       {!socketLoading && foundUsers.length === 0 && <div>No users found</div>}
       {!socketLoading && foundUsers.length > 0 && (
         <ul>
-          {foundUsers.map((user) => (
-            <li key={user.id}>
-              <button
-                className="flex items-center"
-                onClick={() =>
-                  user.convos[0]?.id
-                    ? setActiveConvoId(user.convos[0].id)
-                    : createNewConvo(user.id)
-                }
-              >
-                <MessageSquare
-                  color={user.convos.length > 0 ? "green" : "gray"}
-                />
-                {user.username}
-              </button>
-            </li>
-          ))}
+          {foundUsers.map((user) => {
+            const color = user.online ? "green" : "gray";
+
+            return (
+              <li key={user.id}>
+                <button
+                  className="flex items-center"
+                  onClick={() => {
+                    console.log("user.convos[0] ", user.convos[0]?.id);
+                    return user.convos[0]?.id
+                      ? setActiveConvoId(user.convos[0].id)
+                      : createNewConvo(user.id);
+                  }}
+                >
+                  {/* <MessageSquare
+                  
+                /> */}
+                  {user.convos.length > 0 ? (
+                    <MessageSquare color={color} />
+                  ) : (
+                    <MessageSquareDashed color={color} />
+                  )}
+                  {user.username}
+                </button>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
