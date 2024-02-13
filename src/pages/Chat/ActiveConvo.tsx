@@ -4,13 +4,14 @@ import { AllConvoContext } from "../../context/AllConvoContext";
 import { socket } from "../../utils/socket";
 import MessageList from "./MessageList";
 import { AuthContext } from "../../context/AuthProvider";
+import useOnlineStatus from "../../hooks/useOnlineStatus";
 
 export default function ActiveConvo() {
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
   const [user] = useContext(AuthContext);
   const { convos, unshiftMessagesToConvo } =
     useContext(AllConvoContext).convoContext;
-
+  const online = useOnlineStatus();
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const offset = convos?.[activeConvoId]?.messages.length / 6 || 2;
@@ -51,6 +52,7 @@ export default function ActiveConvo() {
       ref={scrollContainerRef}
       className="flex flex-col flex-grow p-4 overflow-y-auto"
     >
+      {!online && <p>Waiting for network</p>}
       {activeConvoId && convos?.[activeConvoId] ? (
         <MessageList
           ref={observeRef}
@@ -59,7 +61,7 @@ export default function ActiveConvo() {
           actors={convos?.[activeConvoId].actors}
         />
       ) : (
-        "Select convo to start messaging"
+        <p>Select convo to start messaging</p>
       )}
       <div ref={endOfMessagesRef} />
     </div>
