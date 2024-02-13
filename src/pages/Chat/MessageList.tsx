@@ -13,10 +13,6 @@ const MessageList = forwardRef<
       actors.initiator.username == sender.username
         ? actors.initiator.avatarUrl
         : actors.joiner.avatarUrl;
-    const avatar =
-      actors.initiator.username == sender.username
-        ? actors.initiator.avatar
-        : actors.joiner.avatar;
 
     return (
       <React.Fragment key={createdAt}>
@@ -28,7 +24,6 @@ const MessageList = forwardRef<
           alignment={alignment}
           classes={"w-2/3"}
           avatarUrl={avatarUrl}
-          avatar={avatar}
         />
       </React.Fragment>
     );

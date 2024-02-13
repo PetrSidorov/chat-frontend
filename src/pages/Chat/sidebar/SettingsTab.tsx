@@ -23,10 +23,7 @@ export default function SettingsTab() {
       <h1 className="text-lg font-bold mb-3">Hi, {user?.username}</h1>
       <p>{user?.email}</p>
       {user?.name && <p>{user.name}</p>}
-      {avatarUrl && (
-        // <img className="w-[120px]" src={avatarUrl} alt="User Avatar" />
-        <Avatar username={user?.username} avatarUrl={avatarUrl} />
-      )}
+      {avatarUrl && <Avatar username={user?.username} avatarUrl={avatarUrl} />}
       <UploadAvatar />
     </div>
   );

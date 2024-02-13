@@ -32,9 +32,6 @@ export default function ActiveConvoProvider({
     newMessages: TMessage[];
     actors: Tactors;
   }) {
-    // console.log("id ", id);
-    // console.log("newMessages ", newMessages);
-    // console.log("actors ", actors);
     unshiftMessagesToConvo({
       id,
       newMessages,
@@ -42,39 +39,17 @@ export default function ActiveConvoProvider({
     initActors(actors, id);
   }
 
-  // useEffect(() => {
-  //   console.log("convos ", convos);
-  // }, [convos]);
-
   const fetchAvatar = generateFetchAvatar();
 
-  // useEffect(() => {
-  //   const handleAvatar = async () => {
-  //     if (!user || !user.avatarUrl) return;
-  //     const signedUrl = await fetchAvatar(user.avatarUrl);
-  //     setAvatarUrl(signedUrl);
-  //   };
-  //   handleAvatar();
-  // }, [user]);
-
   async function initActors(actors: Tactors, id: string) {
-    // console.log("actors ", actors);
-    const initiatorAvatarUrl = await fetchAvatar(actors.initiator.avatarUrl);
-    const joinerAvatarUrl = await fetchAvatar(actors.joiner.avatarUrl);
-    if (initiatorAvatarUrl) {
-      var preloadedInitiatorAvatar = (
-        <img className="w-[100px]" src={initiatorAvatarUrl} />
-      );
+    let initiatorAvatarUrl = null;
+    if (actors.initiator.avatarUrl) {
+      initiatorAvatarUrl = await fetchAvatar(actors.initiator.avatarUrl);
     }
 
-    //
-    if (joinerAvatarUrl) {
-      // var preloadedJoinerAvatar = new Image();
-      var preloadedJoinerAvatar = (
-        <img className="w-[100px]" src={joinerAvatarUrl} />
-      );
-      // preloadedJoinerAvatar.src = joinerAvatarUrl;
-      // console.log(preloadedJoinerAvatar);
+    let joinerAvatarUrl = null;
+    if (actors.joiner.avatarUrl) {
+      joinerAvatarUrl = await fetchAvatar(actors.joiner.avatarUrl);
     }
 
     setConvos((currentConvos) => {
@@ -82,10 +57,6 @@ export default function ActiveConvoProvider({
       newConvos![id].actors = actors;
       newConvos![id].actors.initiator.avatarUrl = initiatorAvatarUrl;
       newConvos![id].actors.joiner.avatarUrl = joinerAvatarUrl;
-      //
-      newConvos![id].actors.initiator.avatar = preloadedInitiatorAvatar || null;
-      newConvos![id].actors.joiner.avatar = preloadedJoinerAvatar || null;
-      console.log("newConvos![id].actors. ", newConvos![id].actors);
       return newConvos;
     });
   }
@@ -142,7 +113,6 @@ export default function ActiveConvoProvider({
     if (!newMessages) return;
 
     setConvos((currentConvos) => {
-      // console.log("currentConvos ", currentConvos);
       if (currentConvos && currentConvos[id]) {
         const oldMessages = [...currentConvos[id].messages];
         newMessages = [...newMessages, ...oldMessages];

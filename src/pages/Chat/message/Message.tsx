@@ -11,7 +11,6 @@ export default function Message({
   alignment,
   classes,
   avatarUrl,
-  avatar,
 }: {
   content: string;
   createdAt: string;
@@ -19,7 +18,6 @@ export default function Message({
   alignment: string;
   classes: string;
   avatarUrl: string | null;
-  avatar: JSX.Element;
 }) {
   const date = createdAt ? new Date(createdAt).toDateString() : "";
 
@@ -27,7 +25,7 @@ export default function Message({
     <li
       className={`flex items-center m-2 p-2 bg-gray-200 rounded  ${alignment} ${classes}`}
     >
-      <Avatar avatarUrl={avatarUrl} avatar={avatar} />
+      <Avatar avatarUrl={avatarUrl} />
       <div className="ml-2">
         <div className="flex justify-between mb-3">
           <span>{username}</span> <span>{date}</span>

@@ -16,21 +16,15 @@ import { CircleUserRound } from "lucide-react";
 export default function Avatar({
   avatarUrl,
   username,
-  avatar,
 }: {
   avatarUrl?: string | null;
   username?: string;
-  avatar?: JSX.Element | null;
 }) {
-  console.log("avatar ", avatar);
-  // const Avatar = avatar ? avatar : null;
-  if (!avatar) return <CircleUserRound size={100} strokeWidth={1} />;
-  if (avatar)
+  if (!avatarUrl) return <CircleUserRound size={100} strokeWidth={1} />;
+  if (avatarUrl)
     return (
       <div className="w-[100px] h-[100px] border border-black rounded-full overflow-hidden">
-        {/* <img className="w-[100px]" src={avatarUrl} alt={username} /> */}
-        {/* <Avatar /> */}
-        {avatar}
+        <img className="w-[100px]" src={avatarUrl} alt={username} />
       </div>
     );
 }

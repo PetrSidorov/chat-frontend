@@ -38,7 +38,7 @@ export default function ConvosList() {
   const ListOfConvoPreviews =
     convos &&
     Object.entries(convos)?.map((convo: any) => {
-      const [id, messages] = convo;
+      const [id, data] = convo;
 
       return (
         <div
@@ -47,7 +47,7 @@ export default function ConvosList() {
             setActiveConvoId(id);
           }}
         >
-          <ConvoPreview key={id} messages={messages} />
+          <ConvoPreview key={id} messages={data.messages} />
         </div>
       );
     });

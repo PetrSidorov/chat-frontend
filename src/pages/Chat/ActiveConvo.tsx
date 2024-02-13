@@ -29,11 +29,14 @@ export default function ActiveConvo() {
   });
 
   useEffect(() => {
+    if (!scrollContainerRef.current) return;
+    const savedScrollPosition = scrollContainerRef.current.scrollTop;
+
     socket.on("msg:send-offset", (data) => {
       if (!data || !scrollContainerRef.current || !activeConvoId) {
         return;
       }
-      const savedScrollPosition = scrollContainerRef.current.scrollTop;
+
       unshiftMessagesToConvo({ id: activeConvoId, newMessages: data.data });
       scrollContainerRef.current.scrollTop = savedScrollPosition;
     });
@@ -41,7 +44,7 @@ export default function ActiveConvo() {
 
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView();
-  }, [activeConvoId]);
+  }, [activeConvoId, convos]);
 
   return (
     <div
