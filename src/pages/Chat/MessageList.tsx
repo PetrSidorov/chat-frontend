@@ -6,7 +6,7 @@ const MessageList = forwardRef<
   HTMLDivElement,
   { messages: TMessage[]; currentUser: string; actors: Tactors }
 >(({ messages, currentUser, actors }, ref) => {
-  return messages.map(({ content, createdAt, sender }, i: number) => {
+  return messages.map(({ content, createdAt, sender, id }, i: number) => {
     const alignment =
       sender.username == currentUser ? "self-end" : "self-start";
     const avatarUrl =
@@ -15,7 +15,7 @@ const MessageList = forwardRef<
         : actors.joiner.avatarUrl;
 
     return (
-      <React.Fragment key={createdAt}>
+      <React.Fragment key={id}>
         {i === 3 ? <div ref={ref} /> : null}
         <Message
           content={content}

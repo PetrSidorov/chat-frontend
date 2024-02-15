@@ -17,10 +17,11 @@ export type TAuthContext = [
 ];
 
 export type TMessage = {
+  id: string;
   content: string;
   convoId: string;
   createdAt: string;
-  sender: { username: string };
+  sender: { username: string; id: string };
 };
 
 export type Tactors = {
