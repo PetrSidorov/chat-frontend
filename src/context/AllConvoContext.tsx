@@ -32,16 +32,17 @@ export default function ActiveConvoProvider({
     newMessages: TMessage[];
     actors: Tactors;
   }) {
+    initActors(actors, id);
     unshiftMessagesToConvo({
       id,
       newMessages,
     });
-    initActors(actors, id);
   }
 
   const fetchAvatar = generateFetchAvatar();
 
   async function initActors(actors: Tactors, id: string) {
+    // console.log("actors, id ", actors, id);
     let initiatorAvatarUrl = null;
     if (actors.initiator.avatarUrl) {
       initiatorAvatarUrl = await fetchAvatar(actors.initiator.avatarUrl);
@@ -57,6 +58,7 @@ export default function ActiveConvoProvider({
       newConvos![id].actors = actors;
       newConvos![id].actors.initiator.avatarUrl = initiatorAvatarUrl;
       newConvos![id].actors.joiner.avatarUrl = joinerAvatarUrl;
+
       return newConvos;
     });
   }
@@ -73,7 +75,7 @@ export default function ActiveConvoProvider({
       if (updatedConvos[convoId]) {
         updatedConvos[convoId] = {
           ...updatedConvos[convoId],
-          messages: { ...updatedConvos[convoId].messages, ...messages },
+          messages: [...updatedConvos[convoId].messages, ...messages],
         };
       } else {
         updatedConvos[convoId] = {
@@ -86,7 +88,26 @@ export default function ActiveConvoProvider({
     });
   }
 
+  // function pushNewMessageToConvo(message) {
+  //   const convoId = message?.convoId;
+  //   console.log(message);
+  // setConvos((currentConvos) => {
+  //   if (!currentConvos) return {};
+  //   const updatedConvos = { ...currentConvos };
+  //   if (updatedConvos[convoId]) {
+  //     updatedConvos[convoId].messages = [
+  //       ...updatedConvos[convoId].messages,
+  //       message,
+  //     ];
+  //   } else {
+  //     updatedConvos[convoId].messages = [message];
+  //   }
+
+  //   return updatedConvos;
+  // });
+  // }
   function pushNewMessageToConvo(convoId: string, message: TMessage) {
+    // if (!convoId || !message) return;
     setConvos((currentConvos) => {
       if (!currentConvos) return {};
       const updatedConvos = { ...currentConvos };
@@ -110,18 +131,35 @@ export default function ActiveConvoProvider({
     id: string;
     newMessages: TMessage[];
   }) {
-    if (!newMessages) return;
-
     setConvos((currentConvos) => {
-      if (currentConvos && currentConvos[id]) {
-        const oldMessages = [...currentConvos[id].messages];
-        newMessages = [...newMessages, ...oldMessages];
+      if (!currentConvos) return {};
+      const updatedConvos = { ...currentConvos };
+      if (updatedConvos[id]) {
+        updatedConvos[id] = {
+          ...updatedConvos[id],
+          messages: [...newMessages, ...updatedConvos[id].messages],
+        };
+      } else {
+        updatedConvos[id] = {
+          ...updatedConvos[id],
+          messages: [...newMessages],
+        };
       }
-      return {
-        ...currentConvos,
-        [id]: { ...currentConvos![id], messages: [...newMessages] },
-      };
+      console.log("updatedConvos ", updatedConvos);
+      return updatedConvos;
     });
+    // if (!newMessages) return;
+    // console.log("newMessages ", newMessages);
+    // setConvos((currentConvos) => {
+    //   if (currentConvos && currentConvos[id]) {
+    //     const oldMessages = [...currentConvos[id].messages];
+    //     newMessages = [...newMessages, ...oldMessages];
+    //   }
+    //   return {
+    //     ...currentConvos,
+    //     [id]: { ...currentConvos![id], messages: [...newMessages] },
+    //   };
+    // });
   }
 
   return (

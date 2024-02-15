@@ -13,7 +13,7 @@ export default function MessageManager() {
   const { message, sendMessage, handleMessage } = useMessage();
 
   return (
-    <div className="p-4 bg-gray-100 flex">
+    <form className="p-4 bg-gray-100 flex">
       <input
         type="text"
         value={message.content}
@@ -22,12 +22,12 @@ export default function MessageManager() {
         placeholder="Type a message..."
       />
       <button
-        onClick={sendMessage}
+        onClick={(e) => sendMessage(e)}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold
     py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2"
       >
         Send
       </button>
-    </div>
+    </form>
   );
 }

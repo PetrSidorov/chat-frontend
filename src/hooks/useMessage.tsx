@@ -44,10 +44,16 @@ export default function useMessage() {
 
   useEffect(() => {
     if (!incomingMessage) return;
+
+    console.log("incomingMessage ", incomingMessage);
+    if (incomingMessage != activeConvoId) {
+      // TODO:add unread here
+    }
     pushNewMessageToConvo(incomingMessage.convoId, incomingMessage.message);
   }, [incomingMessage]);
 
-  function sendMessage() {
+  function sendMessage(e: KeyboardEvent) {
+    e.preventDefault();
     emit({ ...message, createdAt: new Date().toISOString() });
     setMessage(initialMesssage);
   }
