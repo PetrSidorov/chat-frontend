@@ -197,7 +197,9 @@ export default function ActiveConvoProvider({
     // });
   }
 
-  function handleOnlineStatuses(convoId, online) {}
+  function handleOnlineStatuses(convoId, online) {
+    setConvos((currConvos) => {});
+  }
 
   return (
     <AllConvoContext.Provider
