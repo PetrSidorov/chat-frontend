@@ -11,6 +11,7 @@ export const AllConvoContext = createContext<TConvoContext>({
     unshiftMessagesToConvo: () => {},
     pushNewMessageToConvo: () => {},
     pushNewMessagesToConvo: () => {},
+    handleOnlineStatuses: () => {},
     initConvo: () => {},
   },
 });
@@ -197,8 +198,12 @@ export default function ActiveConvoProvider({
     // });
   }
 
-  function handleOnlineStatuses(convoId, online) {
-    setConvos((currConvos) => {});
+  function handleOnlineStatuses(convoId: string, online: boolean) {
+    setConvos((currConvos) => {
+      const updatedConvos = { ...currConvos };
+      updatedConvos[convoId] = { ...updatedConvos[convoId], online };
+      return updatedConvos;
+    });
   }
 
   return (
@@ -209,6 +214,7 @@ export default function ActiveConvoProvider({
           unshiftMessagesToConvo,
           pushNewMessageToConvo,
           pushNewMessagesToConvo,
+          handleOnlineStatuses,
           initConvo,
         },
         activeConvoId: [activeConvoId, handleActiveConvoId],

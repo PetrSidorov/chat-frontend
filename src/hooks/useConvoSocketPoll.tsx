@@ -8,7 +8,8 @@ export default function useConvoSocketPoll(): [
 ] {
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  const { convos } = useContext(AllConvoContext).convoContext;
+  const { convos, handleOnlineStatuses } =
+    useContext(AllConvoContext).convoContext;
   const [socketPoll, setSocketPoll] = useContext(AllConvoContext).socketPoll;
   //   const [activeConvoContext, setActiveConvoContext] =
   //     useContext(ActiveConvoContext).convoContext;

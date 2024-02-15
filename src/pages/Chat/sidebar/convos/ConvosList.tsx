@@ -51,11 +51,16 @@ export default function ConvosList() {
       return (
         <div
           key={id}
+          className="relative"
           onClick={() => {
             setActiveConvoId(id);
           }}
         >
-          <ConvoPreview key={id} messages={data.messages} />
+          <ConvoPreview
+            // key={id}
+            messages={data.messages}
+            online={data.online}
+          />
         </div>
       );
     });

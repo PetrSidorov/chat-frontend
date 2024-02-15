@@ -42,6 +42,7 @@ export type TConvos = {
   [key: string]: {
     messages: TMessage[];
     actors: Tactors;
+    online: boolean;
     // actors: {
     //   initiator: {
     //     id: string;
@@ -67,6 +68,7 @@ export type TConvoContext = {
     unshiftMessagesToConvo: Function;
     pushNewMessageToConvo: Function;
     pushNewMessagesToConvo: Function;
+    handleOnlineStatuses: Function;
     initConvo: Function;
   };
   activeConvoId: [string | null, Function];
