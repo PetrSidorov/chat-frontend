@@ -5,6 +5,7 @@ export type TLoginDataBaseResponse = {
   user: TUser;
 };
 export type TUser = {
+  id: string;
   name: string;
   username: string;
   email: string;

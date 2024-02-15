@@ -4,7 +4,7 @@ import { AllConvoContext } from "../context/AllConvoContext";
 
 export default function useConvoSocketPoll(): [
   string[],
-  (convoId: string | string[]) => void
+  (convoId: string, companionId: string) => void
 ] {
   const [isConnected, setIsConnected] = useState(socket.connected);
 
@@ -30,6 +30,11 @@ export default function useConvoSocketPoll(): [
     });
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
+    socket.on("online-statuses:return", (onlineStatusMap) => {
+      const [convoId] = Object.keys(onlineStatusMap);
+      const online = onlineStatusMap[convoId];
+      handleOnlineStatuses(convoId, online);
+    });
     // console.log(convoId);
     // if (!socketPoll.includes(convoId)) {
     //   socket.emit("id:send", convoId);
@@ -53,14 +58,14 @@ export default function useConvoSocketPoll(): [
     //   };
   }, [socketPoll]);
 
-  function addConvoToSocketPoll(convoId: string | string[]) {
-    if (typeof convoId == "string") {
-      socket.emit("id:send", convoId);
-      console.log(convoId);
-      setSocketPoll((currSocketPoll) => {
-        return currSocketPoll ? [...currSocketPoll, convoId] : [convoId];
-      });
-    }
+  function addConvoToSocketPoll(convoId: string, companionId: string) {
+    if (!convoId || !companionId) return;
+    // console.log("userId ", companionId);
+    socket.emit("id:send", { convoId, companionId });
+    // console.log(convoId);
+    setSocketPoll((currSocketPoll) => {
+      return currSocketPoll ? [...currSocketPoll, convoId] : [convoId];
+    });
   }
 
   return [socketPoll, addConvoToSocketPoll];

@@ -4,6 +4,7 @@ import { AllConvoContext } from "../../../../context/AllConvoContext";
 import useConvoSocketPoll from "../../../../hooks/useConvoSocketPoll";
 import useFetchDB from "../../../../hooks/useFetchDB";
 import ConvoPreview from "./ConvoPreview";
+import { AuthContext } from "../../../../context/AuthProvider";
 
 export default function ConvosList() {
   const { convos, unshiftMessagesToConvo, initConvo } =
@@ -11,6 +12,7 @@ export default function ConvosList() {
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
   const { loading, isLoaded, data, error, setFetchData } = useFetchDB<any>();
   const [socketPoll, addConvoToSocketPoll] = useConvoSocketPoll();
+  const [user, _] = useContext(AuthContext);
 
   useEffect(() => {
     setFetchData({
@@ -20,7 +22,7 @@ export default function ConvosList() {
   }, []);
 
   useEffect(() => {
-    if (!data) return;
+    if (!data || !user) return;
 
     for (let convoId in data) {
       if (socketPoll && socketPoll.includes(convoId)) {
@@ -31,9 +33,15 @@ export default function ConvosList() {
         newMessages: data[convoId].messages,
         actors: data[convoId].actors,
       });
-      addConvoToSocketPoll(convoId);
+
+      const companionId =
+        data[convoId].actors.initiator.id == user?.id
+          ? data[convoId].actors.joiner.id
+          : data[convoId].actors.initiator.id;
+
+      addConvoToSocketPoll(convoId, companionId);
     }
-  }, [data]);
+  }, [data, user]);
 
   const ListOfConvoPreviews =
     convos &&

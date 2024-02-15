@@ -1,6 +1,7 @@
 import { ReactNode, createContext, useState } from "react";
 import { TConvoContext, TConvos, TMessage, Tactors } from "../types";
 import { generateFetchAvatar } from "../utils/fetchAvatar";
+import useConvoSocketPoll from "../hooks/useConvoSocketPoll";
 
 export const AllConvoContext = createContext<TConvoContext>({
   activeConvoId: [null, () => {}],
@@ -22,6 +23,7 @@ export default function ActiveConvoProvider({
   const [convos, setConvos] = useState<TConvos | null>(null);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
+  const [socketPollz, addConvoToSocketPoll] = useConvoSocketPoll();
 
   async function initConvo({
     id,
@@ -194,6 +196,8 @@ export default function ActiveConvoProvider({
     //   };
     // });
   }
+
+  function handleOnlineStatuses(convoId, online) {}
 
   return (
     <AllConvoContext.Provider
