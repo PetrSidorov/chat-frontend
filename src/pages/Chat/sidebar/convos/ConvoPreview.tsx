@@ -1,4 +1,3 @@
-import { Circle } from "lucide-react";
 import { TMessage } from "../../../../types";
 import Message from "../../message/Message";
 import IsOnline from "./IsOnline";
@@ -14,7 +13,7 @@ export default function ConvoPreview({
   if (online === undefined) return;
   if (notEmptyConvo) {
     let { content, createdAt, sender } = messages[messages.length - 1];
-
+    // const toChatWith = user
     return (
       <>
         {/* {online && (

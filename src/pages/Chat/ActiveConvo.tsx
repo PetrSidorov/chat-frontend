@@ -54,10 +54,12 @@ export default function ActiveConvo() {
       ref={scrollContainerRef}
       className="flex flex-col flex-grow p-4 overflow-y-auto"
     >
-      <div className="w-full h-10 bg-slate-600 fixed -mt-4 -ml-4">
-        {/* classes for bottom IsOnline should be different */}
-        Online <IsOnline online={convos?.[activeConvoId]?.online} />
-      </div>
+      {activeConvoId && (
+        <div className="w-full h-10 bg-slate-600 fixed -mt-4 -ml-4">
+          {/* classes for bottom IsOnline should be different */}
+          Online <IsOnline online={convos?.[activeConvoId]?.online} />
+        </div>
+      )}
       {!online && <p>Waiting for network</p>}
       {activeConvoId && convos?.[activeConvoId] ? (
         <MessageList

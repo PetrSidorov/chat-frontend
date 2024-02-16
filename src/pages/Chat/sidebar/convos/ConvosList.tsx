@@ -47,7 +47,13 @@ export default function ConvosList() {
     convos &&
     Object.entries(convos)?.map((convo: any) => {
       const [id, data] = convo;
-
+      //test
+      const notEmptyConvo = data.messages && data.messages.length > 0;
+      if (notEmptyConvo) {
+        let { content, createdAt, sender } =
+          data.messages[data.messages.length - 1];
+      }
+      //test
       return (
         <div
           key={id}
