@@ -10,7 +10,7 @@ import IsOnline from "./sidebar/convos/IsOnline";
 export default function ActiveConvo() {
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
   const [user] = useContext(AuthContext);
-  const { convos, unshiftMessagesToConvo } =
+  const { convos, unshiftMessagesToConvo, handleRemoveMessage } =
     useContext(AllConvoContext).convoContext;
   const online = useOnlineStatus();
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
@@ -49,13 +49,20 @@ export default function ActiveConvo() {
     console.log("convos?.[activeConvoId] ", convos?.[activeConvoId]);
   }, [activeConvoId]);
 
+  function generateRemoveMessage(convoId: string) {
+    return function removeMessage(messageIdToDelete: string) {
+      // console.log("convoId, messageIdToDelete ", convoId, messageIdToDelete);
+      handleRemoveMessage(convoId, messageIdToDelete);
+    };
+  }
+
   return (
     <div
       ref={scrollContainerRef}
       className="flex flex-col flex-grow p-4 overflow-y-auto"
     >
       {activeConvoId && (
-        <div className="w-full h-10 bg-slate-600 fixed -mt-4 -ml-4">
+        <div className="w-full h-10 bg-slate-600 fixed -mt-4 -ml-4 z-1">
           {/* classes for bottom IsOnline should be different */}
           Online <IsOnline online={convos?.[activeConvoId]?.online} />
         </div>
@@ -67,6 +74,7 @@ export default function ActiveConvo() {
           messages={convos?.[activeConvoId].messages}
           currentUser={user?.username}
           actors={convos?.[activeConvoId].actors}
+          handleRemoveMessage={generateRemoveMessage(activeConvoId)}
         />
       ) : (
         <p>Select convo to start messaging</p>

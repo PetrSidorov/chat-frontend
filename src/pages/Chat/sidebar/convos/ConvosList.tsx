@@ -23,11 +23,12 @@ export default function ConvosList() {
 
   useEffect(() => {
     if (!data || !user) return;
-
+    // console.log("data is ", data);
     for (let convoId in data) {
       if (socketPoll && socketPoll.includes(convoId)) {
         break;
       }
+      // console.log("data is", data[convoId].messages);
       initConvo({
         id: convoId,
         newMessages: data[convoId].messages,
@@ -47,13 +48,7 @@ export default function ConvosList() {
     convos &&
     Object.entries(convos)?.map((convo: any) => {
       const [id, data] = convo;
-      //test
-      const notEmptyConvo = data.messages && data.messages.length > 0;
-      if (notEmptyConvo) {
-        let { content, createdAt, sender } =
-          data.messages[data.messages.length - 1];
-      }
-      //test
+
       return (
         <div
           key={id}
@@ -62,11 +57,7 @@ export default function ConvosList() {
             setActiveConvoId(id);
           }}
         >
-          <ConvoPreview
-            // key={id}
-            messages={data.messages}
-            online={data.online}
-          />
+          <ConvoPreview messages={data.messages} online={data.online} />
         </div>
       );
     });

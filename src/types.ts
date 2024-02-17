@@ -69,6 +69,7 @@ export type TConvoContext = {
     pushNewMessageToConvo: Function;
     pushNewMessagesToConvo: Function;
     handleOnlineStatuses: Function;
+    handleRemoveMessage: Function;
     initConvo: Function;
   };
   activeConvoId: [string | null, Function];

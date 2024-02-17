@@ -12,6 +12,7 @@ export const AllConvoContext = createContext<TConvoContext>({
     pushNewMessageToConvo: () => {},
     pushNewMessagesToConvo: () => {},
     handleOnlineStatuses: () => {},
+    handleRemoveMessage: () => {},
     initConvo: () => {},
   },
 });
@@ -51,6 +52,7 @@ export default function ActiveConvoProvider({
     }
 
     setConvos((currentConvos) => {
+      console.log("currentConvos ", currentConvos);
       if (!currentConvos) return {};
 
       const updatedConvos = { ...currentConvos };
@@ -101,6 +103,29 @@ export default function ActiveConvoProvider({
   function handleActiveConvoId(id: string) {
     if (activeConvoId == id) return;
     setActiveConvoId(id);
+  }
+
+  function handleRemoveMessage(convoId: string, messageIdToDelete: string) {
+    console.log(
+      "convoId: string, messageIdToDelete: string ",
+      convoId,
+      messageIdToDelete
+    );
+    setConvos((currentConvos) => {
+      const updatedConvos = { ...currentConvos };
+      if (
+        updatedConvos[convoId] &&
+        Array.isArray(updatedConvos[convoId].messages)
+      ) {
+        updatedConvos[convoId].messages = updatedConvos?.[
+          convoId
+        ].messages.filter((message) => {
+          return message.id != messageIdToDelete;
+        });
+      }
+
+      return updatedConvos;
+    });
   }
 
   function pushNewMessagesToConvo(convoId: string, messages: TMessage[]) {
@@ -168,6 +193,7 @@ export default function ActiveConvoProvider({
   }) {
     // console.log("id, newMessages ", id, newMessages);
     setConvos((currentConvos) => {
+      // console.log("currentConvos ", currentConvos);
       if (!currentConvos) return {};
       const updatedConvos = { ...currentConvos };
       if (updatedConvos[id]) {
@@ -215,6 +241,7 @@ export default function ActiveConvoProvider({
           pushNewMessageToConvo,
           pushNewMessagesToConvo,
           handleOnlineStatuses,
+          handleRemoveMessage,
           initConvo,
         },
         activeConvoId: [activeConvoId, handleActiveConvoId],
