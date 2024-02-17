@@ -19,10 +19,11 @@ export default function HandleClickOutside({
       }
     };
 
-    document.addEventListener("click", handleClickOutside);
-
+    // document.addEventListener("click", handleClickOutside);
+    // document.addEventListener("contextmenu", handleClickOutside);
     return () => {
       document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("contextmenu", handleClickOutside);
     };
   }, []);
 

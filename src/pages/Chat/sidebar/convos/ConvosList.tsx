@@ -52,7 +52,7 @@ export default function ConvosList() {
       return (
         <div
           key={id}
-          className="relative"
+          // className="relative"
           onClick={() => {
             setActiveConvoId(id);
           }}

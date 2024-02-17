@@ -12,6 +12,7 @@ export default function MessageContextMenu({
   top: number;
   left: number;
 }) {
+  console.log("render");
   return (
     <>
       {yours ? (
@@ -27,9 +28,14 @@ export default function MessageContextMenu({
           }}
         >
           <ul>
-            <li onClick={() => handleRemoveMessage(id)} className="flex p-4">
-              <span className="mr-2">Delete message</span>
-              <XCircle />
+            <li>
+              <button
+                className="flex p-4"
+                onClick={() => handleRemoveMessage(id)}
+              >
+                <span className="mr-2">Delete message</span>
+                <XCircle />
+              </button>
             </li>
           </ul>
         </div>

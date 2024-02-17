@@ -25,7 +25,7 @@ export default function ActiveConvoProvider({
   const [convos, setConvos] = useState<TConvos | null>(null);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
-  const [socketPollz, addConvoToSocketPoll] = useConvoSocketPoll();
+  // const [socketPollz, addConvoToSocketPoll] = useConvoSocketPoll();
 
   async function initConvo({
     id,
