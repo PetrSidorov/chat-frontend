@@ -13,7 +13,6 @@ const MessageList = forwardRef<
     handleRemoveMessage: Function;
   }
 >(({ messages, currentUser, actors, handleRemoveMessage }, ref) => {
-  // const [idForMessageDeletion, setidForMessageDeletion] = useState("");
   const [popupState, setPopupState] = useState({
     show: false,
     top: 0,
@@ -30,7 +29,7 @@ const MessageList = forwardRef<
     e.preventDefault();
     const left = e.clientX;
     const top = e.clientY;
-    // setidForMessageDeletion(id);
+
     setPopupState({
       show: forceShow || !popupState.show,
       top,
@@ -54,21 +53,16 @@ const MessageList = forwardRef<
         <React.Fragment key={id}>
           {i === 3 ? <div ref={ref} /> : null}
           <div
-            // className="relative"
             onContextMenu={(e) => togglePopup(yours, id, e)}
             onClick={(e) => togglePopup(yours, id, e, false)}
             id={id}
+            className={`w-2/3 ${alignment}`}
           >
             <Message
-              // yours={yours}
               content={content}
               createdAt={createdAt}
               username={sender.username}
-              alignment={alignment}
-              classes={"w-2/3"}
               avatarUrl={avatarUrl}
-              id={id}
-              // handleRemoveMessage={() => handleRemoveMessage(id)}
             />
           </div>
         </React.Fragment>

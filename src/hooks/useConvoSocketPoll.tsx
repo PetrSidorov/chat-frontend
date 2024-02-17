@@ -8,8 +8,8 @@ export default function useConvoSocketPoll(): [
 ] {
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  const { convos, handleOnlineStatuses } =
-    useContext(AllConvoContext).convoContext;
+  // const { convos, handleOnlineStatuses } =
+  //   useContext(AllConvoContext).convoContext;
   const [socketPoll, setSocketPoll] = useContext(AllConvoContext).socketPoll;
   //   const [activeConvoContext, setActiveConvoContext] =
   //     useContext(ActiveConvoContext).convoContext;
@@ -31,8 +31,8 @@ export default function useConvoSocketPoll(): [
     });
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-    socket.on("online-statuses:return", (onlineStatusMap) => {
-      console.log("onlineStatusMap ", onlineStatusMap);
+    socket.on("online-statuses:return", (data) => {
+      console.log("onlineStatusMap ", data);
       // const [convoId] = Object.keys(onlineStatusMap);
       // const online = onlineStatusMap[convoId];
       // handleOnlineStatuses(convoId, online);

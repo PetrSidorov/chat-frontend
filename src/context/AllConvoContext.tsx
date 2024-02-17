@@ -27,8 +27,6 @@ export default function ActiveConvoProvider({
   const [_, addConvoToSocketPoll] = useConvoSocketPoll();
 
   async function initConvo(data: TConvos) {
-    // console.log("data ", data);
-
     setConvos(data);
     const convoIdArray = Object.keys(data);
     convoIdArray.map((id) => addConvoToSocketPoll(id));
