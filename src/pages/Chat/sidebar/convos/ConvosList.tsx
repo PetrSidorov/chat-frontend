@@ -11,7 +11,6 @@ export default function ConvosList() {
     useContext(AllConvoContext).convoContext;
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
   const { loading, isLoaded, data, error, setFetchData } = useFetchDB<any>();
-  const [socketPoll, addConvoToSocketPoll] = useConvoSocketPoll();
   const [user, _] = useContext(AuthContext);
 
   useEffect(() => {
@@ -23,32 +22,33 @@ export default function ConvosList() {
 
   useEffect(() => {
     if (!data || !user) return;
-    // console.log("data is ", data);
-    for (let convoId in data) {
-      if (socketPoll && socketPoll.includes(convoId)) {
-        break;
-      }
-      // console.log("data is", data[convoId].messages);
-      initConvo({
-        id: convoId,
-        newMessages: data[convoId].messages,
-        actors: data[convoId].actors,
-      });
+    initConvo(data);
+    console.log("data is ", data);
+    // for (let convoId in data) {
+    //   if (socketPoll && socketPoll.includes(convoId)) {
+    //     break;
+    //   }
+    //   // console.log("data is", data[convoId].messages);
+    //   initConvo({
+    //     id: convoId,
+    //     newMessages: data[convoId].messages,
+    //     actors: data[convoId].actors,
+    //   });
 
-      const companionId =
-        data[convoId].actors.initiator.id == user?.id
-          ? data[convoId].actors.joiner.id
-          : data[convoId].actors.initiator.id;
+    //   const companionId =
+    //     data[convoId].actors.initiator.id == user?.id
+    //       ? data[convoId].actors.joiner.id
+    //       : data[convoId].actors.initiator.id;
 
-      addConvoToSocketPoll(convoId, companionId);
-    }
+    //   addConvoToSocketPoll(convoId, companionId);
+    // }
   }, [data, user]);
-
+  // console.log("convos ?", convos);
   const ListOfConvoPreviews =
     convos &&
     Object.entries(convos)?.map((convo: any) => {
       const [id, data] = convo;
-
+      // console.log("id, data?", id, data);
       return (
         <div
           key={id}

@@ -10,7 +10,7 @@ export default function ConvoPreview({
   online: boolean;
 }) {
   const notEmptyConvo = messages && messages.length > 0;
-  if (online === undefined) return;
+  // if (online === undefined) return;
   if (notEmptyConvo) {
     let { content, createdAt, sender } = messages[messages.length - 1];
     // const toChatWith = user

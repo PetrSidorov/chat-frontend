@@ -1,6 +1,5 @@
 import { ReactNode, createContext, useState } from "react";
-import { TConvoContext, TConvos, TMessage, Tactors } from "../types";
-import { generateFetchAvatar } from "../utils/fetchAvatar";
+import { TConvoContext, TConvos, TMessage } from "../types";
 import useConvoSocketPoll from "../hooks/useConvoSocketPoll";
 
 export const AllConvoContext = createContext<TConvoContext>({
@@ -25,80 +24,15 @@ export default function ActiveConvoProvider({
   const [convos, setConvos] = useState<TConvos | null>(null);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
-  // const [socketPollz, addConvoToSocketPoll] = useConvoSocketPoll();
+  const [_, addConvoToSocketPoll] = useConvoSocketPoll();
 
-  async function initConvo({
-    id,
-    newMessages,
-    actors,
-  }: {
-    id: string;
-    newMessages: TMessage[];
-    actors: Tactors;
-  }) {
-    // initActors(actors, id);
-    // unshiftMessagesToConvo({
-    //   id,
-    //   newMessages,
-    // });
-    let initiatorAvatarUrl = null;
-    if (actors.initiator.avatarUrl) {
-      initiatorAvatarUrl = await fetchAvatar(actors.initiator.avatarUrl);
-    }
+  async function initConvo(data: TConvos) {
+    // console.log("data ", data);
 
-    let joinerAvatarUrl = null;
-    if (actors.joiner.avatarUrl) {
-      joinerAvatarUrl = await fetchAvatar(actors.joiner.avatarUrl);
-    }
-
-    setConvos((currentConvos) => {
-      console.log("currentConvos ", currentConvos);
-      if (!currentConvos) return {};
-
-      const updatedConvos = { ...currentConvos };
-      actors.initiator.avatarUrl = initiatorAvatarUrl;
-      actors.joiner.avatarUrl = joinerAvatarUrl;
-      if (updatedConvos[id]) {
-        updatedConvos[id] = {
-          ...updatedConvos[id],
-          messages: [...newMessages, ...updatedConvos[id].messages],
-          actors,
-        };
-      } else {
-        updatedConvos[id] = {
-          ...updatedConvos[id],
-          messages: [...newMessages],
-          actors,
-        };
-      }
-
-      return updatedConvos;
-    });
+    setConvos(data);
+    const convoIdArray = Object.keys(data);
+    convoIdArray.map((id) => addConvoToSocketPoll(id));
   }
-
-  const fetchAvatar = generateFetchAvatar();
-
-  // async function initActors(actors: Tactors, id: string) {
-  //   // console.log("actors, id ", actors, id);
-  //   let initiatorAvatarUrl = null;
-  //   if (actors.initiator.avatarUrl) {
-  //     initiatorAvatarUrl = await fetchAvatar(actors.initiator.avatarUrl);
-  //   }
-
-  //   let joinerAvatarUrl = null;
-  //   if (actors.joiner.avatarUrl) {
-  //     joinerAvatarUrl = await fetchAvatar(actors.joiner.avatarUrl);
-  //   }
-
-  //   setConvos((currentConvos) => {
-  //     const newConvos = { ...currentConvos };
-  //     newConvos![id].actors = actors;
-  //     newConvos![id].actors.initiator.avatarUrl = initiatorAvatarUrl;
-  //     newConvos![id].actors.joiner.avatarUrl = joinerAvatarUrl;
-
-  //     return newConvos;
-  //   });
-  // }
 
   function handleActiveConvoId(id: string) {
     if (activeConvoId == id) return;

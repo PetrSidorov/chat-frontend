@@ -8,20 +8,20 @@ import AvatarProvider from "./context/AvatarProvider";
 function App() {
   return (
     <BrowserRouter>
-      <AvatarProvider>
-        <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Login />}></Route>
+      {/* <AvatarProvider> */}
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Login />}></Route>
 
-            <Route path="/settings" element={<ChatMain />}></Route>
-            <Route path="/friends" element={<ChatMain />}></Route>
-            <Route path="/messages" element={<ChatMain />}></Route>
+          <Route path="/settings" element={<ChatMain />}></Route>
+          <Route path="/friends" element={<ChatMain />}></Route>
+          <Route path="/messages" element={<ChatMain />}></Route>
 
-            <Route path="/messages" element={<ChatMain />}></Route>
-            <Route path="/settings" element={<ChatMain />}></Route>
-          </Routes>
-        </AuthProvider>
-      </AvatarProvider>
+          <Route path="/messages" element={<ChatMain />}></Route>
+          <Route path="/settings" element={<ChatMain />}></Route>
+        </Routes>
+      </AuthProvider>
+      {/* </AvatarProvider> */}
     </BrowserRouter>
   );
 }
