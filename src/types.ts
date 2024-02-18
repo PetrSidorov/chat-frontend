@@ -17,12 +17,20 @@ export type TAuthContext = [
   Dispatch<SetStateAction<TUser | null>>
 ];
 
+// export type TMessage = {
+//   id: string;
+//   content: string;
+//   convoId: string;
+//   createdAt: string;
+//   sender: { username: string; id: string };
+// };
 export type TMessage = {
   id: string;
   content: string;
-  convoId: string;
   createdAt: string;
-  sender: { username: string; id: string };
+  senderId: string;
+  receiverId: string;
+  convoId: string;
 };
 
 export type Tactors = {

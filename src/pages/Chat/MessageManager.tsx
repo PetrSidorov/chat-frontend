@@ -1,14 +1,11 @@
-// {
-//     "id": "clq0pqkro0001glekpi3c4ylx",
-//     "initiator": "peter1",
-//     "joiner": "peter3",
-//     "initiatorId": "clq0oftzf0001rcqrads0mxtp",
-//     "joinerId": "clq0oh6oz0004rcqrvu8p8tzg",
-//     "userId": "clq0oftzf0001rcqrads0mxtp"
+// id         String   @id @default(cuid())
+// content    String
+// createdAt  DateTime @default(now())
+// senderId   String
+// receiverId String
+// convoId    String
 
 import useMessage from "../../hooks/useMessage";
-
-// }
 export default function MessageManager() {
   const { message, sendMessage, handleMessage } = useMessage();
 

@@ -38,11 +38,6 @@ export default function ActiveConvoProvider({
   }
 
   function handleRemoveMessage(convoId: string, messageIdToDelete: string) {
-    console.log(
-      "convoId: string, messageIdToDelete: string ",
-      convoId,
-      messageIdToDelete
-    );
     setConvos((currentConvos) => {
       const updatedConvos = { ...currentConvos };
       if (
@@ -80,24 +75,6 @@ export default function ActiveConvoProvider({
     });
   }
 
-  // function pushNewMessageToConvo(message) {
-  //   const convoId = message?.convoId;
-  //   console.log(message);
-  // setConvos((currentConvos) => {
-  //   if (!currentConvos) return {};
-  //   const updatedConvos = { ...currentConvos };
-  //   if (updatedConvos[convoId]) {
-  //     updatedConvos[convoId].messages = [
-  //       ...updatedConvos[convoId].messages,
-  //       message,
-  //     ];
-  //   } else {
-  //     updatedConvos[convoId].messages = [message];
-  //   }
-
-  //   return updatedConvos;
-  // });
-  // }
   function pushNewMessageToConvo(convoId: string, message: TMessage) {
     // if (!convoId || !message) return;
     setConvos((currentConvos) => {
@@ -142,18 +119,6 @@ export default function ActiveConvoProvider({
 
       return updatedConvos;
     });
-    // if (!newMessages) return;
-    // console.log("newMessages ", newMessages);
-    // setConvos((currentConvos) => {
-    //   if (currentConvos && currentConvos[id]) {
-    //     const oldMessages = [...currentConvos[id].messages];
-    //     newMessages = [...newMessages, ...oldMessages];
-    //   }
-    //   return {
-    //     ...currentConvos,
-    //     [id]: { ...currentConvos![id], messages: [...newMessages] },
-    //   };
-    // });
   }
 
   function handleOnlineStatuses(convoId: string, online: boolean) {

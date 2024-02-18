@@ -73,6 +73,7 @@ export default function ActiveConvo() {
           ref={observeRef}
           messages={convos?.[activeConvoId].messages}
           currentUser={user?.username}
+          activeConvoId={activeConvoId}
           actors={convos?.[activeConvoId].actors}
           handleRemoveMessage={generateRemoveMessage(activeConvoId)}
         />
