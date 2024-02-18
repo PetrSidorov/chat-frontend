@@ -9,7 +9,7 @@ export type TUser = {
   name: string;
   username: string;
   email: string;
-  avatarUrl?: string;
+  avatarUrl: string | null;
 };
 
 export type TAuthContext = [
@@ -28,8 +28,13 @@ export type TMessage = {
   id: string;
   content: string;
   createdAt: string;
-  senderId: string;
-  receiverId: string;
+  sender: {
+    username: string;
+    id: string;
+  };
+};
+
+export type TMessageToSend = TMessage & {
   convoId: string;
 };
 
@@ -49,7 +54,8 @@ export type Tactors = {
 export type TConvos = {
   [key: string]: {
     messages: TMessage[];
-    actors: Tactors;
+    // actors: Tactors;
+    receiver: TUser;
     online: boolean;
     // actors: {
     //   initiator: {

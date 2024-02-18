@@ -68,13 +68,20 @@ export default function ActiveConvo() {
         </div>
       )}
       {!online && <p>Waiting for network</p>}
-      {activeConvoId && convos?.[activeConvoId] ? (
+      {activeConvoId &&
+      convos?.[activeConvoId] &&
+      user &&
+      Object.keys(user).length > 0 ? (
         <MessageList
           ref={observeRef}
           messages={convos?.[activeConvoId].messages}
-          currentUser={user?.username}
+          currentUser={{
+            username: user.username,
+            avatarUrl: user.avatarUrl,
+            id: user.id,
+          }}
           activeConvoId={activeConvoId}
-          actors={convos?.[activeConvoId].actors}
+          receiver={convos?.[activeConvoId].receiver}
           handleRemoveMessage={generateRemoveMessage(activeConvoId)}
         />
       ) : (

@@ -13,7 +13,7 @@ export default function MessageManager() {
     <form className="p-4 bg-gray-100 flex">
       <input
         type="text"
-        value={message.content}
+        value={message}
         onChange={(e) => handleMessage(e.target.value)}
         className="w-full p-2 rounded border border-gray-300"
         placeholder="Type a message..."

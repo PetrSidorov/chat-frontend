@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useState } from "react";
 import Message from "./message/Message";
-import { TMessage, Tactors } from "../../types";
+import { TMessage, TUser, Tactors } from "../../types";
 import MessageContextMenu from "./sidebar/convos/MessageContextMenu";
 import HandleClickOutside from "../../hooks/useClickOutside";
 
@@ -8,14 +8,14 @@ const MessageList = forwardRef<
   HTMLDivElement,
   {
     messages: TMessage[];
-    currentUser: string;
-    actors: Tactors;
+    currentUser: { username: string; avatarUrl: string | null; id: string };
     handleRemoveMessage: Function;
     activeConvoId: string;
+    receiver: TUser;
   }
 >(
   (
-    { messages, currentUser, actors, handleRemoveMessage, activeConvoId },
+    { messages, currentUser, receiver, handleRemoveMessage, activeConvoId },
     ref
   ) => {
     const initialPopupState = {
@@ -51,14 +51,10 @@ const MessageList = forwardRef<
 
     const messageList = messages.map(
       ({ content, createdAt, sender, id }, i: number) => {
-        const alignment =
-          sender.username == currentUser ? "self-end" : "self-start";
-        const avatarUrl =
-          actors.initiator.username == sender.username
-            ? actors.initiator.avatarUrl
-            : actors.joiner.avatarUrl;
+        const yours = sender.id! == currentUser.id;
+        const avatarUrl = yours ? currentUser.avatarUrl : receiver.avatarUrl;
+        const alignment = yours ? "self-end" : "self-start";
 
-        const yours = sender.username == currentUser;
         return (
           <React.Fragment key={id}>
             {i === 3 ? <div ref={ref} /> : null}
