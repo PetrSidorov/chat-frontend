@@ -12,8 +12,8 @@ function App() {
     <BrowserRouter>
       {/* <AvatarProvider> */}
       <AuthProvider>
-        <ResizeProvider>
-          <ActiveConvoProvider>
+        <ActiveConvoProvider>
+          <ResizeProvider>
             <Routes>
               <Route path="/" element={<Login />}></Route>
 
@@ -25,8 +25,8 @@ function App() {
               <Route path="/messages" element={<ChatMain />}></Route>
               <Route path="/settings" element={<ChatMain />}></Route>
             </Routes>
-          </ActiveConvoProvider>
-        </ResizeProvider>
+          </ResizeProvider>
+        </ActiveConvoProvider>
       </AuthProvider>
       {/* </AvatarProvider> */}
     </BrowserRouter>

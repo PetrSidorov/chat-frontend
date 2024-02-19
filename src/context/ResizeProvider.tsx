@@ -47,10 +47,15 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
   //   console.log("setShowOnlyAvatars ", showOnlyAvatars);
   // }, [showOnlyAvatars]);
   useEffect(() => {
+    console.log("hi?");
+    console.log(sizes);
+  }, [sizes]);
+
+  useEffect(() => {
     const [leftPanelWidth, rightPanelWidth] = sizes;
     const leftNarrow = leftPanelWidth < 17;
     const rightNarrow = rightPanelWidth < 35;
-
+    // console.log("sizes ", sizes);
     setFullWidthMessagesInActiveConvo((currentValue) => {
       if (rightNarrow && !currentValue) {
         return true;
@@ -75,10 +80,15 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
   }
 
   function switchToMobile(setter: boolean) {
-    console.log("setter ", setter);
+    console.log("setter ", setter, activeConvoId);
     setMobileView(setter);
     if (activeConvoId && setter) {
       // hideleftpanel
+      setSizes([0, 100]);
+    }
+
+    if (!setter) {
+      setSizes([35, 65]);
     }
   }
 
@@ -89,8 +99,8 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
         setFullWidthMessagesInActiveConvo(true);
         switchToMobile(false);
       } else if (window.innerWidth > 701) {
-        // setShowOnlyAvatars(false);
-        // setFullWidthMessagesInActiveConvo(false);
+        setShowOnlyAvatars(false);
+        setFullWidthMessagesInActiveConvo(false);
         switchToMobile(false);
       } else if (window.innerWidth < 500) {
         switchToMobile(true);
@@ -117,6 +127,7 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
         setMobileView,
         // leftPanelRef,
         // rightPanelRef,
+        handleDrag,
         sizes,
       }}
     >
