@@ -1,14 +1,17 @@
-import { TMessage } from "../../../../types";
+import { TMessage, TUser } from "../../../../types";
 import Message from "../../message/Message";
 import IsOnline from "./IsOnline";
 
 export default function ConvoPreview({
   messages,
   online,
+  receiver,
 }: {
   messages: TMessage[];
   online: boolean;
+  receiver: TUser;
 }) {
+  console.log("receiver ", receiver);
   const notEmptyConvo = messages && messages.length > 0;
   // if (online === undefined) return;
   if (notEmptyConvo) {
@@ -24,7 +27,8 @@ export default function ConvoPreview({
           key={createdAt}
           content={content}
           createdAt={createdAt}
-          username={sender?.username}
+          username={receiver.username}
+          avatarUrl={receiver.avatarUrl}
         />
       </>
     );

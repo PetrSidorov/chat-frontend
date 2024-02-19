@@ -34,24 +34,23 @@ export default function ActiveConvo() {
     endOfMessagesRef.current?.scrollIntoView();
     if (!scrollContainerRef.current) return;
     const savedScrollPosition = scrollContainerRef.current.scrollTop;
-    // console.log(savedScrollPosition);
+
     socket.on("msg:send-offset", (data) => {
       if (!data || !scrollContainerRef.current || !activeConvoId) {
         return;
       }
-      console.log("convos?.[activeConvoId] ", convos);
+
       unshiftMessagesToConvo({ id: activeConvoId, newMessages: data.data });
       scrollContainerRef.current.scrollTop = savedScrollPosition;
     });
   }, [activeConvoId]);
 
   useEffect(() => {
-    console.log("convos?.[activeConvoId] ", convos?.[activeConvoId]);
-  }, [activeConvoId]);
+    endOfMessagesRef.current?.scrollIntoView();
+  }, [convos]);
 
   function generateRemoveMessage(convoId: string) {
     return function removeMessage(messageIdToDelete: string) {
-      // console.log("convoId, messageIdToDelete ", convoId, messageIdToDelete);
       handleRemoveMessage(convoId, messageIdToDelete);
     };
   }

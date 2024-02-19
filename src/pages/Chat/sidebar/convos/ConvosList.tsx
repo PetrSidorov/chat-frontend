@@ -1,10 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 
 import { AllConvoContext } from "../../../../context/AllConvoContext";
-import useConvoSocketPoll from "../../../../hooks/useConvoSocketPoll";
+import { AuthContext } from "../../../../context/AuthProvider";
 import useFetchDB from "../../../../hooks/useFetchDB";
 import ConvoPreview from "./ConvoPreview";
-import { AuthContext } from "../../../../context/AuthProvider";
 
 export default function ConvosList() {
   const { convos, unshiftMessagesToConvo, initConvo } =
@@ -23,41 +22,25 @@ export default function ConvosList() {
   useEffect(() => {
     if (!data || !user) return;
     initConvo(data);
-    console.log("data is ", data);
-    // for (let convoId in data) {
-    //   if (socketPoll && socketPoll.includes(convoId)) {
-    //     break;
-    //   }
-    //   // console.log("data is", data[convoId].messages);
-    //   initConvo({
-    //     id: convoId,
-    //     newMessages: data[convoId].messages,
-    //     actors: data[convoId].actors,
-    //   });
-
-    //   const companionId =
-    //     data[convoId].actors.initiator.id == user?.id
-    //       ? data[convoId].actors.joiner.id
-    //       : data[convoId].actors.initiator.id;
-
-    //   addConvoToSocketPoll(convoId, companionId);
-    // }
   }, [data, user]);
-  // console.log("convos ?", convos);
+
   const ListOfConvoPreviews =
     convos &&
     Object.entries(convos)?.map((convo: any) => {
       const [id, data] = convo;
-      // console.log("id, data?", id, data);
+
       return (
         <div
           key={id}
-          // className="relative"
           onClick={() => {
             setActiveConvoId(id);
           }}
         >
-          <ConvoPreview messages={data.messages} online={data.online} />
+          <ConvoPreview
+            receiver={data.receiver}
+            messages={data.messages}
+            online={data.online}
+          />
         </div>
       );
     });

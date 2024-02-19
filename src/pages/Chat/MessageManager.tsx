@@ -1,10 +1,3 @@
-// id         String   @id @default(cuid())
-// content    String
-// createdAt  DateTime @default(now())
-// senderId   String
-// receiverId String
-// convoId    String
-
 import useMessage from "../../hooks/useMessage";
 export default function MessageManager() {
   const { message, sendMessage, handleMessage } = useMessage();

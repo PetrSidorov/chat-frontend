@@ -44,17 +44,15 @@ export default function useMessage() {
 
   function sendMessage(e: KeyboardEvent) {
     e.preventDefault();
-    if (!user || isEmpty(user) || !activeConvoId) return;
+    if (!user || isEmpty(user) || !activeConvoId || !convos) return;
 
     emit({
-      message,
+      content: message,
       convoId: activeConvoId,
+      receiverId: convos[activeConvoId].receiver.id,
       createdAt: new Date().toISOString(),
       id: crypto.randomUUID(),
-      sender: {
-        username: user?.username,
-        id: user.id,
-      },
+      senderId: user.id,
       // TODO: use this Uuid for optimistic updates
       // id: crypto.randomUUID(),
     });
