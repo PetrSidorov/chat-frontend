@@ -59,7 +59,7 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
     setFullWidthMessagesInActiveConvo((currentValue) => {
       if (rightNarrow && !currentValue) {
         return true;
-      } else if (!rightNarrow && currentValue) {
+      } else if (!rightNarrow && currentValue && !mobileView) {
         return false;
       }
       return currentValue;
@@ -85,6 +85,7 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
     if (activeConvoId && setter) {
       // hideleftpanel
       setSizes([0, 100]);
+      setFullWidthMessagesInActiveConvo(true);
     }
 
     if (!setter) {
@@ -100,7 +101,7 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
         switchToMobile(false);
       } else if (window.innerWidth > 701) {
         setShowOnlyAvatars(false);
-        setFullWidthMessagesInActiveConvo(false);
+        // setFullWidthMessagesInActiveConvo(false);
         switchToMobile(false);
       } else if (window.innerWidth < 500) {
         switchToMobile(true);

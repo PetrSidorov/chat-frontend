@@ -65,8 +65,8 @@ const MessageList = forwardRef<
               onContextMenu={(e) => togglePopup(yours, id, e)}
               onClick={(e) => togglePopup(yours, id, e, false)}
               id={id}
-              className={`w-2/3 ${alignment} ${
-                fullWidthMessagesInActiveConvo ? "w-full" : ""
+              className={`${alignment} ${
+                fullWidthMessagesInActiveConvo ? "w-full" : "w-2/3"
               }`}
             >
               <Message
