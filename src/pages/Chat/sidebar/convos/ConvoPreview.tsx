@@ -1,6 +1,8 @@
+import { useContext } from "react";
 import { TMessage, TUser } from "../../../../types";
 import Message from "../../message/Message";
 import IsOnline from "./IsOnline";
+import { ResizeContext } from "../../../../context/ResizeProvider";
 
 export default function ConvoPreview({
   messages,
@@ -11,12 +13,18 @@ export default function ConvoPreview({
   online: boolean;
   receiver: TUser;
 }) {
-  console.log("receiver ", receiver);
   const notEmptyConvo = messages && messages.length > 0;
-  // if (online === undefined) return;
+  const { showOnlyAvatars } = useContext(ResizeContext);
+
   if (notEmptyConvo) {
     let { content, createdAt, sender } = messages[messages.length - 1];
-    // const toChatWith = user
+
+    let trimmedContent;
+    if (content.length > 30) {
+      trimmedContent = content.slice(0, 100) + "...";
+    } else {
+      trimmedContent = content;
+    }
     return (
       <>
         {/* {online && (
@@ -25,10 +33,11 @@ export default function ConvoPreview({
         <IsOnline online={online} />
         <Message
           key={createdAt}
-          content={content}
+          content={trimmedContent}
           createdAt={createdAt}
           username={receiver.username}
           avatarUrl={receiver.avatarUrl}
+          showOnlyAvatars={showOnlyAvatars}
         />
       </>
     );
@@ -37,6 +46,9 @@ export default function ConvoPreview({
       <Message
         createdAt={""}
         content={"This convo is empty, start messaging now =)"}
+        username={receiver.username}
+        avatarUrl={receiver.avatarUrl}
+        showOnlyAvatars={showOnlyAvatars}
       />
     );
   }

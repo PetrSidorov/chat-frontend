@@ -9,11 +9,15 @@ export default function Avatar({
   return (
     <>
       {avatarUrl ? (
-        <div className="w-[100px] flex-none h-[100px] border border-black rounded-full overflow-hidden">
+        <div className="w-[100px] flex-none h-[100px] border border-black rounded-full overflow-hidden mx-auto">
           <img className="w-[100px]" src={avatarUrl} alt={username} />
         </div>
       ) : (
-        <CircleUserRound className="flex-none" size={100} strokeWidth={1} />
+        <CircleUserRound
+          className="flex-none mx-auto"
+          size={100}
+          strokeWidth={1}
+        />
       )}
     </>
   );

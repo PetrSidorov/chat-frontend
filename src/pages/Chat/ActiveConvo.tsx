@@ -6,6 +6,8 @@ import MessageList from "./MessageList";
 import { AuthContext } from "../../context/AuthProvider";
 import useOnlineStatus from "../../hooks/useOnlineStatus";
 import IsOnline from "./sidebar/convos/IsOnline";
+import { ChevronLeft } from "lucide-react";
+import { ResizeContext } from "../../context/ResizeProvider";
 
 export default function ActiveConvo() {
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
@@ -16,6 +18,7 @@ export default function ActiveConvo() {
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const offset = convos?.[activeConvoId]?.messages.length / 6 || 2;
+  const { mobileView } = useContext(ResizeContext);
 
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
@@ -61,9 +64,17 @@ export default function ActiveConvo() {
       className="flex flex-col flex-grow p-4 overflow-y-auto"
     >
       {activeConvoId && (
-        <div className="w-full h-10 bg-slate-600 fixed -mt-4 -ml-4 z-1">
+        <div className="w-full h-10 bg-slate-600 fixed -mt-4 -ml-4 z-1 flex items-center">
           {/* classes for bottom IsOnline should be different */}
-          Online <IsOnline online={convos?.[activeConvoId]?.online} />
+          {mobileView && (
+            <button>
+              <ChevronLeft />
+            </button>
+          )}
+
+          <p>
+            Online <IsOnline online={convos?.[activeConvoId]?.online} />
+          </p>
         </div>
       )}
       {!online && <p>Waiting for network</p>}

@@ -11,24 +11,28 @@ export default function Message({
   createdAt,
   username,
   avatarUrl,
+  showOnlyAvatars = false,
 }: {
   content: string;
   createdAt: string;
   username: string;
   avatarUrl: string | null;
+  showOnlyAvatars?: boolean;
 }) {
   const date = createdAt ? new Date(createdAt).toDateString() : "";
 
   // TODO: ${alignment} ${classes} - gives undefined undefined - fix
   return (
-    <li className="flex items-center m-2 p-4 bg-gray-200">
+    <li className="flex items-start m-2 p-4 bg-gray-200">
       <Avatar avatarUrl={avatarUrl} />
-      <div className="ml-2">
-        <div className="flex justify-between mb-3">
-          <span>{username}</span> <span>{date}</span>
+      {!showOnlyAvatars && (
+        <div className="ml-2 w-full overflow-x-hidden">
+          <div className="flex justify-between mb-3">
+            <span>{username}</span> <span>{date}</span>
+          </div>
+          <p>{content}</p>
         </div>
-        <div>{content}</div>
-      </div>
+      )}
     </li>
   );
 }

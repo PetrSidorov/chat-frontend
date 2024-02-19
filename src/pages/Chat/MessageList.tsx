@@ -1,8 +1,9 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useContext, useEffect, useState } from "react";
 import Message from "./message/Message";
 import { TMessage, TUser, Tactors } from "../../types";
 import MessageContextMenu from "./sidebar/convos/MessageContextMenu";
 import HandleClickOutside from "../../hooks/useClickOutside";
+import { ResizeContext } from "../../context/ResizeProvider";
 
 const MessageList = forwardRef<
   HTMLDivElement,
@@ -26,6 +27,8 @@ const MessageList = forwardRef<
       yours: false,
     };
     const [popupState, setPopupState] = useState(initialPopupState);
+    const { fullWidthMessagesInActiveConvo } = useContext(ResizeContext);
+
     useEffect(() => {
       setPopupState(initialPopupState);
     }, [activeConvoId]);
@@ -62,7 +65,9 @@ const MessageList = forwardRef<
               onContextMenu={(e) => togglePopup(yours, id, e)}
               onClick={(e) => togglePopup(yours, id, e, false)}
               id={id}
-              className={`w-2/3 ${alignment}`}
+              className={`w-2/3 ${alignment} ${
+                fullWidthMessagesInActiveConvo ? "w-full" : ""
+              }`}
             >
               <Message
                 content={content}
