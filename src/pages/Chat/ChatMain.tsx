@@ -76,11 +76,6 @@ export default function ChatMain() {
         {/* )} */}
 
         {/* Chat Column */}
-        {/* <div className="flex flex-col w-2/3"> */}
-        {/* Messages Area */}
-        {/* <ActiveConvo /> */}
-
-        {/* {(!mobileView || (mobileView && activeConvoId)) && ( */}
         <div
           className={`flex flex-col ${
             mobileView && activeConvoId ? " w-full" : " w-2/3"

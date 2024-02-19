@@ -22,6 +22,8 @@ export default function Message({
   const date = createdAt ? new Date(createdAt).toDateString() : "";
 
   // TODO: ${alignment} ${classes} - gives undefined undefined - fix
+  // TODO:   text-overflow: ellipsis;
+
   return (
     <li className="flex items-start m-2 p-4 bg-gray-200">
       <Avatar avatarUrl={avatarUrl} />
