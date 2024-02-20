@@ -10,7 +10,8 @@ import { ChevronLeft } from "lucide-react";
 import { ResizeContext } from "../../context/ResizeProvider";
 
 export default function ActiveConvo() {
-  const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
+  const [activeConvoId, handleActiveConvoId] =
+    useContext(AllConvoContext).activeConvoId;
   const [user] = useContext(AuthContext);
   const { convos, unshiftMessagesToConvo, handleRemoveMessage } =
     useContext(AllConvoContext).convoContext;
@@ -67,7 +68,7 @@ export default function ActiveConvo() {
         <div className="w-full h-10 bg-slate-600 fixed -mt-4 -ml-4 z-1 flex items-center">
           {/* classes for bottom IsOnline should be different */}
           {mobileView && (
-            <button>
+            <button onClick={() => handleActiveConvoId(null)}>
               <ChevronLeft />
             </button>
           )}

@@ -32,7 +32,7 @@ export default function ActiveConvoProvider({
     convoIdArray.map((id) => addConvoToSocketPoll(id));
   }
 
-  function handleActiveConvoId(id: string) {
+  function handleActiveConvoId(id: string | null) {
     if (activeConvoId == id) return;
     setActiveConvoId(id);
   }

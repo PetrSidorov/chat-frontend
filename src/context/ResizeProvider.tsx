@@ -47,7 +47,6 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
   //   console.log("setShowOnlyAvatars ", showOnlyAvatars);
   // }, [showOnlyAvatars]);
   useEffect(() => {
-    console.log("hi?");
     console.log(sizes);
   }, [sizes]);
 
@@ -84,7 +83,7 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
     setMobileView(setter);
     if (activeConvoId && setter) {
       // hideleftpanel
-      setSizes([0, 100]);
+      // setSizes([0, 100]);
       setFullWidthMessagesInActiveConvo(true);
     }
 
@@ -105,13 +104,18 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
         switchToMobile(false);
       } else if (window.innerWidth < 500) {
         switchToMobile(true);
+        if (activeConvoId) {
+          setSizes([0, 100]);
+        } else if (!activeConvoId) {
+          setSizes([100, 0]);
+        }
       }
     }
     window.addEventListener("resize", handleResize);
     handleResize();
 
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [activeConvoId]);
 
   // useEffect(() => {
   //   console.log(windowWidth);

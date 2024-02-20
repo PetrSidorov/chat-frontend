@@ -9,6 +9,7 @@ import Sidebar from "./sidebar/Sidebar";
 import { useEffect, useRef, useState } from "react";
 import ResizeProvider, { ResizeContext } from "../../context/ResizeProvider";
 import { useContext } from "react";
+import clsx from "clsx";
 
 export default function ChatMain() {
   const leftPanelRef = useRef(null);
@@ -66,20 +67,33 @@ export default function ChatMain() {
         {/* User List Column */}
 
         {/* {(!mobileView || (mobileView && !activeConvoId)) && ( */}
-        <div
+        {/* <div
           className={`flex flex-col w-1/3 bg-gray-800 text-white p-4 ${
             mobileView && activeConvoId ? " hidden" : ""
           }`}
+        >*/}
+        <div
+          className={clsx("flex flex-col bg-gray-800 text-white p-4", {
+            hidden: mobileView && activeConvoId,
+            "w-1/3": !mobileView && activeConvoId,
+            "w-full": mobileView && !activeConvoId,
+          })}
         >
           <Sidebar />
         </div>
         {/* )} */}
 
         {/* Chat Column */}
-        <div
+        {/* <div
           className={`flex flex-col ${
             mobileView && activeConvoId ? " w-full" : " w-2/3"
           }`}
+        > */}
+        <div
+          className={clsx("flex flex-col", {
+            "w-full": mobileView && activeConvoId,
+            hidden: mobileView && !activeConvoId,
+          })}
         >
           {/* <div className="flex flex-col w-2/3"> */}
           <ActiveConvo />
