@@ -7,6 +7,7 @@ import { MessageSquare, Settings, User } from "lucide-react";
 import SidebarFooterButton from "../../../components/SidebarFooterButton";
 import { useNavigate } from "react-router-dom";
 import useTabs from "../../../hooks/useTabs";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Sidebar() {
   const [activeTab, handleActiveTab] = useTabs<TSidebarTabs>(
@@ -15,9 +16,36 @@ export default function Sidebar() {
 
   return (
     <>
-      {activeTab === TSidebarTabs.FRIENDS && <FriendsTab />}
+      {/* {activeTab === TSidebarTabs.FRIENDS && <FriendsTab />}
       {activeTab === TSidebarTabs.SETTINGS && <SettingsTab />}
-      {activeTab === TSidebarTabs.MESSAGES && <ConvosList />}
+      {activeTab === TSidebarTabs.MESSAGES && <ConvosList />} */}
+      <AnimatePresence mode="wait">
+        {activeTab === TSidebarTabs.FRIENDS && (
+          <motion.div
+            key="friends"
+            layout
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <FriendsTab />
+          </motion.div>
+        )}
+        {activeTab === TSidebarTabs.SETTINGS && (
+          <motion.div
+            key="settings"
+            layout
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <SettingsTab />
+          </motion.div>
+        )}
+        {activeTab === TSidebarTabs.MESSAGES && <ConvosList />}
+      </AnimatePresence>
 
       <div className="mt-auto flex justify-evenly items-center bg-gray-200 p-4 text-black">
         <SidebarFooterButton

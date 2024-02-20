@@ -47,7 +47,7 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
   //   console.log("setShowOnlyAvatars ", showOnlyAvatars);
   // }, [showOnlyAvatars]);
   useEffect(() => {
-    console.log(sizes);
+    // console.log(sizes);
   }, [sizes]);
 
   useEffect(() => {
