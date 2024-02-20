@@ -1,15 +1,23 @@
-// getCroppedImg.js
-export default async function getCroppedImg(imageSrc, pixelCrop) {
+import { PixelCrop } from "../types";
+
+export default async function getCroppedImg(
+  imageSrc: string,
+  pixelCrop: PixelCrop
+): Promise<Blob> {
   const image = new Image();
   image.src = imageSrc;
-  await new Promise((resolve) => {
-    image.onload = resolve;
+  await new Promise<void>((resolve) => {
+    image.onload = () => resolve();
   });
 
   const canvas = document.createElement("canvas");
   canvas.width = pixelCrop.width;
   canvas.height = pixelCrop.height;
   const ctx = canvas.getContext("2d");
+
+  if (!ctx) {
+    throw new Error("Could not get canvas context");
+  }
 
   ctx.drawImage(
     image,
@@ -23,9 +31,13 @@ export default async function getCroppedImg(imageSrc, pixelCrop) {
     pixelCrop.height
   );
 
-  return new Promise((resolve) => {
+  return new Promise<Blob>((resolve, reject) => {
     canvas.toBlob((blob) => {
-      resolve(blob);
+      if (blob) {
+        resolve(blob);
+      } else {
+        reject(new Error("Canvas to Blob conversion failed"));
+      }
     }, "image/jpeg");
   });
 }

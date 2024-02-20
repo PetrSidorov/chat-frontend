@@ -1,25 +1,36 @@
-import React, { useEffect, useState } from "react";
+type Area = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../../../utils/getCroppedImg";
+import { AuthContext } from "../../../context/AuthProvider";
 
 function UploadAndCropAvatar() {
-  const [imageSrc, setImageSrc] = useState(null);
+  const [user, setUser] = useContext(AuthContext);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [uploadStatus, setUploadStatus] = useState("");
 
-  const handleImageChange = (e) => {
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const reader = new FileReader();
-      reader.addEventListener("load", () =>
-        setImageSrc(reader.result.toString())
-      );
+      reader.addEventListener("load", () => {
+        if (typeof reader.result === "string") {
+          setImageSrc(reader.result);
+        }
+      });
       reader.readAsDataURL(e.target.files[0]);
     }
   };
 
-  const onCropComplete = (croppedArea, croppedAreaPixels) => {
+  const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
   };
 
@@ -50,6 +61,7 @@ function UploadAndCropAvatar() {
     }
 
     try {
+      if (!imageSrc) return;
       const croppedImageBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
       const formData = new FormData();
       formData.append("avatar", croppedImageBlob, "avatar.jpg");
@@ -62,7 +74,13 @@ function UploadAndCropAvatar() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Success:", data);
+        console.log(data);
+        setUser((userInfo) => {
+          if (userInfo) {
+            return { ...userInfo, avatarUrl: data.url };
+          }
+          return userInfo;
+        });
         setUploadStatus("Upload successful!");
         resetToInitials();
       } else {

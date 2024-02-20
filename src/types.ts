@@ -34,6 +34,13 @@ export type TMessage = {
   };
 };
 
+export type PixelCrop = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 export type TMessageToSend = TMessage & {
   convoId: string;
 };
