@@ -55,6 +55,7 @@ const MessageList = forwardRef<
     const messageList = messages.map(
       ({ content, createdAt, sender, id }, i: number) => {
         const yours = sender.id! == currentUser.id;
+
         const avatarUrl = yours ? currentUser.avatarUrl : receiver.avatarUrl;
         const alignment = yours ? "self-end" : "self-start";
 

@@ -18,14 +18,17 @@ export default function ActiveConvo() {
   const online = useOnlineStatus();
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const offset = convos?.[activeConvoId]?.messages.length / 6 || 2;
+  // const offset = convos?.[activeConvoId]?.messages.length / 6 || 2;
+  const skip = convos?.[activeConvoId]?.messages.length;
   const { mobileView } = useContext(ResizeContext);
 
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
-
+    // console.log("offset ", offset);
+    console.log("activeConvoId ", activeConvoId);
     socket.emit("msg:get-offset", {
-      offset,
+      skip,
+      // offset was here
       convoId: activeConvoId,
     });
   }
