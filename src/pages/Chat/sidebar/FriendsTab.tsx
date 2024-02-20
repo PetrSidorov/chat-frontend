@@ -4,6 +4,7 @@ import useSockets from "../../../hooks/useSockets";
 import { MessageSquare } from "lucide-react";
 import { AllConvoContext } from "../../../context/AllConvoContext";
 import useNewConvo from "../../../hooks/useNewConvo";
+import { motion } from "framer-motion";
 
 export default function FriendsTab() {
   const [searchInput, setSearchInput] = useState<string>("");
@@ -32,7 +33,6 @@ export default function FriendsTab() {
   }, [searchInput, emit]);
 
   useEffect(() => {
-    console.log("data.users ", data);
     if (data && data.length > 0) {
       setFoundUsers(data);
     }
@@ -60,9 +60,16 @@ export default function FriendsTab() {
         <ul>
           {foundUsers.map((user) => {
             const color = user.online ? "green" : "gray";
-
+            // TODO: pack all animation code in one variable to reuse it
             return (
-              <li key={user.id}>
+              <motion.li
+                key={user.id}
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+              >
                 <button
                   className="flex items-center"
                   onClick={() => {
@@ -82,7 +89,7 @@ export default function FriendsTab() {
                   )}
                   {user.username}
                 </button>
-              </li>
+              </motion.li>
             );
           })}
         </ul>
