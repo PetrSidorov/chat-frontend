@@ -18,17 +18,15 @@ export default function ActiveConvo() {
   const online = useOnlineStatus();
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  // const offset = convos?.[activeConvoId]?.messages.length / 6 || 2;
-  const skip = convos?.[activeConvoId]?.messages.length;
+  const offset = convos?.[activeConvoId]?.messages.length / 6 || 2;
   const { mobileView } = useContext(ResizeContext);
 
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
-    // console.log("offset ", offset);
-    console.log("activeConvoId ", activeConvoId);
+
     socket.emit("msg:get-offset", {
-      skip,
-      // offset was here
+      offset,
+      currMessagesLength: convos?.[activeConvoId]?.messages.length,
       convoId: activeConvoId,
     });
   }
@@ -47,6 +45,7 @@ export default function ActiveConvo() {
         return;
       }
 
+      // TODO: pass not current convo id, but id of the convo which is needed
       unshiftMessagesToConvo({ id: activeConvoId, newMessages: data.data });
       scrollContainerRef.current.scrollTop = savedScrollPosition;
     });
