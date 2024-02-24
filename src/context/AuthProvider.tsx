@@ -14,7 +14,7 @@ export const AuthContext = createContext<TAuthContext>([null, () => {}]);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<TUser | null>(null);
-  const { loading, data, error, setFetchData } = useFetchDB<any>();
+  const { loading, isLoaded, data, error, setFetchData } = useFetchDB<any>();
   useEffect(() => {
     if (!user) {
       setFetchData({
@@ -29,7 +29,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, [data]);
 
   const value = useMemo(() => {
-    return [user, setUser] as [
+    return [user, setUser, isLoaded] as [
       TUser | null,
       Dispatch<SetStateAction<TUser | null>>
     ];

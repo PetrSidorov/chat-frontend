@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login/Login";
+import StartScreen from "./pages/StartScreen/StartScreen";
 import ChatMain from "./pages/Chat/ChatMain";
 import AuthProvider from "./context/AuthProvider";
 import AvatarProvider from "./context/AvatarProvider";
@@ -10,12 +11,12 @@ import ActiveConvoProvider from "./context/AllConvoContext";
 function App() {
   return (
     <BrowserRouter>
-      {/* <AvatarProvider> */}
       <AuthProvider>
         <ActiveConvoProvider>
           <ResizeProvider>
             <Routes>
-              <Route path="/" element={<Login />}></Route>
+              <Route path="/" element={<StartScreen />}></Route>
+              <Route path="/login" element={<Login />}></Route>
 
               <Route path="/settings" element={<ChatMain />}></Route>
 
@@ -28,7 +29,6 @@ function App() {
           </ResizeProvider>
         </ActiveConvoProvider>
       </AuthProvider>
-      {/* </AvatarProvider> */}
     </BrowserRouter>
   );
 }
