@@ -12,18 +12,21 @@ export type TUser = {
   avatarUrl: string | null;
 };
 
-export type TAuthContext = [
-  TUser | null,
-  Dispatch<SetStateAction<TUser | null>>
-];
+// export type TAuthContext = [
+//   TUser | null,
+//   Dispatch<SetStateAction<TUser | null>>
+// ];
+export type TAuthContext = {
+  // TUser | null,
+  // Dispatch<SetStateAction<TUser | null>>
+  loading: boolean;
+  user: TUser | null;
+  isLoaded: boolean;
+  data: any;
+  error: any;
+  setUser: Dispatch<SetStateAction<TUser | null>>;
+};
 
-// export type TMessage = {
-//   id: string;
-//   content: string;
-//   convoId: string;
-//   createdAt: string;
-//   sender: { username: string; id: string };
-// };
 export type TMessage = {
   id: string;
   content: string;

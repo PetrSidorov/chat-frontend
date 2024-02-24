@@ -10,7 +10,7 @@ import {
 import { TAuthContext, TUser } from "../types.ts";
 import useFetchDB from "../hooks/useFetchDB.ts";
 
-export const AuthContext = createContext<TAuthContext>([null, () => {}]);
+export const AuthContext = createContext<TAuthContext>(null);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<TUser | null>(null);
@@ -29,10 +29,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, [data]);
 
   const value = useMemo(() => {
-    return [user, setUser, isLoaded] as [
-      TUser | null,
-      Dispatch<SetStateAction<TUser | null>>
-    ];
+    return { loading, user, isLoaded, data, error, setUser } as TAuthContext;
   }, [user]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -12,7 +12,7 @@ import isEmpty from "../utils/isEmpty";
 // convoId    String
 
 export default function useMessage() {
-  const [user, _] = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [message, setMessage] = useState<string>("");
   const [activeConvoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;

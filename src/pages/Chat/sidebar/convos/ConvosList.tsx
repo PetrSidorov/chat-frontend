@@ -10,7 +10,7 @@ export default function ConvosList() {
     useContext(AllConvoContext).convoContext;
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
   const { loading, isLoaded, data, error, setFetchData } = useFetchDB<any>();
-  const [user, _] = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     setFetchData({

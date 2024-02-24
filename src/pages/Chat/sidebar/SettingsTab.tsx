@@ -4,7 +4,7 @@ import UploadAvatar from "./UploadAvatar";
 import Avatar from "../message/Avatar";
 
 export default function SettingsTab() {
-  const [user] = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   return (
     <div>

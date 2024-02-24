@@ -16,7 +16,7 @@ import VisuallyHidden from "../../components/VisuallyHidden";
 import FullScreenLoading from "../../components/FullScreenLoading";
 
 export default function Login() {
-  const [user, setUser] = useContext<TAuthContext>(AuthContext);
+  const { user, setUser } = useContext<TAuthContext>(AuthContext);
   const [isNewUser, setIsNewUser] = useState<boolean>(false);
   // const [submitData, setSubmitData] = useState<TDataBaseRequestData | null>(
   //   null

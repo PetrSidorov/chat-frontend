@@ -11,7 +11,7 @@ import getCroppedImg from "../../../utils/getCroppedImg";
 import { AuthContext } from "../../../context/AuthProvider";
 
 function UploadAndCropAvatar() {
-  const [user, setUser] = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);

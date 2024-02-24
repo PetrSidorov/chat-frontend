@@ -12,7 +12,7 @@ import { ResizeContext } from "../../context/ResizeProvider";
 export default function ActiveConvo() {
   const [activeConvoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
-  const [user] = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { convos, unshiftMessagesToConvo, handleRemoveMessage } =
     useContext(AllConvoContext).convoContext;
   const online = useOnlineStatus();
