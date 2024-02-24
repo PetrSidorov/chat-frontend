@@ -7,30 +7,40 @@ import {
   useMemo,
   useState,
 } from "react";
-import { TAuthContext, TUser } from "../types.ts";
-import useFetchDB from "../hooks/useFetchDB.ts";
+import { TAuthContext, TUser } from "../types";
+import useFetchDB from "../hooks/useFetchDB";
 
-export const AuthContext = createContext<TAuthContext>(null);
+export const AuthContext = createContext<TAuthContext | null>(null);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<TUser | null>(null);
   const { loading, isLoaded, data, error, setFetchData } = useFetchDB<any>();
+
   useEffect(() => {
-    if (!user) {
+    if (!user && !isLoaded) {
       setFetchData({
         url: "http://localhost:3007/api/user-data",
         method: "GET",
       });
     }
-  }, []);
+  }, [user, isLoaded]);
 
   useEffect(() => {
-    setUser(data);
-  }, [data]);
+    if (error === "notoken") {
+      console.log('if (error == "notoken") {');
+      setUser(null);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (data !== user) {
+      setUser(data);
+    }
+  }, [data, user]);
 
   const value = useMemo(() => {
-    return { loading, user, isLoaded, data, error, setUser } as TAuthContext;
-  }, [user]);
+    return { loading, user, isLoaded, data, error, setUser };
+  }, [loading, user, isLoaded, data, error]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

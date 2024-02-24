@@ -5,17 +5,19 @@ import { useNavigate } from "react-router-dom";
 import FullScreenLoading from "../../components/FullScreenLoading";
 
 export default function StartScreen() {
-  const { user, setUser, isLoaded } = useContext<TAuthContext>(AuthContext);
-  const navigate = useNavigate();
+  // const { user, setUser, isLoaded, error } =
+  //   useContext<TAuthContext>(AuthContext);
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isLoaded) return;
-    if (user) {
-      navigate("/messages");
-    } else {
-      navigate("/login");
-    }
-  }, [user, navigate]);
+  // useEffect(() => {
+  //   if (!isLoaded) return;
+  //   if (user?.message == "notoken") {
+  //     console.log(user);
+  //     navigate("/login");
+  //   } else {
+  //     navigate("/messages");
+  //   }
+  // }, [user, navigate]);
 
   return <FullScreenLoading />;
 }

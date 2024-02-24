@@ -10,12 +10,9 @@ export type TUser = {
   username: string;
   email: string;
   avatarUrl: string | null;
+  message?: string;
 };
 
-// export type TAuthContext = [
-//   TUser | null,
-//   Dispatch<SetStateAction<TUser | null>>
-// ];
 export type TAuthContext = {
   // TUser | null,
   // Dispatch<SetStateAction<TUser | null>>

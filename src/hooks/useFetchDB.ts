@@ -35,6 +35,7 @@ export default function useFetchDB<T>(): {
     } = fetchData;
 
     async function fetchStuff() {
+      console.log("fetchData ", fetchData);
       setLoading(true);
       setIsLoaded(false);
       try {
@@ -49,25 +50,29 @@ export default function useFetchDB<T>(): {
         if (!response.ok) {
           // navigate("/");
         }
-
+        // TODO: i will not get response in some cases, fix that
+        const data = await response.json();
         if (response.status != 200) {
-          throw new Error(`Error with ${url} and ${method}`);
+          setError(data.message);
+          // setLoading(false);
+          // setIsLoaded(true);
+          // throw new Error(`Error with ${url} and ${method}`);
         }
 
-        const data = await response.json();
         if (!ignore) {
-          setData(data);
-          setLoading(false);
-          setIsLoaded(true);
+          setData((curr) => data);
+          // setLoading(false);
+          // setIsLoaded(true);
         }
       } catch (e) {
         if (!ignore) {
           setError(String(e));
-          throw fetchData;
+          // throw fetchData;
         }
       } finally {
         if (!ignore) {
           setLoading(false);
+          setIsLoaded(true);
         }
       }
     }
@@ -79,6 +84,5 @@ export default function useFetchDB<T>(): {
     };
   }, [fetchData]);
 
-  // return [loading, state, error, setFetchData];
   return { loading, isLoaded, data, error, setFetchData };
 }

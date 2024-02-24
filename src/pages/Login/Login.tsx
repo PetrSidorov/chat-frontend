@@ -16,7 +16,7 @@ import VisuallyHidden from "../../components/VisuallyHidden";
 import FullScreenLoading from "../../components/FullScreenLoading";
 
 export default function Login() {
-  const { user, setUser } = useContext<TAuthContext>(AuthContext);
+  const { setUser } = useContext<TAuthContext>(AuthContext);
   const [isNewUser, setIsNewUser] = useState<boolean>(false);
   // const [submitData, setSubmitData] = useState<TDataBaseRequestData | null>(
   //   null
@@ -46,11 +46,11 @@ export default function Login() {
     }
   }
 
-  useEffect(() => {
-    if (user) {
-      navigate("/messages");
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     navigate("/messages");
+  //   }
+  // }, [user]);
 
   useEffect(() => {
     if (data && data.token) {
@@ -86,7 +86,9 @@ export default function Login() {
 
   return (
     <>
-      {isLoaded ? (
+      {loading ? (
+        <FullScreenLoading />
+      ) : (
         <div className="flex justify-center content-center h-screen flex-wrap">
           <motion.div
             layout
@@ -98,9 +100,9 @@ export default function Login() {
                 className={
                   isNewUser
                     ? `bg-blue-500 hover:bg-blue-700 text-white font-bold
-            py-2 px-4 rounded focus:outline-none focus:shadow-outline`
+          py-2 px-4 rounded focus:outline-none focus:shadow-outline`
                     : `font-bold align-baseline
-            text-blue-500 hover:text-blue-800 py-2 px-4 `
+          text-blue-500 hover:text-blue-800 py-2 px-4 `
                 }
                 type="button"
               >
@@ -111,9 +113,9 @@ export default function Login() {
                 className={
                   !isNewUser
                     ? `bg-blue-500 hover:bg-blue-700 text-white font-bold
-            py-2 px-4 rounded focus:outline-none focus:shadow-outline`
+          py-2 px-4 rounded focus:outline-none focus:shadow-outline`
                     : `font-bold align-baseline
-            text-blue-500 hover:text-blue-800 py-2 px-4 `
+          text-blue-500 hover:text-blue-800 py-2 px-4 `
                 }
                 type="button"
               >
@@ -162,8 +164,8 @@ export default function Login() {
                 type="password"
               />
               {/* <p className="text-red-500 text-xs italic mb-3">
-              Please choose a password.
-            </p> */}
+            Please choose a password.
+          </p> */}
               <AnimatePresence>
                 {isNewUser && (
                   <LoginFormField
@@ -175,7 +177,7 @@ export default function Login() {
                     type="password"
                   />
                 )}
-                {formData.password !== formData.verifyPassword && (
+                {formData.password !== formData.verifyPassword && isNewUser && (
                   <p className="text-red-500 text-xs italic mb-3">
                     Passwords mismatch.
                   </p>
@@ -184,14 +186,14 @@ export default function Login() {
               <div className="flex items-center justify-between">
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold
-            py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   type="submit"
                 >
                   Let's go!
                 </button>
                 <a
                   className="inline-block align-baseline font-bold text-sm
-            text-blue-500 hover:text-blue-800"
+          text-blue-500 hover:text-blue-800"
                   href="#"
                 >
                   Forgot Password?
@@ -200,8 +202,6 @@ export default function Login() {
             </form>
           </motion.div>
         </div>
-      ) : (
-        <FullScreenLoading />
       )}
     </>
   );

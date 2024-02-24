@@ -4,6 +4,7 @@ import { AllConvoContext } from "../../../../context/AllConvoContext";
 import { AuthContext } from "../../../../context/AuthProvider";
 import useFetchDB from "../../../../hooks/useFetchDB";
 import ConvoPreview from "./ConvoPreview";
+import { useNavigate } from "react-router-dom";
 
 export default function ConvosList() {
   const { convos, unshiftMessagesToConvo, initConvo } =
@@ -11,6 +12,7 @@ export default function ConvosList() {
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
   const { loading, isLoaded, data, error, setFetchData } = useFetchDB<any>();
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setFetchData({
@@ -18,6 +20,12 @@ export default function ConvosList() {
       url: "http://localhost:3007/api/convo/last-ten-convos-with-ten-messages",
     });
   }, []);
+
+  // useEffect(() => {
+  //   if (error == "notoken") {
+  //     navigate("/login");
+  //   }
+  // }, [error]);
 
   useEffect(() => {
     if (!data || !user) return;

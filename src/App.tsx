@@ -6,6 +6,7 @@ import AuthProvider from "./context/AuthProvider";
 import AvatarProvider from "./context/AvatarProvider";
 import ResizeProvider from "./context/ResizeProvider";
 import ActiveConvoProvider from "./context/AllConvoContext";
+import AuthGuard from "./components/AuthGuard";
 // import NavigationProvider from "./context/NavigationContext";
 
 function App() {
@@ -15,16 +16,19 @@ function App() {
         <ActiveConvoProvider>
           <ResizeProvider>
             <Routes>
-              <Route path="/" element={<StartScreen />}></Route>
-              <Route path="/login" element={<Login />}></Route>
+              <Route element={<AuthGuard />}>
+                <Route path="/" element={<StartScreen />}></Route>
 
-              <Route path="/settings" element={<ChatMain />}></Route>
+                <Route path="/login" element={<Login />}></Route>
 
-              <Route path="/friends" element={<ChatMain />}></Route>
-              <Route path="/messages" element={<ChatMain />}></Route>
+                <Route path="/settings" element={<ChatMain />}></Route>
 
-              <Route path="/messages" element={<ChatMain />}></Route>
-              <Route path="/settings" element={<ChatMain />}></Route>
+                <Route path="/friends" element={<ChatMain />}></Route>
+                <Route path="/messages" element={<ChatMain />}></Route>
+
+                <Route path="/messages" element={<ChatMain />}></Route>
+                <Route path="/settings" element={<ChatMain />}></Route>
+              </Route>
             </Routes>
           </ResizeProvider>
         </ActiveConvoProvider>
