@@ -7,7 +7,7 @@ import FullScreenLoading from "../../components/FullScreenLoading";
 export default function StartScreen() {
   // const { user, setUser, isLoaded, error } =
   //   useContext<TAuthContext>(AuthContext);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // useEffect(() => {
   //   if (!isLoaded) return;
@@ -18,6 +18,6 @@ export default function StartScreen() {
   //     navigate("/messages");
   //   }
   // }, [user, navigate]);
-
+  navigate("/messages");
   return <FullScreenLoading />;
 }

@@ -17,7 +17,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const { loading, isLoaded, data, error, setFetchData } = useFetchDB<any>();
 
   useEffect(() => {
-    if (!user && !isLoaded) {
+    if (!user && !isLoaded && !loading) {
       setFetchData({
         url: "http://localhost:3007/api/user-data",
         method: "GET",
@@ -27,12 +27,12 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (error === "notoken") {
-      console.log('if (error == "notoken") {');
       setUser(null);
     }
   }, [error]);
 
   useEffect(() => {
+    // TODO: should onject is or something
     if (data !== user) {
       setUser(data);
     }

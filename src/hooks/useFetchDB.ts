@@ -14,7 +14,6 @@ export default function useFetchDB<T>(): {
   const [data, setData] = useState<T | null>(null);
   const [fetchData, setFetchData] = useState<TDataBaseRequestData | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (fetchData == null) {

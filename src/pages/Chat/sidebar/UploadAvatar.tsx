@@ -74,8 +74,8 @@ function UploadAndCropAvatar() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         setUser((userInfo) => {
+          console.log(userInfo);
           if (userInfo) {
             return { ...userInfo, avatarUrl: data.url };
           }
