@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { AllConvoContext } from "../../context/AllConvoContext";
 import { socket } from "../../utils/socket";
@@ -19,6 +19,7 @@ export default function ActiveConvo() {
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { mobileView } = useContext(ResizeContext);
+  const [blockOffset, setBlockOffset] = useState(false);
 
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
@@ -27,6 +28,7 @@ export default function ActiveConvo() {
       currMessagesLength: convos?.[activeConvoId]?.messages.length,
       convoId: activeConvoId,
     });
+    setBlockOffset(true);
   }
 
   const [observeRef, inView] = useInView({
@@ -36,6 +38,7 @@ export default function ActiveConvo() {
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView();
     if (!scrollContainerRef.current) return;
+    if (blockOffset) return;
     const savedScrollPosition = scrollContainerRef.current.scrollTop;
 
     socket.on("msg:send-offset", (data) => {
@@ -46,6 +49,7 @@ export default function ActiveConvo() {
       unshiftMessagesToConvo({ id: data.convoId, newMessages: data.messages });
       scrollContainerRef.current.scrollTop = savedScrollPosition;
     });
+    setBlockOffset(false);
   }, [activeConvoId]);
 
   useEffect(() => {
