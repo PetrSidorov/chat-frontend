@@ -56,11 +56,11 @@ export default function ActiveConvo() {
     endOfMessagesRef.current?.scrollIntoView();
   }, [convos]);
 
-  function generateRemoveMessage(convoId: string) {
-    return function removeMessage(messageIdToDelete: string) {
-      handleRemoveMessage(convoId, messageIdToDelete);
-    };
-  }
+  // function generateRemoveMessage(convoId: string) {
+  //   return function removeMessage(messageIdToDelete: string) {
+  //     handleRemoveMessage(convoId, messageIdToDelete);
+  //   };
+  // }
 
   return (
     <div
@@ -96,7 +96,7 @@ export default function ActiveConvo() {
           }}
           activeConvoId={activeConvoId}
           receiver={convos?.[activeConvoId].receiver}
-          handleRemoveMessage={generateRemoveMessage(activeConvoId)}
+          handleRemoveMessage={handleRemoveMessage}
         />
       ) : (
         <p>Select convo to start messaging</p>

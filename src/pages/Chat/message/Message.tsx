@@ -1,9 +1,5 @@
-import { MouseEventHandler, SyntheticEvent, useEffect, useState } from "react";
-import { generateFetchAvatar } from "../../../utils/fetchAvatar";
-import Avatar from "./Avatar";
-import MessageContextMenu from "../sidebar/convos/MessageContextMenu";
-import HandleClickOutside from "../../../hooks/useClickOutside";
 import { motion } from "framer-motion";
+import Avatar from "./Avatar";
 // import { ActiveConvoContext } from "../../context/ActiveConvoContext";
 // import { useContext, useEffect } from "react";
 

@@ -52,6 +52,16 @@ const MessageList = forwardRef<
       });
     }
 
+    function closePopup() {
+      setPopupState((curr) => {
+        return { ...curr, show: false };
+      });
+    }
+
+    function handleRemoveMessageAndClose() {
+      handleRemoveMessage();
+    }
+
     const messageList = messages.map(
       ({ content, createdAt, sender, id }, i: number) => {
         const yours = sender.id == currentUser.id;
@@ -64,7 +74,6 @@ const MessageList = forwardRef<
             {i === 3 ? <div ref={ref} /> : null}
             <div
               onContextMenu={(e) => togglePopup(yours, id, e)}
-              onClick={(e) => togglePopup(yours, id, e, false)}
               id={id}
               className={`${alignment} ${
                 fullWidthMessagesInActiveConvo ? "w-full" : "w-2/3"
@@ -88,7 +97,7 @@ const MessageList = forwardRef<
           <HandleClickOutside
             callback={() =>
               setPopupState((curr) => {
-                return { ...curr, show: false };
+                return { ...curr, show: !curr.show };
               })
             }
           >

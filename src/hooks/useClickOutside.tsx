@@ -27,5 +27,9 @@ export default function HandleClickOutside({
     };
   }, []);
 
-  return <div ref={myDivRef}>{children}</div>;
+  return (
+    <div id="myDivRef" ref={myDivRef}>
+      {children}
+    </div>
+  );
 }
