@@ -12,14 +12,14 @@ export default function Avatar({
       {avatarUrl ? (
         <motion.img
           layout
-          className="w-[100px] h-[100px] border-black border-2 rounded-full"
+          className="w-[100px] h-[100px] border-black border-2 rounded-full max-w-[100%]"
           src={avatarUrl}
           alt={username}
           style={{ objectFit: "cover" }}
         />
       ) : (
         <CircleUserRound
-          className="flex-none mx-auto"
+          className="flex-none mx-auto max-w-[100%]"
           size={100}
           strokeWidth={1}
         />
