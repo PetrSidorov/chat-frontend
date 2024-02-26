@@ -32,11 +32,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, [error]);
 
   useEffect(() => {
-    // TODO: should onject is or something
-    if (data !== user) {
-      setUser(data);
-    }
-  }, [data, user]);
+    setUser(data);
+  }, [data]);
 
   const value = useMemo(() => {
     return { loading, user, isLoaded, data, error, setUser };
