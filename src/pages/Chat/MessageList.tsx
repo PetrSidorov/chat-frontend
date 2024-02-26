@@ -2,7 +2,7 @@ import React, { forwardRef, useContext, useEffect, useState } from "react";
 import Message from "./message/Message";
 import { TMessage, TUser, Tactors } from "../../types";
 import MessageContextMenu from "./sidebar/convos/MessageContextMenu";
-import HandleClickOutside from "../../hooks/useClickOutside";
+import HandleClickOutside from "../../hooks/ClickOutsideHandler";
 import { ResizeContext } from "../../context/ResizeProvider";
 
 const MessageList = forwardRef<
@@ -58,8 +58,10 @@ const MessageList = forwardRef<
       });
     }
 
-    function handleRemoveMessageAndClose() {
-      handleRemoveMessage();
+    function handleRemoveMessageAndClose(activeConvoId: string, id: string) {
+      console.log("hi again");
+      handleRemoveMessage(activeConvoId, id);
+      closePopup();
     }
 
     const messageList = messages.map(
@@ -84,6 +86,7 @@ const MessageList = forwardRef<
                 createdAt={createdAt}
                 username={sender.username}
                 avatarUrl={avatarUrl}
+                id={id}
               />
             </div>
           </React.Fragment>
@@ -95,6 +98,7 @@ const MessageList = forwardRef<
       <>
         {popupState.show && (
           <HandleClickOutside
+            popupState={popupState}
             callback={() =>
               setPopupState((curr) => {
                 return { ...curr, show: !curr.show };
@@ -103,7 +107,7 @@ const MessageList = forwardRef<
           >
             <MessageContextMenu
               yours={popupState.yours}
-              handleRemoveMessage={handleRemoveMessage}
+              handleRemoveMessage={handleRemoveMessageAndClose}
               id={popupState.id}
               top={popupState.top}
               left={popupState.left}

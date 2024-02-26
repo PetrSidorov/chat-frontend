@@ -9,12 +9,14 @@ export default function Message({
   username,
   avatarUrl,
   showOnlyAvatars = false,
+  id,
 }: {
   content: string;
   createdAt: string;
   username: string;
   avatarUrl: string | null;
   showOnlyAvatars?: boolean;
+  id: string;
 }) {
   const date = createdAt ? new Date(createdAt).toDateString() : "";
 
@@ -35,6 +37,7 @@ export default function Message({
         <div className="ml-2 w-full overflow-x-hidden">
           <div className="flex justify-between mb-3">
             <span>{username}</span> <span>{date}</span>
+            {/* <span>{id}</span> */}
           </div>
           <p>{content}</p>
         </div>

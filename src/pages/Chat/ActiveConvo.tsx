@@ -21,6 +21,13 @@ export default function ActiveConvo() {
   const { mobileView } = useContext(ResizeContext);
   const [blockOffset, setBlockOffset] = useState(false);
 
+  useEffect(() => {
+    console.log(
+      "convos?.[activeConvoId]?.messages.length ",
+      convos?.[activeConvoId]?.messages.length
+    );
+  }, [convos]);
+
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
 
@@ -28,7 +35,7 @@ export default function ActiveConvo() {
       currMessagesLength: convos?.[activeConvoId]?.messages.length,
       convoId: activeConvoId,
     });
-    setBlockOffset(true);
+    // setBlockOffset(true);
   }
 
   const [observeRef, inView] = useInView({
@@ -38,7 +45,7 @@ export default function ActiveConvo() {
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView();
     if (!scrollContainerRef.current) return;
-    if (blockOffset) return;
+    // if (blockOffset) return;
     const savedScrollPosition = scrollContainerRef.current.scrollTop;
 
     socket.on("msg:send-offset", (data) => {
@@ -49,11 +56,13 @@ export default function ActiveConvo() {
       unshiftMessagesToConvo({ id: data.convoId, newMessages: data.messages });
       scrollContainerRef.current.scrollTop = savedScrollPosition;
     });
-    setBlockOffset(false);
+    // setBlockOffset(false);
   }, [activeConvoId]);
 
   useEffect(() => {
-    endOfMessagesRef.current?.scrollIntoView();
+    // TODO: i need scroll into view but on new message
+    // (maybe on some other cases too)
+    // endOfMessagesRef.current?.scrollIntoView();
   }, [convos]);
 
   // function generateRemoveMessage(convoId: string) {
@@ -65,7 +74,7 @@ export default function ActiveConvo() {
   return (
     <div
       ref={scrollContainerRef}
-      className="flex flex-col flex-grow p-4 overflow-y-auto"
+      className="flex flex-col flex-grow p-4 overflow-y-auto overflow-x-hidden"
     >
       {activeConvoId && (
         <div className="w-full h-10 bg-slate-600 fixed -mt-4 -ml-4 z-1 flex items-center">

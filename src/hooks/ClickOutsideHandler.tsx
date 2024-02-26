@@ -1,11 +1,19 @@
 import { useRef, useEffect, ReactElement } from "react";
 
-export default function HandleClickOutside({
+export default function ClickOutsideHandler({
   children,
   callback,
+  popupState,
 }: {
   children: ReactElement;
   callback: Function;
+  popupState: {
+    show: boolean;
+    top: number;
+    left: number;
+    id: string;
+    yours: boolean;
+  };
 }) {
   const myDivRef = useRef<HTMLDivElement>(null);
 
@@ -13,19 +21,19 @@ export default function HandleClickOutside({
     const handleClickOutside = (event: MouseEvent) => {
       if (
         myDivRef.current &&
-        !myDivRef.current.contains(event.target as Node)
+        !myDivRef.current.contains(event.target as Node) &&
+        popupState.show
       ) {
         callback();
       }
     };
 
-    // document.addEventListener("click", handleClickOutside);
-    // document.addEventListener("contextmenu", handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
+
     return () => {
       document.removeEventListener("click", handleClickOutside);
-      document.removeEventListener("contextmenu", handleClickOutside);
     };
-  }, []);
+  }, [popupState]);
 
   return (
     <div id="myDivRef" ref={myDivRef}>

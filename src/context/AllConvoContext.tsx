@@ -1,7 +1,8 @@
-import { ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useEffect, useState } from "react";
 import { TConvoContext, TConvos, TMessage } from "../types";
 import useConvoSocketPoll from "../hooks/useConvoSocketPoll";
-
+import useSockets from "../hooks/useSockets";
+// TODO: ask Artem if this could be managed in a less ugly way
 export const AllConvoContext = createContext<TConvoContext>({
   activeConvoId: [null, () => {}],
   socketPoll: [null, () => {}],
@@ -26,6 +27,16 @@ export default function ActiveConvoProvider({
   const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
   const [_, addConvoToSocketPoll] = useConvoSocketPoll();
 
+  const {
+    socketLoading,
+    data: deleteMessageIdResponse,
+    emit,
+  } = useSockets({
+    emitFlag: "msg:delete",
+    onFlag: "msg:delete:return",
+    initialState: "",
+  });
+
   async function initConvo(data: TConvos) {
     setConvos(data);
     const convoIdArray = Object.keys(data);
@@ -37,7 +48,33 @@ export default function ActiveConvoProvider({
     setActiveConvoId(id);
   }
 
+  useEffect(() => {
+    if (deleteMessageIdResponse) {
+      const { id: idToRemove, convoId } = deleteMessageIdResponse as {
+        id: string;
+        convoId: string;
+      };
+
+      if (!convos || !convoId || !idToRemove) return;
+      // convos[convoId][id];
+      setConvos((currentConvos) => {
+        const updatedConvos = { ...currentConvos };
+        const convo = updatedConvos[convoId];
+        if (!convo || !convo.messages) return currentConvos;
+        const filteredMessages = convo.messages.filter(
+          ({ id }) => id != idToRemove
+        );
+        updatedConvos[convoId].messages = filteredMessages;
+        return updatedConvos;
+      });
+    }
+  }, [deleteMessageIdResponse]);
+
   function handleRemoveMessage(convoId: string, messageIdToDelete: string) {
+    // TODO: if there's no connection we should wait
+    // and excecute deletion after the connection is established
+    // also there should be a spinner or a message or something that indicates,
+    // that the message will be indeed deleted
     setConvos((currentConvos) => {
       const updatedConvos = { ...currentConvos };
       if (
@@ -53,6 +90,8 @@ export default function ActiveConvoProvider({
 
       return updatedConvos;
     });
+
+    emit(messageIdToDelete);
   }
 
   function pushNewMessagesToConvo(convoId: string, messages: TMessage[]) {
