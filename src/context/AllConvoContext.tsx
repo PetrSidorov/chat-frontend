@@ -75,6 +75,7 @@ export default function ActiveConvoProvider({
     // and excecute deletion after the connection is established
     // also there should be a spinner or a message or something that indicates,
     // that the message will be indeed deleted
+
     setConvos((currentConvos) => {
       const updatedConvos = { ...currentConvos };
       if (
@@ -90,7 +91,6 @@ export default function ActiveConvoProvider({
 
       return updatedConvos;
     });
-
     emit(messageIdToDelete);
   }
 

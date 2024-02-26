@@ -35,7 +35,7 @@ export default function ActiveConvo() {
       currMessagesLength: convos?.[activeConvoId]?.messages.length,
       convoId: activeConvoId,
     });
-    // setBlockOffset(true);
+    setBlockOffset(true);
   }
 
   const [observeRef, inView] = useInView({
@@ -45,7 +45,7 @@ export default function ActiveConvo() {
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView();
     if (!scrollContainerRef.current) return;
-    // if (blockOffset) return;
+    if (blockOffset) return;
     const savedScrollPosition = scrollContainerRef.current.scrollTop;
 
     socket.on("msg:send-offset", (data) => {
@@ -56,7 +56,7 @@ export default function ActiveConvo() {
       unshiftMessagesToConvo({ id: data.convoId, newMessages: data.messages });
       scrollContainerRef.current.scrollTop = savedScrollPosition;
     });
-    // setBlockOffset(false);
+    setBlockOffset(false);
   }, [activeConvoId]);
 
   useEffect(() => {

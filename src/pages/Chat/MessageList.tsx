@@ -4,6 +4,7 @@ import { TMessage, TUser, Tactors } from "../../types";
 import MessageContextMenu from "./sidebar/convos/MessageContextMenu";
 import HandleClickOutside from "../../hooks/ClickOutsideHandler";
 import { ResizeContext } from "../../context/ResizeProvider";
+import { AnimatePresence } from "framer-motion";
 
 const MessageList = forwardRef<
   HTMLDivElement,
@@ -27,6 +28,10 @@ const MessageList = forwardRef<
       yours: false,
     };
     const [popupState, setPopupState] = useState(initialPopupState);
+    // animation related states
+    const [messageToRemove, setMessageToRemove] = useState("");
+
+    // animation related states
     const { fullWidthMessagesInActiveConvo } = useContext(ResizeContext);
 
     useEffect(() => {
@@ -59,8 +64,11 @@ const MessageList = forwardRef<
     }
 
     function handleRemoveMessageAndClose(activeConvoId: string, id: string) {
-      console.log("hi again");
-      handleRemoveMessage(activeConvoId, id);
+      setMessageToRemove(id);
+      setTimeout(() => {
+        handleRemoveMessage(activeConvoId, id);
+      }, 0);
+
       closePopup();
     }
 
@@ -70,6 +78,10 @@ const MessageList = forwardRef<
 
         const avatarUrl = yours ? currentUser.avatarUrl : receiver.avatarUrl;
         const alignment = yours ? "self-end" : "self-start";
+        let animationType = "";
+        if (id === messageToRemove) {
+          animationType = "remove";
+        }
 
         return (
           <React.Fragment key={id}>
@@ -86,7 +98,7 @@ const MessageList = forwardRef<
                 createdAt={createdAt}
                 username={sender.username}
                 avatarUrl={avatarUrl}
-                id={id}
+                animationType={animationType}
               />
             </div>
           </React.Fragment>
@@ -114,7 +126,7 @@ const MessageList = forwardRef<
             />
           </HandleClickOutside>
         )}
-        {messageList}
+        <AnimatePresence>{messageList}</AnimatePresence>
       </>
     );
   }
