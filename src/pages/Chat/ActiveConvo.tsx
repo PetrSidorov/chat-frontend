@@ -21,13 +21,6 @@ export default function ActiveConvo() {
   const { mobileView } = useContext(ResizeContext);
   const [blockOffset, setBlockOffset] = useState(false);
 
-  useEffect(() => {
-    console.log(
-      "convos?.[activeConvoId]?.messages.length ",
-      convos?.[activeConvoId]?.messages.length
-    );
-  }, [convos]);
-
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
 

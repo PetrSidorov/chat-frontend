@@ -29,7 +29,6 @@ export default function ConvosList() {
 
   useEffect(() => {
     if (!data || !user) return;
-    console.log("data ", data);
     initConvo(data);
   }, [data, user]);
 
@@ -40,6 +39,9 @@ export default function ConvosList() {
 
       return (
         <div
+          // className="h-[132px]"
+          // className="h-[132px] overflow-hidden whitespace-nowrap overflow-ellipsis w-full"
+          className="h-auto max-h-[132px] overflow-hidden w-full"
           key={id}
           onClick={() => {
             setActiveConvoId(id);

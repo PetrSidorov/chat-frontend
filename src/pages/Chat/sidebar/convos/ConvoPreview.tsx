@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { TMessage, TUser } from "../../../../types";
+import { TCSSclampLines, TMessage, TUser } from "../../../../types";
 import Message from "../../message/Message";
 import IsOnline from "./IsOnline";
 import { ResizeContext } from "../../../../context/ResizeProvider";
@@ -15,6 +15,12 @@ export default function ConvoPreview({
 }) {
   const notEmptyConvo = messages && messages.length > 0;
   const { showOnlyAvatars } = useContext(ResizeContext);
+  const style: TCSSclampLines = {
+    display: "-webkit-box",
+    WebkitBoxOrient: "vertical",
+    WebkitLineClamp: 2,
+    overflow: "hidden",
+  };
 
   if (notEmptyConvo) {
     let { content, createdAt, sender } = messages[messages.length - 1];
@@ -25,6 +31,7 @@ export default function ConvoPreview({
     } else {
       trimmedContent = content;
     }
+
     return (
       <>
         {/* {online && (
@@ -38,6 +45,7 @@ export default function ConvoPreview({
           username={receiver.username}
           avatarUrl={receiver.avatarUrl}
           showOnlyAvatars={showOnlyAvatars}
+          style={style}
         />
       </>
     );
@@ -49,6 +57,7 @@ export default function ConvoPreview({
         username={receiver.username}
         avatarUrl={receiver.avatarUrl}
         showOnlyAvatars={showOnlyAvatars}
+        style={style}
       />
     );
   }

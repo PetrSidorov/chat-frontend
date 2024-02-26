@@ -79,7 +79,7 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
   }
 
   function switchToMobile(setter: boolean) {
-    console.log("setter ", setter, activeConvoId);
+    // console.log("setter ", setter, activeConvoId);
     setMobileView(setter);
     if (activeConvoId && setter) {
       // hideleftpanel

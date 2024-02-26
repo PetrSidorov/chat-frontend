@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import Avatar from "./Avatar";
 import { animations } from "../../../utils/animations";
+import { TCSSclampLines } from "../../../types";
 // import { ActiveConvoContext } from "../../context/ActiveConvoContext";
 // import { useContext, useEffect } from "react";
 
@@ -11,13 +12,16 @@ export default function Message({
   avatarUrl,
   showOnlyAvatars = false,
   animationType = "enter",
-}: {
+  style,
+}: //style,
+{
   content: string;
   createdAt: string;
   username: string;
   avatarUrl: string | null;
   showOnlyAvatars?: boolean;
   animationType?: string;
+  style?: TCSSclampLines;
 }) {
   const date = createdAt ? new Date(createdAt).toDateString() : "";
 
@@ -26,7 +30,7 @@ export default function Message({
 
   // const animationType = "enter";
   const animation = animations[animationType] || animations.enter;
-
+  // console.log("style ", style);
   return (
     <motion.li
       className="flex items-start m-2 p-4 bg-gray-200"
@@ -42,7 +46,7 @@ export default function Message({
           <div className="flex justify-between mb-3">
             <span>{username}</span> <span>{date}</span>
           </div>
-          <p>{content}</p>
+          <p style={style}>{content}</p>
         </div>
       )}
     </motion.li>

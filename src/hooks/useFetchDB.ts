@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { TDataBaseRequestData } from "../types";
-import { useNavigate } from "react-router-dom";
 
 export default function useFetchDB<T>(): {
   loading: boolean;
@@ -34,7 +33,6 @@ export default function useFetchDB<T>(): {
     } = fetchData;
 
     async function fetchStuff() {
-      console.log("fetchData ", fetchData);
       setLoading(true);
       setIsLoaded(false);
       try {

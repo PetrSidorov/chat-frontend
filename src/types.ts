@@ -115,3 +115,7 @@ export type TDataBaseRequestData = {
 };
 
 // export TNavigationContext = {[string | null, Dispatch<SetStateAction<string | null>>]}
+export type TCSSclampLines = React.CSSProperties & {
+  WebkitBoxOrient?: string;
+  WebkitLineClamp?: number;
+};
