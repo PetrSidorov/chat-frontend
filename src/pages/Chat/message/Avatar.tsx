@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { CircleUserRound } from "lucide-react";
 export default function Avatar({
   avatarUrl,
@@ -9,9 +10,13 @@ export default function Avatar({
   return (
     <>
       {avatarUrl ? (
-        <div className="w-[100px] flex-none h-[100px] border border-black rounded-full overflow-hidden mx-auto">
-          <img className="w-[100px]" src={avatarUrl} alt={username} />
-        </div>
+        <motion.img
+          layout
+          className="w-[100px] h-[100px] border-black border-2 rounded-full"
+          src={avatarUrl}
+          alt={username}
+          style={{ objectFit: "cover" }}
+        />
       ) : (
         <CircleUserRound
           className="flex-none mx-auto"

@@ -9,6 +9,7 @@ import {
   useRef,
 } from "react";
 import { AllConvoContext } from "./AllConvoContext";
+import { debounce } from "lodash";
 
 type TinitialContext = {
   showOnlyAvatars: boolean;
@@ -52,26 +53,28 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const [leftPanelWidth, rightPanelWidth] = sizes;
-    const leftNarrow = leftPanelWidth < 17;
+    const leftNarrow = leftPanelWidth < 20;
     const rightNarrow = rightPanelWidth < 35;
-    // console.log("sizes ", sizes);
-    setFullWidthMessagesInActiveConvo((currentValue) => {
-      if (rightNarrow && !currentValue) {
-        return true;
-      } else if (!rightNarrow && currentValue && !mobileView) {
-        return false;
-      }
-      return currentValue;
-    });
+    setFullWidthMessagesInActiveConvo(rightNarrow);
+    setShowOnlyAvatars(leftNarrow);
 
-    setShowOnlyAvatars((currentValue) => {
-      if (leftNarrow && !currentValue) {
-        return true;
-      } else if (!leftNarrow && currentValue) {
-        return false;
-      }
-      return currentValue;
-    });
+    // setFullWidthMessagesInActiveConvo((currentValue) => {
+    //   if (rightNarrow && !currentValue) {
+    //     return true;
+    //   } else if (!rightNarrow && currentValue && !mobileView) {
+    //     return false;
+    //   }
+    //   return currentValue;
+    // });
+
+    // setShowOnlyAvatars((currentValue) => {
+    //   if (leftNarrow && !currentValue) {
+    //     return true;
+    //   } else if (!leftNarrow && currentValue) {
+    //     return false;
+    //   }
+    //   return currentValue;
+    // });
   }, [sizes]);
 
   function handleDrag(newSizes: [number, number]) {
@@ -81,11 +84,11 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
   function switchToMobile(setter: boolean) {
     // console.log("setter ", setter, activeConvoId);
     setMobileView(setter);
-    if (activeConvoId && setter) {
-      // hideleftpanel
-      // setSizes([0, 100]);
-      setFullWidthMessagesInActiveConvo(true);
-    }
+    // if (activeConvoId && setter) {
+    //   // hideleftpanel
+    //   // setSizes([0, 100]);
+    //   setFullWidthMessagesInActiveConvo(true);
+    // }
 
     if (!setter) {
       setSizes([35, 65]);
@@ -93,16 +96,19 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    function handleResize() {
+    const handleResize = debounce(() => {
       if (window.innerWidth < 700 && window.innerWidth > 500) {
+        console.log("window.innerWidth < 700 && window.innerWidth > 500");
         setShowOnlyAvatars(true);
         setFullWidthMessagesInActiveConvo(true);
         switchToMobile(false);
       } else if (window.innerWidth > 701) {
+        console.log("window.innerWidth > 701");
         setShowOnlyAvatars(false);
-        // setFullWidthMessagesInActiveConvo(false);
+        setFullWidthMessagesInActiveConvo(false);
         switchToMobile(false);
       } else if (window.innerWidth < 500) {
+        console.log("window.innerWidth < 500");
         switchToMobile(true);
         if (activeConvoId) {
           setSizes([0, 100]);
@@ -110,11 +116,14 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
           setSizes([100, 0]);
         }
       }
-    }
+    }, 200);
     window.addEventListener("resize", handleResize);
     handleResize();
 
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      handleResize.cancel();
+    };
   }, [activeConvoId]);
 
   // useEffect(() => {

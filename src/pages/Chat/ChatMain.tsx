@@ -18,13 +18,6 @@ export default function ChatMain() {
   const leftPanelRef = useRef(null);
   const rightPanelRef = useRef(null);
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   if (!user) {
-  //     navigate("/login");
-  //   }
-  // }, [user]);
 
   const {
     // showOnlyAvatars,
