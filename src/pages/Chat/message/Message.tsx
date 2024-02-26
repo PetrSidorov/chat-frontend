@@ -43,8 +43,9 @@ export default function Message({
       <Avatar avatarUrl={avatarUrl} />
       {!showOnlyAvatars && (
         <div className="ml-2 w-full overflow-x-hidden">
-          <div className="flex justify-between mb-3">
-            <span>{username}</span> <span>{date}</span>
+          <div className="flex justify-between mb-3 flex-nowrap">
+            <span className="mr-2">{username}</span>
+            <span className="whitespace-nowrap">{date}</span>
           </div>
           <p style={style}>{content}</p>
         </div>
