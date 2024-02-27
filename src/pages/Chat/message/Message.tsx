@@ -26,7 +26,7 @@ export default function Message({
     ? new Date(createdAt).toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
-        hour12: false, // Use 24-hour time without AM/PM
+        hour12: false,
       })
     : "";
 
@@ -35,7 +35,10 @@ export default function Message({
 
   // const animationType = "enter";
   const animation = animations[animationType] || animations.enter;
+  const showAvatarAndUsername = prevMessageSender != username;
+  // console.log("showAvatarAndUsername ", showAvatarAndUsername);
   // console.log("style ", style);
+  // console.log("username ", username);
   return (
     <motion.li
       className={`flex m-2 p-4 bg-gray-200 items-start justify-center`}
@@ -45,7 +48,7 @@ export default function Message({
       exit={animation.exit}
       transition={animation.transition}
     >
-      {prevMessageSender != username && (
+      {showAvatarAndUsername && (
         <Avatar
           showOnlyAvatars={showOnlyAvatars}
           username={username}
@@ -55,9 +58,7 @@ export default function Message({
       {!showOnlyAvatars && (
         <div className={`ml-2 w-full ${style ? "overflow-x-hidden" : ""}`}>
           <div className="flex justify-between mb-3 flex-nowrap">
-            {prevMessageSender != username && (
-              <span className="mr-2">{username}</span>
-            )}
+            {showAvatarAndUsername && <span className="mr-2">{username}</span>}
             <span className="whitespace-nowrap ml-auto">{date}</span>
           </div>
           <p style={style}>{content}</p>

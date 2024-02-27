@@ -36,7 +36,7 @@ export default function ConvosList() {
     convos &&
     Object.entries(convos)?.map((convo: any) => {
       const [id, data] = convo;
-
+      console.log(data);
       return (
         <div
           // className="h-[132px]"
