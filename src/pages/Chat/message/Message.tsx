@@ -11,6 +11,7 @@ export default function Message({
   showOnlyAvatars = false,
   animationType = "enter",
   style,
+  prevMessageSender,
 }: {
   content: string;
   createdAt: string;
@@ -19,8 +20,15 @@ export default function Message({
   showOnlyAvatars?: boolean;
   animationType?: string;
   style?: TCSSclampLines;
+  prevMessageSender: string;
 }) {
-  const date = createdAt ? new Date(createdAt).toDateString() : "";
+  const date = createdAt
+    ? new Date(createdAt).toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false, // Use 24-hour time without AM/PM
+      })
+    : "";
 
   // TODO: ${alignment} ${classes} - gives undefined undefined - fix
   // TODO:   text-overflow: ellipsis (maybe);
@@ -37,12 +45,14 @@ export default function Message({
       exit={animation.exit}
       transition={animation.transition}
     >
-      <Avatar avatarUrl={avatarUrl} />
+      {prevMessageSender != username && <Avatar avatarUrl={avatarUrl} />}
       {!showOnlyAvatars && (
         <div className={`ml-2 w-full ${style ? "overflow-x-hidden" : ""}`}>
           <div className="flex justify-between mb-3 flex-nowrap">
-            <span className="mr-2">{username}</span>
-            <span className="whitespace-nowrap">{date}</span>
+            {prevMessageSender != username && (
+              <span className="mr-2">{username}</span>
+            )}
+            <span className="whitespace-nowrap ml-auto">{date}</span>
           </div>
           <p style={style}>{content}</p>
         </div>

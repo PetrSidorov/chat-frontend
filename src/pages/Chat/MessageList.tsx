@@ -5,6 +5,8 @@ import MessageContextMenu from "./sidebar/convos/MessageContextMenu";
 import HandleClickOutside from "../../hooks/ClickOutsideHandler";
 import { ResizeContext } from "../../context/ResizeProvider";
 import { AnimatePresence } from "framer-motion";
+import isSameDayAsPreviousMessage from "../../utils/isSameDayAsPreviousMessage";
+import MonthAndYear from "./message/MonthAndYear";
 
 const MessageList = forwardRef<
   HTMLDivElement,
@@ -73,7 +75,7 @@ const MessageList = forwardRef<
     }
 
     const messageList = messages.map(
-      ({ content, createdAt, sender, id }, i: number) => {
+      ({ content, createdAt, sender, id }, i: number, messages) => {
         const yours = sender.id == currentUser.id;
 
         const avatarUrl = yours ? currentUser.avatarUrl : receiver.avatarUrl;
@@ -86,6 +88,10 @@ const MessageList = forwardRef<
         return (
           <React.Fragment key={id}>
             {i === 3 ? <div ref={ref} /> : null}
+            {!isSameDayAsPreviousMessage(
+              createdAt,
+              messages[i - 1]?.createdAt || ""
+            ) && <MonthAndYear createdAt={createdAt} />}
             <div
               onContextMenu={(e) => togglePopup(yours, id, e)}
               id={id}
@@ -99,6 +105,7 @@ const MessageList = forwardRef<
                 username={sender.username}
                 avatarUrl={avatarUrl}
                 animationType={animationType}
+                prevMessageSender={messages[i - 1]?.sender?.username || ""}
               />
             </div>
           </React.Fragment>
