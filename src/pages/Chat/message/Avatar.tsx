@@ -5,10 +5,13 @@ import { CircleUserRound } from "lucide-react";
 export default function Avatar({
   avatarUrl,
   username,
+  showOnlyAvatars,
 }: {
   avatarUrl?: string | null;
   username?: string;
+  showOnlyAvatars?: boolean;
 }) {
+  const size = showOnlyAvatars ? 80 : 100;
   return (
     <>
       {avatarUrl ? (
@@ -20,11 +23,14 @@ export default function Avatar({
           style={{ objectFit: "cover" }}
         />
       ) : (
-        <CircleUserRound
-          className="flex-none mx-auto max-w-[100%]"
-          size={100}
-          strokeWidth={1}
-        />
+        <div>
+          <CircleUserRound
+            className="flex-none mx-auto max-w-[100%]"
+            size={size}
+            strokeWidth={1}
+          />
+          {showOnlyAvatars && <p className="text-center">{username}</p>}
+        </div>
       )}
     </>
   );

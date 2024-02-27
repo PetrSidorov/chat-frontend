@@ -38,14 +38,20 @@ export default function Message({
   // console.log("style ", style);
   return (
     <motion.li
-      className="flex items-start m-2 p-4 bg-gray-200"
+      className={`flex m-2 p-4 bg-gray-200 items-start justify-center`}
       layout
       initial={animation.initial}
       animate={animation.animate}
       exit={animation.exit}
       transition={animation.transition}
     >
-      {prevMessageSender != username && <Avatar avatarUrl={avatarUrl} />}
+      {prevMessageSender != username && (
+        <Avatar
+          showOnlyAvatars={showOnlyAvatars}
+          username={username}
+          avatarUrl={avatarUrl}
+        />
+      )}
       {!showOnlyAvatars && (
         <div className={`ml-2 w-full ${style ? "overflow-x-hidden" : ""}`}>
           <div className="flex justify-between mb-3 flex-nowrap">
