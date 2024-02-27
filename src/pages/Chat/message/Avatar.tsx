@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { CircleUserRound } from "lucide-react";
+// TODO: should show name of the person under avatar,
+// when message and date are hidden in preview
 export default function Avatar({
   avatarUrl,
   username,
