@@ -55,26 +55,13 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
     const [leftPanelWidth, rightPanelWidth] = sizes;
     const leftNarrow = leftPanelWidth < 20;
     const rightNarrow = rightPanelWidth < 35;
-    setFullWidthMessagesInActiveConvo(rightNarrow);
-    setShowOnlyAvatars(leftNarrow);
-
-    // setFullWidthMessagesInActiveConvo((currentValue) => {
-    //   if (rightNarrow && !currentValue) {
-    //     return true;
-    //   } else if (!rightNarrow && currentValue && !mobileView) {
-    //     return false;
-    //   }
-    //   return currentValue;
-    // });
-
-    // setShowOnlyAvatars((currentValue) => {
-    //   if (leftNarrow && !currentValue) {
-    //     return true;
-    //   } else if (!leftNarrow && currentValue) {
-    //     return false;
-    //   }
-    //   return currentValue;
-    // });
+    setFullWidthMessagesInActiveConvo(rightNarrow || window.innerWidth < 800);
+    setShowOnlyAvatars(leftNarrow || (window.innerWidth < 800 && !mobileView));
+    console.log(
+      "setFullWidthMessagesInActiveConvo(rightNarrow); ",
+      rightNarrow
+    );
+    console.log("setShowOnlyAvatars(leftNarrow); ", leftNarrow);
   }, [sizes]);
 
   function handleDrag(newSizes: [number, number]) {
@@ -82,13 +69,7 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
   }
 
   function switchToMobile(setter: boolean) {
-    // console.log("setter ", setter, activeConvoId);
     setMobileView(setter);
-    // if (activeConvoId && setter) {
-    //   // hideleftpanel
-    //   // setSizes([0, 100]);
-    //   setFullWidthMessagesInActiveConvo(true);
-    // }
 
     if (!setter) {
       setSizes([35, 65]);
@@ -99,22 +80,26 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
     const handleResize = debounce(() => {
       if (window.innerWidth < 700 && window.innerWidth > 500) {
         console.log("window.innerWidth < 700 && window.innerWidth > 500");
+        console.log(
+          "setShowOnlyAvatars(true) setFullWidthMessagesInActiveConvo(true) switchToMobile(false)"
+        );
+        console.log("-----------");
         setShowOnlyAvatars(true);
         setFullWidthMessagesInActiveConvo(true);
         switchToMobile(false);
       } else if (window.innerWidth > 701) {
         console.log("window.innerWidth > 701");
+        console.log(
+          " setShowOnlyAvatars(false);setFullWidthMessagesInActiveConvo(false) switchToMobile(false);"
+        );
+        console.log("-----------");
         setShowOnlyAvatars(false);
         setFullWidthMessagesInActiveConvo(false);
         switchToMobile(false);
       } else if (window.innerWidth < 500) {
         console.log("window.innerWidth < 500");
         switchToMobile(true);
-        if (activeConvoId) {
-          setSizes([0, 100]);
-        } else if (!activeConvoId) {
-          setSizes([100, 0]);
-        }
+        setSizes(activeConvoId ? [0, 100] : [100, 0]);
       }
     }, 200);
     window.addEventListener("resize", handleResize);
