@@ -4,15 +4,19 @@ import { AuthContext } from "../context/AuthProvider";
 import FullScreenLoading from "./FullScreenLoading";
 
 export default function AuthRequired() {
-  const { data, loading, isLoaded } = useContext(AuthContext);
+  const { user, isLoaded } = useContext(AuthContext);
   const location = useLocation();
 
   if (!isLoaded) {
     return <FullScreenLoading />;
   }
 
-  if (!data && isLoaded) {
+  if (user && user.message === "notoken" && location.pathname !== "/login") {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (isLoaded && user && location.pathname === "/") {
+    return <Navigate to="/messages" replace />;
   }
 
   return <Outlet />;

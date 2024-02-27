@@ -18,16 +18,10 @@ function App() {
             <Routes>
               <Route element={<AuthGuard />}>
                 <Route path="/" element={<StartScreen />}></Route>
-
                 <Route path="/login" element={<Login />}></Route>
-
                 <Route path="/settings" element={<ChatMain />}></Route>
-
                 <Route path="/friends" element={<ChatMain />}></Route>
                 <Route path="/messages" element={<ChatMain />}></Route>
-
-                <Route path="/messages" element={<ChatMain />}></Route>
-                <Route path="/settings" element={<ChatMain />}></Route>
               </Route>
             </Routes>
           </ResizeProvider>

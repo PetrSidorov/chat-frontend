@@ -1,19 +1,13 @@
-import { useState, useEffect, useContext } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import fetchDB from "../../utils/FetchDB";
-import pickProperties from "../../utils/pickProperties";
-import { AuthContext } from "../../context/AuthProvider";
-import LoginFormField from "./LoginFormField";
-import useFetchDB from "../../hooks/useFetchDB";
-import {
-  TAuthContext,
-  TDataBaseRequestData,
-  TLoginDataBaseResponse,
-  TUser,
-} from "../../types";
-import VisuallyHidden from "../../components/VisuallyHidden";
+
 import FullScreenLoading from "../../components/FullScreenLoading";
+import { AuthContext } from "../../context/AuthProvider";
+import useFetchDB from "../../hooks/useFetchDB";
+import { TAuthContext, TLoginDataBaseResponse } from "../../types";
+import pickProperties from "../../utils/pickProperties";
+import LoginFormField from "./LoginFormField";
 
 export default function Login() {
   const { setUser } = useContext<TAuthContext>(AuthContext);
@@ -53,7 +47,7 @@ export default function Login() {
   // }, [user]);
 
   useEffect(() => {
-    if (data && data.token) {
+    if (data && data?.token) {
       setUser(data.user);
       navigate("/messages");
     }
