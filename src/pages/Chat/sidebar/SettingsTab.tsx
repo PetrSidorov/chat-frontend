@@ -5,7 +5,9 @@ import Avatar from "../message/Avatar";
 import useFetchDB from "../../../hooks/useFetchDB";
 import { TLoginDataBaseResponse } from "../../../types";
 import { useNavigate } from "react-router-dom";
-
+// TODO: when this tab or /friends tab is reloaded
+// i get redirected to messages component but url stays the same
+// and basically the whole thing gets broken
 export default function SettingsTab() {
   const { user } = useContext(AuthContext);
   const { loading, data, error, setFetchData, isLoaded } =
