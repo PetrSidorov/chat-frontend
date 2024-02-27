@@ -11,7 +11,7 @@ export default function Message({
   showOnlyAvatars = false,
   animationType = "enter",
   style,
-  prevMessageSender,
+  prevMessageSender = "",
 }: {
   content: string;
   createdAt: string;
@@ -20,7 +20,7 @@ export default function Message({
   showOnlyAvatars?: boolean;
   animationType?: string;
   style?: TCSSclampLines;
-  prevMessageSender: string;
+  prevMessageSender?: string;
 }) {
   const date = createdAt
     ? new Date(createdAt).toLocaleTimeString("en-US", {
