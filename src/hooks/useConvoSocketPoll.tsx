@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { socket } from "../utils/socket";
 import { AllConvoContext } from "../context/AllConvoContext";
+import { AuthContext } from "../context/AuthProvider";
 
 export default function useConvoSocketPoll(): [
   string[],
@@ -13,64 +14,37 @@ export default function useConvoSocketPoll(): [
   const [socketPoll, setSocketPoll] = useContext(AllConvoContext).socketPoll;
   //   const [activeConvoContext, setActiveConvoContext] =
   //     useContext(ActiveConvoContext).convoContext;
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    if (!socketPoll || socketPoll.length == 0) return;
-    // setSocketPoll((currSocketPoll) => [...currSocketPoll, convoId]);
+    if (user && !socket.connected) {
+      socket.connect();
+    }
 
-    function onConnect() {
-      console.log("socket connect");
-      setIsConnected(true);
-    }
-    function onDisconnect() {
-      console.log("socket disconnect");
-      setIsConnected(false);
-    }
+    socket.on("connect", () => setIsConnected(true));
+    socket.on("disconnect", () => setIsConnected(false));
     socket.on("connect_error", (error) => {
       console.log("Connection Error:", error);
+      setIsConnected(false);
     });
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("online-statuses:return", (data) => {
-      console.log("onlineStatusMap ", data);
-      // const [convoId] = Object.keys(onlineStatusMap);
-      // const online = onlineStatusMap[convoId];
-      // handleOnlineStatuses(convoId, online);
-    });
-    // console.log(convoId);
-    // if (!socketPoll.includes(convoId)) {
-    //   socket.emit("id:send", convoId);
-    // }
 
-    // socket.on("msg:get", (data) => {
-    //   console.log("get ", data);
-    //   setActiveConvoContext((activeConvoContext) => {
-    //     if (!activeConvoContext) {
-    //       return null;
-    //     }
-    //     return {
-    //       ...activeConvoContext,
-    //       messages: [...activeConvoContext.messages.slice(0, -1), data],
-    //     };
-    //   });
-    // });
-    //   return () => {
-    //     socket.off("connect", onConnect);
-    //     socket.off("disconnect", onDisconnect);
-    //   };
-  }, [socketPoll]);
+    // Directly update isConnected based on the current socket connection status
+    setIsConnected(socket.connected);
 
-  function addConvoToSocketPoll(convoId: string) {
-    if (!convoId) return;
-    // if (!convoId || !companionId) return;
-    // console.log("userId ", companionId);
-    // socket.emit("id:send", { convoId, companionId });
-    socket.emit("id:send", convoId);
-    // console.log(convoId);
-    setSocketPoll((currSocketPoll) => {
-      return currSocketPoll ? [...currSocketPoll, convoId] : [convoId];
-    });
+    return () => {
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("connect_error");
+    };
+  }, [user]);
+
+  function joinRoom(convoId: string) {
+    if (!convoId || !isConnected || socketPoll?.includes(convoId)) return;
+    socket.emit("room:join", convoId);
+    setSocketPoll((currSocketPoll) => [
+      ...new Set([...(currSocketPoll || []), convoId]),
+    ]);
   }
 
-  return [socketPoll, addConvoToSocketPoll];
+  return { socketPoll, joinRoom };
 }

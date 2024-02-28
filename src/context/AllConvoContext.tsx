@@ -25,7 +25,7 @@ export default function ActiveConvoProvider({
   const [convos, setConvos] = useState<TConvos | null>(null);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
-  const [_, addConvoToSocketPoll] = useConvoSocketPoll();
+  const { joinRoom } = useConvoSocketPoll();
 
   const {
     socketLoading,
@@ -40,7 +40,8 @@ export default function ActiveConvoProvider({
   async function initConvo(data: TConvos) {
     setConvos(data);
     const convoIdArray = Object.keys(data);
-    convoIdArray.map((id) => addConvoToSocketPoll(id));
+    console.log("convoIdArray ", convoIdArray);
+    convoIdArray.map((id) => joinRoom(id));
   }
 
   function handleActiveConvoId(id: string | null) {

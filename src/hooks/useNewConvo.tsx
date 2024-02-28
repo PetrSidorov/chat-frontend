@@ -7,7 +7,7 @@ export default function useNewConvo() {
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
   const { convos, unshiftMessagesToConvo } =
     useContext(AllConvoContext).convoContext;
-  const [addToSocketPoll, addConvoToSocketPoll] = useConvoSocketPoll();
+  const { joinRoom } = useConvoSocketPoll();
 
   const { socketLoading, data, emit } = useSockets({
     emitFlag: "convo:create",
@@ -21,7 +21,7 @@ export default function useNewConvo() {
 
     setActiveConvoId(convoId);
     unshiftMessagesToConvo({ id: convoId, newMessages: messages });
-    addConvoToSocketPoll(convoId);
+    joinRoom(convoId);
   }, [data]);
 
   return emit;
