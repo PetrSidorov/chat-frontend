@@ -20,6 +20,7 @@ export default function ActiveConvo() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { mobileView } = useContext(ResizeContext);
   const [blockOffset, setBlockOffset] = useState(false);
+  const onlineStatus = convos?.[activeConvoId]?.receiver.onlineStatus;
 
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
@@ -70,7 +71,8 @@ export default function ActiveConvo() {
       className="flex flex-col flex-grow p-4 overflow-y-auto overflow-x-hidden"
     >
       {activeConvoId && (
-        <div className="w-full h-10 bg-slate-600 fixed -mt-4 -ml-4 z-1 flex items-center">
+        // the 100% below are not working
+        <div className="w-[100%] h-10 bg-slate-600 fixed -mt-4 -ml-4 z-1 flex items-center">
           {/* classes for bottom IsOnline should be different */}
           {mobileView && (
             <button onClick={() => handleActiveConvoId(null)}>
@@ -78,9 +80,14 @@ export default function ActiveConvo() {
             </button>
           )}
 
-          <p>
-            Online <IsOnline online={convos?.[activeConvoId]?.online} />
-          </p>
+          <div className="flex align-center justify-between w-[40%]">
+            <p>
+              <span>{convos?.[activeConvoId].receiver.username}</span> is{" "}
+              {onlineStatus ? "online" : "offline"}
+            </p>
+
+            <IsOnline online={onlineStatus} />
+          </div>
         </div>
       )}
       {!online && <p>Waiting for network</p>}

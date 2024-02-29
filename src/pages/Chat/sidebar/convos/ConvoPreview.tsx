@@ -40,7 +40,10 @@ export default function ConvoPreview({
             {/* <div>Hello everynan</div> */}
           </>
         )}
-        <IsOnline online={online} />
+        <div className="absolute top-2 right-4">
+          <IsOnline online={online} />
+        </div>
+
         <Message
           key={createdAt}
           content={trimmedContent}
