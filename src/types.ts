@@ -11,6 +11,7 @@ export type TUser = {
   email: string;
   avatarUrl: string | null;
   message?: string;
+  onlineStatus?: boolean;
 };
 
 export type TAuthContext = {
@@ -63,7 +64,7 @@ export type TConvos = {
     messages: TMessage[];
     // actors: Tactors;
     receiver: TUser;
-    online: boolean;
+    // onlineStatus: boolean;
     // actors: {
     //   initiator: {
     //     id: string;

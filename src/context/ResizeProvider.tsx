@@ -57,11 +57,11 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
     const rightNarrow = rightPanelWidth < 35;
     setFullWidthMessagesInActiveConvo(rightNarrow || window.innerWidth < 800);
     setShowOnlyAvatars(leftNarrow || (window.innerWidth < 800 && !mobileView));
-    console.log(
-      "setFullWidthMessagesInActiveConvo(rightNarrow); ",
-      rightNarrow
-    );
-    console.log("setShowOnlyAvatars(leftNarrow); ", leftNarrow);
+    // console.log(
+    // "setFullWidthMessagesInActiveConvo(rightNarrow); ",
+    //   rightNarrow
+    // );
+    // console.log("setShowOnlyAvatars(leftNarrow); ", leftNarrow);
   }, [sizes]);
 
   function handleDrag(newSizes: [number, number]) {
@@ -79,25 +79,25 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const handleResize = debounce(() => {
       if (window.innerWidth < 700 && window.innerWidth > 500) {
-        console.log("window.innerWidth < 700 && window.innerWidth > 500");
-        console.log(
-          "setShowOnlyAvatars(true) setFullWidthMessagesInActiveConvo(true) switchToMobile(false)"
-        );
-        console.log("-----------");
+        // console.log("window.innerWidth < 700 && window.innerWidth > 500");
+        // console.log(
+        //   "setShowOnlyAvatars(true) setFullWidthMessagesInActiveConvo(true) switchToMobile(false)"
+        // );
+        // console.log("-----------");
         setShowOnlyAvatars(true);
         setFullWidthMessagesInActiveConvo(true);
         switchToMobile(false);
       } else if (window.innerWidth > 701) {
-        console.log("window.innerWidth > 701");
-        console.log(
-          " setShowOnlyAvatars(false);setFullWidthMessagesInActiveConvo(false) switchToMobile(false);"
-        );
-        console.log("-----------");
+        // console.log("window.innerWidth > 701");
+        // console.log(
+        //   " setShowOnlyAvatars(false);setFullWidthMessagesInActiveConvo(false) switchToMobile(false);"
+        // );
+        // console.log("-----------");
         setShowOnlyAvatars(false);
         setFullWidthMessagesInActiveConvo(false);
         switchToMobile(false);
       } else if (window.innerWidth < 500) {
-        console.log("window.innerWidth < 500");
+        // console.log("window.innerWidth < 500");
         switchToMobile(true);
         setSizes(activeConvoId ? [0, 100] : [100, 0]);
       }

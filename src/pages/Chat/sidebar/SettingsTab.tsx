@@ -5,6 +5,7 @@ import Avatar from "../message/Avatar";
 import useFetchDB from "../../../hooks/useFetchDB";
 import { TLoginDataBaseResponse } from "../../../types";
 import { useNavigate } from "react-router-dom";
+import { socket } from "../../../utils/socket";
 // TODO: when this tab or /friends tab is reloaded
 // i get redirected to messages component but url stays the same
 // and basically the whole thing gets broken
@@ -26,6 +27,7 @@ export default function SettingsTab() {
   useEffect(() => {
     if (data?.message == "loggedout") {
       navigate("/login");
+      if (socket) socket.disconnect();
     }
   }, [data]);
 

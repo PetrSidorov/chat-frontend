@@ -33,10 +33,13 @@ export default function ConvoPreview({
     }
 
     return (
-      <>
-        {/* {online && (
-          <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full absolute top-2 right-4"></div>
-        )} */}
+      <div className="relative">
+        {online && (
+          <>
+            <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full absolute top-2 right-4"></div>
+            {/* <div>Hello everynan</div> */}
+          </>
+        )}
         <IsOnline online={online} />
         <Message
           key={createdAt}
@@ -47,7 +50,7 @@ export default function ConvoPreview({
           showOnlyAvatars={showOnlyAvatars}
           style={style}
         />
-      </>
+      </div>
     );
   } else {
     return (

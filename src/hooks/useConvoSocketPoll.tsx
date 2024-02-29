@@ -3,10 +3,7 @@ import { socket } from "../utils/socket";
 import { AllConvoContext } from "../context/AllConvoContext";
 import { AuthContext } from "../context/AuthProvider";
 
-export default function useConvoSocketPoll(): [
-  string[],
-  (convoId: string) => void
-] {
+export default function useConvoSocketPoll() {
   const [isConnected, setIsConnected] = useState(socket.connected);
 
   // const { convos, handleOnlineStatuses } =
@@ -28,7 +25,6 @@ export default function useConvoSocketPoll(): [
       setIsConnected(false);
     });
 
-    // Directly update isConnected based on the current socket connection status
     setIsConnected(socket.connected);
 
     return () => {

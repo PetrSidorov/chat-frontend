@@ -4,7 +4,7 @@ import { AllConvoContext } from "../../context/AllConvoContext";
 import { socket } from "../../utils/socket";
 import MessageList from "./MessageList";
 import { AuthContext } from "../../context/AuthProvider";
-import useOnlineStatus from "../../hooks/useOnlineStatus";
+import useOnlineStatus from "../../hooks/useNetworkStatus";
 import IsOnline from "./sidebar/convos/IsOnline";
 import { ChevronLeft } from "lucide-react";
 import { ResizeContext } from "../../context/ResizeProvider";

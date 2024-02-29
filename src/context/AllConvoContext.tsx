@@ -2,6 +2,8 @@ import { ReactNode, createContext, useEffect, useState } from "react";
 import { TConvoContext, TConvos, TMessage } from "../types";
 import useConvoSocketPoll from "../hooks/useConvoSocketPoll";
 import useSockets from "../hooks/useSockets";
+import useOnlineStatus from "../hooks/useOnlineStatus";
+
 // TODO: ask Artem if this could be managed in a less ugly way
 export const AllConvoContext = createContext<TConvoContext>({
   activeConvoId: [null, () => {}],
@@ -26,6 +28,7 @@ export default function ActiveConvoProvider({
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
   const { joinRoom } = useConvoSocketPoll();
+  useOnlineStatus(convos, handleOnlineStatus);
 
   const {
     socketLoading,
@@ -37,10 +40,13 @@ export default function ActiveConvoProvider({
     initialState: "",
   });
 
+  useEffect(() => {
+    console.log("data ", convos);
+  }, [convos]);
+
   async function initConvo(data: TConvos) {
     setConvos(data);
     const convoIdArray = Object.keys(data);
-    console.log("convoIdArray ", convoIdArray);
     convoIdArray.map((id) => joinRoom(id));
   }
 
@@ -161,10 +167,18 @@ export default function ActiveConvoProvider({
     });
   }
 
-  function handleOnlineStatuses(convoId: string, online: boolean) {
+  function handleOnlineStatus(convoId: string, onlineStatus: boolean) {
     setConvos((currConvos) => {
+      if (!currConvos || !currConvos[convoId]) {
+        return currConvos;
+      }
+
       const updatedConvos = { ...currConvos };
-      updatedConvos[convoId] = { ...updatedConvos[convoId], online };
+      updatedConvos[convoId].receiver = {
+        ...updatedConvos[convoId].receiver,
+        onlineStatus: onlineStatus,
+      };
+
       return updatedConvos;
     });
   }
@@ -177,7 +191,7 @@ export default function ActiveConvoProvider({
           unshiftMessagesToConvo,
           pushNewMessageToConvo,
           pushNewMessagesToConvo,
-          handleOnlineStatuses,
+          handleOnlineStatuses: handleOnlineStatus,
           handleRemoveMessage,
           initConvo,
         },

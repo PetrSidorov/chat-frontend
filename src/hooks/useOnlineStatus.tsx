@@ -1,21 +1,36 @@
-import { useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
+import { TConvos } from "../types";
+import { socket } from "../utils/socket";
 
-const getSnapshot = () => {
-  return navigator.onLine ? true : false;
-};
+export default function useRoomUsersStatus(
+  convos: TConvos,
+  handleOnlineStatus: Function
+) {
+  const [changes, setChanges] = useState([]);
 
-const subscribe = (callback: () => void) => {
-  window.addEventListener("online", callback);
-  window.addEventListener("offline", callback);
+  useEffect(() => {
+    console.log("convos in  online status ", convos);
+  }, [convos]);
 
-  return () => {
-    window.removeEventListener("online", callback);
-    window.removeEventListener("offline", callback);
-  };
-};
+  useEffect(() => {
+    const handleUserOffline = (convoId: string) => {
+      handleOnlineStatus(convoId, false);
+      console.log(convoId, false);
+    };
 
-export default function useOnlineStatus() {
-  const networkStatus = useSyncExternalStore(subscribe, getSnapshot);
+    const handleUserOnline = (convoId: string) => {
+      handleOnlineStatus(convoId, true);
+      console.log(convoId, true);
+    };
 
-  return networkStatus;
+    socket.on("user:online", handleUserOnline);
+    socket.on("user:offline", handleUserOffline);
+
+    return () => {
+      socket.off("user:online", handleUserOnline);
+      socket.off("user:offline", handleUserOffline);
+    };
+  }, []);
+
+  return changes;
 }

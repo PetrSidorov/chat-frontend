@@ -49,7 +49,7 @@ export default function ConvosList() {
           <ConvoPreview
             receiver={data.receiver}
             messages={data.messages}
-            online={data.online}
+            online={data?.receiver?.onlineStatus}
           />
         </div>
       );
