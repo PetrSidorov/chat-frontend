@@ -20,29 +20,27 @@ export default function MessageContextMenu({
   return (
     <>
       {yours ? (
-        <div className="fixed inset-0 grid place-content-center p-4 z-1">
-          <div className="absolute inset-0" onClick={() => handleDismiss()}>
-            <ul
-              style={{
-                position: "absolute",
-                left: `${left}px`,
-                top: `${top}px`,
-                backgroundColor: "gray",
-                borderRadius: "md",
-                width: "max-content",
-              }}
-            >
-              <li>
-                <button
-                  className="flex p-4"
-                  onClick={() => handleRemoveMessage(activeConvoId, id)}
-                >
-                  <span className="mr-2">Delete message</span>
-                  <XCircle />
-                </button>
-              </li>
-            </ul>
-          </div>
+        <div className="fixed inset-0 z-1 " onClick={() => handleDismiss()}>
+          <ul
+            style={{
+              position: "absolute",
+              left: `${left}px`,
+              top: `${top}px`,
+              backgroundColor: "gray",
+              borderRadius: "md",
+              width: "max-content",
+            }}
+          >
+            <li>
+              <button
+                className="flex p-4"
+                onClick={() => handleRemoveMessage(activeConvoId, id)}
+              >
+                <span className="mr-2">Delete message</span>
+                <XCircle />
+              </button>
+            </li>
+          </ul>
         </div>
       ) : (
         <div
