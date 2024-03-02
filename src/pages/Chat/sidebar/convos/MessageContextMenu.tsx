@@ -7,38 +7,42 @@ export default function MessageContextMenu({
   id,
   top,
   left,
+  handleDismiss,
 }: {
   yours: boolean;
   handleRemoveMessage: Function;
   id: string;
   top: number;
   left: number;
+  handleDismiss: Function;
 }) {
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
   return (
     <>
       {yours ? (
-        <div
-          style={{
-            position: "absolute",
-            left: `${left}px`,
-            top: `${top}px`,
-            backgroundColor: "gray",
-            borderRadius: "md",
-            width: "max-content",
-          }}
-        >
-          <ul className="test-hey">
-            <li>
-              <button
-                className="flex p-4"
-                onClick={() => handleRemoveMessage(activeConvoId, id)}
-              >
-                <span className="mr-2">Delete message</span>
-                <XCircle />
-              </button>
-            </li>
-          </ul>
+        <div className="fixed inset-0 grid place-content-center p-4 z-1">
+          <div className="absolute inset-0" onClick={() => handleDismiss()}>
+            <ul
+              style={{
+                position: "absolute",
+                left: `${left}px`,
+                top: `${top}px`,
+                backgroundColor: "gray",
+                borderRadius: "md",
+                width: "max-content",
+              }}
+            >
+              <li>
+                <button
+                  className="flex p-4"
+                  onClick={() => handleRemoveMessage(activeConvoId, id)}
+                >
+                  <span className="mr-2">Delete message</span>
+                  <XCircle />
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       ) : (
         <div

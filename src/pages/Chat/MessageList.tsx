@@ -59,7 +59,7 @@ const MessageList = forwardRef<
       });
     }
 
-    function closePopup() {
+    function handleDismiss() {
       setPopupState((curr) => {
         return { ...curr, show: false };
       });
@@ -71,7 +71,7 @@ const MessageList = forwardRef<
         handleRemoveMessage(activeConvoId, id);
       }, 0);
 
-      closePopup();
+      handleDismiss();
     }
 
     const messageList = messages.map(
@@ -116,22 +116,14 @@ const MessageList = forwardRef<
     return (
       <>
         {popupState.show && (
-          <HandleClickOutside
-            popupState={popupState}
-            callback={() =>
-              setPopupState((curr) => {
-                return { ...curr, show: !curr.show };
-              })
-            }
-          >
-            <MessageContextMenu
-              yours={popupState.yours}
-              handleRemoveMessage={handleRemoveMessageAndClose}
-              id={popupState.id}
-              top={popupState.top}
-              left={popupState.left}
-            />
-          </HandleClickOutside>
+          <MessageContextMenu
+            yours={popupState.yours}
+            handleRemoveMessage={handleRemoveMessageAndClose}
+            handleDismiss={handleDismiss}
+            id={popupState.id}
+            top={popupState.top}
+            left={popupState.left}
+          />
         )}
         <AnimatePresence>{messageList}</AnimatePresence>
       </>
