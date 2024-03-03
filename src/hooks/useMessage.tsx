@@ -1,23 +1,17 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { TMessage } from "../types";
 import { AuthContext } from "../context/AuthProvider";
 import { AllConvoContext } from "../context/AllConvoContext";
 import useSockets from "./useSockets";
 import isEmpty from "../utils/isEmpty";
-// id         String   @id @default(cuid())
-// content    String
-// createdAt  DateTime @default(now())
-// senderId   String
-// receiverId String
-// convoId    String
 
 export default function useMessage() {
   const { user } = useContext(AuthContext);
-  const [message, setMessage] = useState<string>("");
-  const [activeConvoId, handleActiveConvoId] =
-    useContext(AllConvoContext).activeConvoId;
+  const [message, setMessage] = useState("");
+  const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
   const { convos, pushNewMessageToConvo } =
     useContext(AllConvoContext).convoContext;
+
   const {
     socketLoading,
     data: incomingMessage,
@@ -29,10 +23,6 @@ export default function useMessage() {
   });
 
   useEffect(() => {
-    setMessage("");
-  }, [user, activeConvoId]);
-
-  useEffect(() => {
     if (!incomingMessage || !incomingMessage.id) return;
 
     if (incomingMessage != activeConvoId) {
@@ -42,10 +32,15 @@ export default function useMessage() {
     pushNewMessageToConvo(convoId, message);
   }, [incomingMessage]);
 
-  function sendMessage(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    if (!message.trim()) return;
-    if (!user || isEmpty(user) || !activeConvoId || !convos) return;
+  const send = useCallback(() => {
+    if (!message.trim()) {
+      console.log("Message is empty or only whitespace");
+      return;
+    }
+    if (!user || isEmpty(user) || !activeConvoId || !convos) {
+      console.log("User, active conversation, or convos are not properly set");
+      return;
+    }
 
     emit({
       content: message,
@@ -55,15 +50,10 @@ export default function useMessage() {
       id: crypto.randomUUID(),
       senderId: user.id,
       // TODO: use this Uuid for optimistic updates
-      // id: crypto.randomUUID(),
     });
 
     setMessage("");
-  }
+  }, [message, user, activeConvoId, convos, emit]);
 
-  function handleMessage(content: string) {
-    setMessage(content);
-  }
-
-  return { message, sendMessage, handleMessage };
+  return { message, setMessage, send };
 }

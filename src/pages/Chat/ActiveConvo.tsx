@@ -56,7 +56,7 @@ export default function ActiveConvo() {
   useEffect(() => {
     // TODO: i need scroll into view but on new message
     // (maybe on some other cases too)
-    // endOfMessagesRef.current?.scrollIntoView();
+    endOfMessagesRef.current?.scrollIntoView();
   }, [convos]);
 
   // function generateRemoveMessage(convoId: string) {
