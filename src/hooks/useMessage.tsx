@@ -42,8 +42,9 @@ export default function useMessage() {
     pushNewMessageToConvo(convoId, message);
   }, [incomingMessage]);
 
-  function sendMessage(e: KeyboardEvent) {
+  function sendMessage(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
+    if (!message.trim()) return;
     if (!user || isEmpty(user) || !activeConvoId || !convos) return;
 
     emit({

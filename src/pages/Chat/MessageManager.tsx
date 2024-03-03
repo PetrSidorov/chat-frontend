@@ -10,6 +10,7 @@ export default function MessageManager() {
         onChange={(e) => handleMessage(e.target.value)}
         className="w-full p-2 rounded border border-gray-300"
         placeholder="Type a message..."
+        required
       />
       <button
         onClick={(e) => sendMessage(e)}
