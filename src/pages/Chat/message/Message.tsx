@@ -56,7 +56,11 @@ export default function Message({
         />
       )}
       {!showOnlyAvatars && (
-        <div className={`ml-2 w-full ${style ? "overflow-x-hidden" : ""}`}>
+        <div
+          className={`ml-2 w-full ${
+            style ? "overflow-x-hidden" : "whitespace-pre-wrap"
+          }`}
+        >
           <div className="flex justify-between mb-3 flex-nowrap">
             {showAvatarAndUsername && <span className="mr-2">{username}</span>}
             <span className="whitespace-nowrap ml-auto">{date}</span>
