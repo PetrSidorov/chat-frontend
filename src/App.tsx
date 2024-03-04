@@ -6,6 +6,7 @@ import ResizeProvider from "./context/ResizeProvider";
 import ChatMain from "./pages/Chat/ChatMain";
 import Login from "./pages/Login/Login";
 import StartScreen from "./pages/StartScreen/StartScreen";
+import Register from "./pages/Login/Register";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
               <Route element={<AuthGuard />}>
                 <Route path="/" element={<StartScreen />}></Route>
                 <Route path="/login" element={<Login />}></Route>
+                <Route path="/register" element={<Register />}></Route>
                 <Route path="/settings" element={<ChatMain />}></Route>
                 <Route path="/friends" element={<ChatMain />}></Route>
                 <Route path="/messages" element={<ChatMain />}></Route>
