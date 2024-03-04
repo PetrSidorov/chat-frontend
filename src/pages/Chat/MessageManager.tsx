@@ -9,7 +9,8 @@ export default function MessageManager() {
     if (!textareaRef.current) return;
 
     const textarea = textareaRef.current;
-    textarea.style.height = "auto";
+
+    // textarea.style.height = "auto";
     textarea.style.height = `${textarea.scrollHeight}px`;
   };
 
@@ -18,7 +19,7 @@ export default function MessageManager() {
     e.preventDefault();
     send();
 
-    textareaRef.current.style.height = "auto";
+    // textareaRef.current.style.height = "20px";
   };
 
   return (
@@ -31,7 +32,8 @@ export default function MessageManager() {
           adjustTextareaHeight();
         }}
         placeholder="Type a message..."
-        className="textarea w-full p-2 rounded border border-gray-300 overflow-hidden resize-none"
+        // style={{ transition: "height 0.2s ease-out" }}
+        className="textarea w-full p-2 rounded border border-gray-300 overflow-hidden resize-none h-15 transition ease-out duration-200"
         onKeyDown={(e) => {
           if (e.key === "Enter" && e.shiftKey) {
           } else if (e.key === "Enter" && !e.shiftKey) {
@@ -43,7 +45,7 @@ export default function MessageManager() {
       />
       <button
         type="submit"
-        className="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
+        className="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2 max-h-10"
       >
         Send
       </button>
