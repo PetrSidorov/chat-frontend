@@ -7,6 +7,10 @@ import ChatMain from "./pages/Chat/ChatMain";
 import Login from "./pages/Login/Login";
 import StartScreen from "./pages/StartScreen/StartScreen";
 import Register from "./pages/Login/Register";
+import MainLayout from "./pages/Chat/MainLayout";
+import ConvosList from "./pages/Chat/sidebar/convos/ConvosList";
+import FriendsTab from "./pages/Chat/sidebar/FriendsTab";
+import SettingsTab from "./pages/Chat/sidebar/SettingsTab";
 
 function App() {
   return (
@@ -16,12 +20,12 @@ function App() {
           <ResizeProvider>
             <Routes>
               <Route element={<AuthGuard />}>
-                <Route path="/" element={<StartScreen />}></Route>
                 <Route path="/login" element={<Login />}></Route>
-                <Route path="/register" element={<Register />}></Route>
-                <Route path="/settings" element={<ChatMain />}></Route>
-                <Route path="/friends" element={<ChatMain />}></Route>
-                <Route path="/messages" element={<ChatMain />}></Route>
+                <Route path="/" element={<MainLayout />}>
+                  <Route path="messages" element={<ConvosList />} />
+                  <Route path="search" element={<FriendsTab />} />
+                  <Route path="settings" element={<SettingsTab />} />
+                </Route>
                 <Route path="*" element={<Navigate to="/login" replace />} />
               </Route>
             </Routes>

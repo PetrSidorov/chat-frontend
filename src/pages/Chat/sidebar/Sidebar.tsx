@@ -1,69 +1,47 @@
-import { useState } from "react";
-import { TSidebarTabs } from "../../../types";
-import FriendsTab from "./FriendsTab";
-import SettingsTab from "./SettingsTab";
-import ConvosList from "./convos/ConvosList";
-import { MessageSquare, Settings, User } from "lucide-react";
-import SidebarFooterButton from "../../../components/SidebarFooterButton";
-import { useNavigate } from "react-router-dom";
-import useTabs from "../../../hooks/useTabs";
-import { AnimatePresence, motion } from "framer-motion";
+import { MessageSquare, Search, Settings } from "lucide-react";
+import { ReactElement } from "react";
+import VisuallyHidden from "../../../components/VisuallyHidden";
+import { Link } from "react-router-dom";
 
-export default function Sidebar() {
-  const [activeTab, handleActiveTab] = useTabs<TSidebarTabs>(
-    TSidebarTabs.MESSAGES
-  );
-
+export default function Sidebar({ children }: { children: ReactElement }) {
   return (
     <>
-      {/* {activeTab === TSidebarTabs.FRIENDS && <FriendsTab />}
-      {activeTab === TSidebarTabs.SETTINGS && <SettingsTab />}
-      {activeTab === TSidebarTabs.MESSAGES && <ConvosList />} */}
-      <AnimatePresence mode="wait">
-        {activeTab === TSidebarTabs.FRIENDS && (
-          <motion.div
-            key="friends"
-            layout
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
+      {children}
+      <ul className="mt-auto flex justify-around">
+        <li>
+          <Link
+            to="/messages"
+            className="flex flex-col items-center justify-center hover:bg-gray-300 p-2 rounded text-inherit"
           >
-            <FriendsTab />
-          </motion.div>
-        )}
-        {activeTab === TSidebarTabs.SETTINGS && (
-          <motion.div
-            key="settings"
-            layout
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
+            <MessageSquare />
+            <VisuallyHidden>
+              <span>Messages</span>
+            </VisuallyHidden>
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/search"
+            className="flex flex-col items-center justify-center hover:bg-gray-300 p-2 rounded text-inherit"
           >
-            <SettingsTab />
-          </motion.div>
-        )}
-        {activeTab === TSidebarTabs.MESSAGES && <ConvosList />}
-      </AnimatePresence>
-
-      <div className="mt-auto flex justify-evenly items-center bg-gray-200 p-4 text-black">
-        <SidebarFooterButton
-          onHandle={() => handleActiveTab(TSidebarTabs.MESSAGES)}
-          tabName={TSidebarTabs.MESSAGES}
-          icon={MessageSquare}
-        />
-        <SidebarFooterButton
-          onHandle={() => handleActiveTab(TSidebarTabs.SETTINGS)}
-          tabName={TSidebarTabs.SETTINGS}
-          icon={Settings}
-        />
-        <SidebarFooterButton
-          onHandle={() => handleActiveTab(TSidebarTabs.FRIENDS)}
-          tabName={TSidebarTabs.FRIENDS}
-          icon={User}
-        />
-      </div>
+            <Search />
+            <VisuallyHidden>
+              <span>Contacts</span>
+            </VisuallyHidden>
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/settings"
+            className="flex flex-col items-center justify-center hover:bg-gray-300 p-2 rounded text-inherit"
+          >
+            <Settings />
+            <VisuallyHidden>
+              <span>Settings</span>
+            </VisuallyHidden>
+          </Link>
+        </li>
+      </ul>
     </>
   );
 }

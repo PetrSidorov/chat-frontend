@@ -20,6 +20,7 @@ export default function FriendsTab() {
   });
 
   function createNewConvo(secondUserId: string) {
+    console.log("secondUserId ", secondUserId);
     emitNewConvo(secondUserId);
   }
 

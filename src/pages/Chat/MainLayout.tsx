@@ -11,7 +11,7 @@ import ResizeProvider, { ResizeContext } from "../../context/ResizeProvider";
 import { useContext } from "react";
 import clsx from "clsx";
 import { AuthContext } from "../../context/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import FullScreenLoading from "../../components/FullScreenLoading";
 
 export default function ChatMain() {
@@ -29,35 +29,6 @@ export default function ChatMain() {
   } = useContext(ResizeContext);
   const [activeConvoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
-  // const [sizes, setSizes] = useState<[number, number]>([35, 65]);
-
-  // useEffect(() => {
-  //   const [leftPanelWidth, rightPanelWidth] = sizes;
-  //   const leftNarrow = leftPanelWidth < 17;
-  //   const rightNarrow = rightPanelWidth < 35;
-
-  //   setFullWidthMessagesInActiveConvo((currentValue) => {
-  //     if (rightNarrow && !currentValue) {
-  //       return true;
-  //     } else if (!rightNarrow && currentValue) {
-  //       return false;
-  //     }
-  //     return currentValue;
-  //   });
-
-  //   setShowOnlyAvatars((currentValue) => {
-  //     if (leftNarrow && !currentValue) {
-  //       return true;
-  //     } else if (!leftNarrow && currentValue) {
-  //       return false;
-  //     }
-  //     return currentValue;
-  //   });
-  // }, [sizes]);
-
-  // function handleDrag(newSizes: [number, number]) {
-  //   setSizes(newSizes);
-  // }
 
   return (
     <>
@@ -88,7 +59,9 @@ export default function ChatMain() {
                 "w-full": mobileView && !activeConvoId,
               })}
             >
-              <Sidebar />
+              <Sidebar>
+                <Outlet />
+              </Sidebar>
             </div>
             {/* )} */}
 

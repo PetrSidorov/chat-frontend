@@ -98,12 +98,6 @@ export type TConvoContext = {
   socketPoll: [string[] | null, Dispatch<SetStateAction<string[] | null>>];
 };
 
-export enum TSidebarTabs {
-  FRIENDS = "FRIENDS",
-  SETTINGS = "SETTINGS",
-  MESSAGES = "MESSAGES",
-}
-
 type TypeHttpHeaders = {
   [key: string]: string;
 };

@@ -57,7 +57,7 @@ export default function ConvosList() {
   console.log("ListOfConvoPreviews ", ListOfConvoPreviews);
   return (
     <>
-      {ListOfConvoPreviews && ListOfConvoPreviews.length > 0 ? (
+      {ListOfConvoPreviews ? (
         <ul className="font-semibold">{ListOfConvoPreviews}</ul>
       ) : (
         <p className="text-white text-lg italic mt-2">
