@@ -11,7 +11,7 @@ export default function AuthRequired() {
     return <FullScreenLoading />;
   }
 
-  if (user && user.message === "notoken" && location.pathname !== "/login") {
+  if (user && user.message === "notoken" && location.pathname == "/messages") {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

@@ -54,6 +54,16 @@ export default function ConvosList() {
         </div>
       );
     });
-
-  return <ul className="font-semibold">{ListOfConvoPreviews}</ul>;
+  console.log("ListOfConvoPreviews ", ListOfConvoPreviews);
+  return (
+    <>
+      {ListOfConvoPreviews && ListOfConvoPreviews.length > 0 ? (
+        <ul className="font-semibold">{ListOfConvoPreviews}</ul>
+      ) : (
+        <p className="text-white text-lg italic mt-2">
+          You have no messages yet
+        </p>
+      )}
+    </>
+  );
 }

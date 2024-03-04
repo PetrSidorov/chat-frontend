@@ -65,6 +65,13 @@ export default function ActiveConvo() {
   //   };
   // }
 
+  const startMessaging =
+    convos && Object.keys(convos).length > 0 ? (
+      <p>Select convo to start messaging</p>
+    ) : (
+      <p>You have no convos yet, find users and start messaging now</p>
+    );
+
   return (
     <div
       ref={scrollContainerRef}
@@ -108,7 +115,7 @@ export default function ActiveConvo() {
           handleRemoveMessage={handleRemoveMessage}
         />
       ) : (
-        <p>Select convo to start messaging</p>
+        startMessaging
       )}
       <div ref={endOfMessagesRef} />
     </div>
