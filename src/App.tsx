@@ -19,8 +19,9 @@ function App() {
         <ActiveConvoProvider>
           <ResizeProvider>
             <Routes>
+              <Route path="/login" element={<Login />}></Route>
+              <Route path="/register" element={<Register />}></Route>
               <Route element={<AuthGuard />}>
-                <Route path="/login" element={<Login />}></Route>
                 <Route path="/" element={<MainLayout />}>
                   <Route path="messages" element={<ConvosList />} />
                   <Route path="search" element={<FriendsTab />} />
