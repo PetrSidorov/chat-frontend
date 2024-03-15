@@ -12,19 +12,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Eye, EyeOff } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const formSchema = z
   .object({
-    username: z
-      .string()
-      .min(1, { message: "This field has to be filled." })
-      .refine(
-        async (value) => {
-          const isUnique = await checkIfUsernameIsUnique(value);
-          return isUnique;
-        },
-        { message: "This username is not unique" }
-      ),
+    username: z.string().min(1, { message: "This field has to be filled." }),
+    name: z.string().min(1, { message: "This field has to be filled." }),
+    email: z.string().email({ message: "Invalid email address." }),
     password: z
       .string()
       .min(1)
@@ -39,19 +34,14 @@ const formSchema = z
           );
         },
         {
-          message:
-            "Password must be at least 8 characters long, include at least one lowercase letter, one uppercase letter, one number, and one special character (e.g., !, @, #, ?).",
+          message: `Password must be at least 8 characters long,
+          include at least one lowercase letter, one uppercase letter,
+          one number, and one special character (e.g., !, @, #, ?).`,
         }
       ),
     confirmPassword: z
       .string()
       .min(1, { message: "Confirm password must be filled." }),
-    name: z.string().min(2, {
-      message: "Name must be at least 2 characters.",
-    }),
-    email: z.string().min(2, {
-      message: "Email must be at least 2 characters.",
-    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match.",
@@ -59,19 +49,23 @@ const formSchema = z
   });
 
 const checkIfUsernameIsUnique = async (username: string) => {
+  console.log("wat ", username);
   try {
     const response = await axios.post("http://localhost:3007/check-username", {
       username,
     });
-    return response.data.unique;
+
+    return response.data;
   } catch (error) {
-    return false; // Username is not unique
+    return false;
   }
 };
 
 type LoginFormValues = z.infer<typeof formSchema>;
 
-export default function LoginForm() {
+export default function RegisterForm() {
+  const [showPassword, setShowPassword] = useState(false);
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -82,6 +76,25 @@ export default function LoginForm() {
       confirmPassword: "",
     },
   });
+  const watchedUsername = form.watch("username");
+
+  useEffect(() => {
+    async function handleUniqueUser() {
+      if (watchedUsername) {
+        const isUnique = await checkIfUsernameIsUnique(watchedUsername);
+
+        if (!isUnique) {
+          form.setError("username", {
+            type: "server",
+            message: "This username is already taken",
+          });
+        } else {
+          form.clearErrors("username");
+        }
+      }
+    }
+    handleUniqueUser();
+  }, [watchedUsername]);
 
   async function onSubmit(values: LoginFormValues) {
     console.log("data ", values);
@@ -106,7 +119,7 @@ export default function LoginForm() {
                 <FormControl>
                   <Input
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Password"
+                    placeholder="Username"
                     {...field}
                   />
                 </FormControl>
@@ -125,7 +138,7 @@ export default function LoginForm() {
                 <FormControl>
                   <Input
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Password"
+                    placeholder="Enter your name"
                     {...field}
                   />
                 </FormControl>
@@ -139,12 +152,13 @@ export default function LoginForm() {
             render={({ field }) => (
               <FormItem className="mb-4">
                 <FormLabel className="block text-gray-700 text-sm font-bold mb-2">
-                  Password
+                  Email
                 </FormLabel>
                 <FormControl>
                   <Input
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Password"
+                    placeholder="email"
+                    type="email"
                     {...field}
                   />
                 </FormControl>
@@ -156,7 +170,7 @@ export default function LoginForm() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem className="mb-4">
+              <FormItem className="mb-4 relative">
                 <FormLabel className="block text-gray-700 text-sm font-bold mb-2">
                   Password
                 </FormLabel>
@@ -164,9 +178,18 @@ export default function LoginForm() {
                   <Input
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Password"
+                    type={showPassword ? "text" : "password"}
                     {...field}
                   />
                 </FormControl>
+                <Button
+                  size="icon"
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-sm text-blue-500 hover:underline focus:outline-none absolute top-5 right-0"
+                >
+                  {showPassword ? <EyeOff /> : <Eye />}
+                </Button>
                 <FormMessage className="text-red-500 text-sm italic" />
               </FormItem>
             )}
@@ -183,6 +206,7 @@ export default function LoginForm() {
                   <Input
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Confirm Password"
+                    type={showPassword ? "text" : "password"}
                     {...field}
                   />
                 </FormControl>
