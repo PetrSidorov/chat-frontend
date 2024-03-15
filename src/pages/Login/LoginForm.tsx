@@ -49,6 +49,7 @@ export default function LoginForm() {
           "Content-Type": "application/json",
         },
       });
+
       const data = response.data;
       if (data && data?.token) {
         setUser(data.user);

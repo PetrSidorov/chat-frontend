@@ -1,7 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import axios from "axios";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,8 +8,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { AuthContext } from "@/context/AuthProvider";
+import { TAuthContext } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 
 const formSchema = z
   .object({
@@ -39,6 +42,7 @@ const formSchema = z
           one number, and one special character (e.g., !, @, #, ?).`,
         }
       ),
+    //   TODO: fix password mismatch
     confirmPassword: z
       .string()
       .min(1, { message: "Confirm password must be filled." }),
@@ -61,10 +65,24 @@ const checkIfUsernameIsUnique = async (username: string) => {
   }
 };
 
+const checkIfEmailIsUnique = async (email: string) => {
+  try {
+    const response = await axios.post("http://localhost:3007/check-email", {
+      email,
+    });
+
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+};
+
 type LoginFormValues = z.infer<typeof formSchema>;
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const { setUser } = useContext<TAuthContext>(AuthContext);
+  const navigate = useNavigate();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(formSchema),
@@ -77,6 +95,7 @@ export default function RegisterForm() {
     },
   });
   const watchedUsername = form.watch("username");
+  const watchedEmail = form.watch("email");
 
   useEffect(() => {
     async function handleUniqueUser() {
@@ -96,8 +115,60 @@ export default function RegisterForm() {
     handleUniqueUser();
   }, [watchedUsername]);
 
+  useEffect(() => {
+    async function handleUniqueEmail() {
+      if (watchedEmail) {
+        const isUnique = await checkIfEmailIsUnique(watchedEmail);
+
+        if (!isUnique) {
+          form.setError("email", {
+            type: "server",
+            message: "This email is already in use",
+          });
+        } else {
+          form.clearErrors("email");
+        }
+      }
+    }
+    handleUniqueEmail();
+  }, [watchedEmail]);
+
   async function onSubmit(values: LoginFormValues) {
-    console.log("data ", values);
+    try {
+      const response = await axios.post(
+        "http://localhost:3007/register",
+        values,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = response.data;
+      if (data && data?.token) {
+        setUser(data.user);
+        navigate("/messages");
+      }
+    } catch (error: any) {
+      if (error.response) {
+        form.setError("username", {
+          type: "server",
+          message: error.response.data.message,
+        });
+      } else if (error.request) {
+        form.setError("username", {
+          type: "server",
+          message: "Please try again later",
+        });
+      } else {
+        form.setError("username", {
+          type: "server",
+          message: "Please try again",
+        });
+      }
+    }
   }
 
   return (
