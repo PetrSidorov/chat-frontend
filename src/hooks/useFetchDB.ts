@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import axios, { AxiosRequestConfig, CancelTokenSource } from "axios";
 import { TDataBaseRequestData } from "../types";
 
 export default function useFetchDB<T>(): {
@@ -8,76 +9,52 @@ export default function useFetchDB<T>(): {
   error: string | Error;
   setFetchData: Dispatch<SetStateAction<TDataBaseRequestData | null>>;
 } {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | Error>("");
   const [data, setData] = useState<T | null>(null);
   const [fetchData, setFetchData] = useState<TDataBaseRequestData | null>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   useEffect(() => {
-    if (fetchData == null) {
-      return;
-    }
+    if (fetchData === null) return;
 
-    let ignore = false;
-    const controller = new AbortController();
+    let source: CancelTokenSource = axios.CancelToken.source();
 
-    const {
-      url,
-      method,
-      body,
-      serialize = JSON.stringify,
-      headers = {
-        "Content-Type": "application/json",
-      },
-    } = fetchData;
-
-    async function fetchStuff() {
+    const fetchStuff = async () => {
       setLoading(true);
       setIsLoaded(false);
       try {
-        const response = await fetch(url, {
-          method,
-          body: serialize(body),
-          credentials: "include",
-          headers,
-          signal: controller.signal,
-        });
+        const axiosConfig: AxiosRequestConfig = {
+          url: fetchData.url,
+          method: fetchData.method,
+          data: fetchData.body,
+          withCredentials: true,
+          headers: fetchData.headers || { "Content-Type": "application/json" },
+          cancelToken: source.token,
+        };
 
-        if (!response.ok) {
-          // navigate("/");
-        }
-        // TODO: i will not get response in some cases, fix that
-        const data = await response.json();
-        if (response.status != 200) {
-          setError(data.message);
-          // setLoading(false);
-          // setIsLoaded(true);
-          // throw new Error(`Error with ${url} and ${method}`);
+        if (fetchData.serialize) {
+          axiosConfig.data = fetchData.serialize(fetchData.body);
         }
 
-        if (!ignore) {
-          setData((curr) => data);
-          // setLoading(false);
-          // setIsLoaded(true);
-        }
+        const response = await axios(axiosConfig);
+        setData(response.data);
       } catch (e) {
-        if (!ignore) {
-          setError(String(e));
-          // throw fetchData;
+        if (axios.isCancel(e)) {
+          console.log("Request canceled", e.message);
+        } else {
+          setError(e.response?.data?.message || String(e));
         }
       } finally {
-        if (!ignore) {
-          setLoading(false);
-          setIsLoaded(true);
-        }
+        setLoading(false);
+        setIsLoaded(true);
       }
-    }
+    };
 
     fetchStuff();
+
     return () => {
-      ignore = true;
-      controller.abort();
+      source.cancel("Operation canceled by the user.");
     };
   }, [fetchData]);
 
