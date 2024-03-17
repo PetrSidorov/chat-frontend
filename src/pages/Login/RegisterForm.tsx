@@ -42,18 +42,17 @@ const formSchema = z
           one number, and one special character (e.g., !, @, #, ?).`,
         }
       ),
-    //   TODO: fix password mismatch
     confirmPassword: z
       .string()
       .min(1, { message: "Confirm password must be filled." }),
   })
+
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match.",
-    path: ["confirmPassword"], // This ensures the error is attached to confirmPassword
+    path: ["confirmPassword"],
   });
 
 const checkIfUsernameIsUnique = async (username: string) => {
-  console.log("wat ", username);
   try {
     const response = await axios.post("http://localhost:3007/check-username", {
       username,
