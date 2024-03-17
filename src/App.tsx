@@ -7,9 +7,8 @@ import MainLayout from "./pages/Chat/MainLayout";
 import FriendsTab from "./pages/Chat/sidebar/FriendsTab";
 import SettingsTab from "./pages/Chat/sidebar/SettingsTab";
 import ConvosList from "./pages/Chat/sidebar/convos/ConvosList";
-import LoginForm from "./pages/Login/LoginForm";
-import RegisterForm from "./pages/Login/RegisterForm";
-import Login from "./pages/Login/Login";
+import LoginPage from "./pages/Login/LoginPage";
+import RegisterPage from "./pages/Login/RegisterPage";
 
 function App() {
   return (
@@ -18,16 +17,15 @@ function App() {
         <ActiveConvoProvider>
           <ResizeProvider>
             <Routes>
-              {/* <Route path="/logins" element={<Login />}></Route> */}
-              <Route path="/login" element={<LoginForm />} />
-              <Route path="/register" element={<RegisterForm />} />
+              <Route path="*" element={<Navigate to="/login" replace />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
               <Route element={<AuthGuard />}>
                 <Route path="/" element={<MainLayout />}>
                   <Route path="messages" element={<ConvosList />} />
                   <Route path="search" element={<FriendsTab />} />
                   <Route path="settings" element={<SettingsTab />} />
                 </Route>
-                <Route path="*" element={<Navigate to="/login" replace />} />
               </Route>
             </Routes>
           </ResizeProvider>

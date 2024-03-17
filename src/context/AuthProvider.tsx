@@ -7,37 +7,55 @@ import {
   useMemo,
   useState,
 } from "react";
-import { TAuthContext, TUser } from "../types";
 import useFetchDB from "../hooks/useFetchDB";
+import { TUser } from "../types";
 
-export const AuthContext = createContext<TAuthContext | null>(null);
+type TAuthContext = {
+  loading: boolean;
+  user: TUser | null;
+  isLoaded: boolean;
+  userData: TUser | null;
+  error: any;
+  setUser: Dispatch<SetStateAction<TUser | null>> | (() => void);
+};
+
+const initialData = {
+  loading: false,
+  user: null,
+  isLoaded: false,
+  userData: null,
+  error: null,
+  setUser: () => {},
+};
+
+export const AuthContext = createContext<TAuthContext>(initialData);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<TUser | null>(null);
-  const { loading, isLoaded, data, error, setFetchData } = useFetchDB<any>();
+  const {
+    loading,
+    isLoaded,
+    data: userData,
+    error,
+    setFetchData,
+  } = useFetchDB<any>();
 
   useEffect(() => {
-    if (!user && !isLoaded && !loading) {
+    if (!user) {
       setFetchData({
         url: "http://localhost:3007/api/user-data",
         method: "GET",
       });
     }
-  }, [user, isLoaded]);
+  }, [user]);
 
   useEffect(() => {
-    if (error === "notoken") {
-      setUser(null);
-    }
-  }, [error]);
-
-  useEffect(() => {
-    setUser(data);
-  }, [data]);
+    setUser(userData);
+  }, [userData]);
 
   const value = useMemo(() => {
-    return { loading, user, isLoaded, data, error, setUser };
-  }, [loading, user, isLoaded, data, error]);
+    return { loading, user, isLoaded, userData, error, setUser };
+  }, [loading, user, isLoaded, userData, error]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

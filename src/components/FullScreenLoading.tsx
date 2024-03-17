@@ -2,7 +2,7 @@ import VisuallyHidden from "./VisuallyHidden";
 
 export default function FullScreenLoading() {
   return (
-    <div className="flex justify-around items-center h-svh-fallback">
+    <div className="flex justify-around items-center h-full">
       <div role="status">
         <svg
           aria-hidden="true"

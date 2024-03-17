@@ -13,17 +13,17 @@ export type TUser = {
   message?: string;
   onlineStatus?: boolean;
 };
-
-export type TAuthContext = {
-  // TUser | null,
-  // Dispatch<SetStateAction<TUser | null>>
-  loading: boolean;
-  user: TUser | null;
-  isLoaded: boolean;
-  data: any;
-  error: any;
-  setUser: Dispatch<SetStateAction<TUser | null>>;
-};
+// loading, user, isLoaded, data, error, setUser
+// export type TAuthContext = {
+//   // TUser | null,
+//   // Dispatch<SetStateAction<TUser | null>>
+//   loading: boolean;
+//   user: TUser | null;
+//   isLoaded: boolean;
+//   data: any;
+//   error: any;
+//   setUser: Dispatch<SetStateAction<TUser | null>>;
+// };
 
 export type TMessage = {
   id: string;

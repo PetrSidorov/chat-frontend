@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { AuthContext } from "@/context/AuthProvider";
-import { TAuthContext } from "@/types";
+// import { TAuthContext } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
@@ -78,9 +78,9 @@ const checkIfEmailIsUnique = async (email: string) => {
 
 type LoginFormValues = z.infer<typeof formSchema>;
 
-export default function RegisterForm() {
+export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const { setUser } = useContext<TAuthContext>(AuthContext);
+  const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const form = useForm<LoginFormValues>({
@@ -284,12 +284,20 @@ export default function RegisterForm() {
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Submit
-          </Button>
+          <div className="flex justify-between items-center">
+            <Button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Submit
+            </Button>
+            <a
+              className="font-bold text-sm text-blue-500 hover:text-blue-800 pr-4"
+              href="/login"
+            >
+              Sign in
+            </a>
+          </div>
         </form>
       </Form>
     </div>

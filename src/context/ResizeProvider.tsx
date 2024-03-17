@@ -18,6 +18,8 @@ type TinitialContext = {
   setFullWidthMessagesInActiveConvo: Dispatch<SetStateAction<boolean>>;
   mobileView: boolean;
   setMobileView: Dispatch<SetStateAction<boolean>>;
+  handleDrag: () => void;
+  sizes: [];
 };
 
 const initialContext = {
@@ -29,6 +31,8 @@ const initialContext = {
   >,
   mobileView: false,
   setMobileView: (() => {}) as Dispatch<SetStateAction<boolean>>,
+  handleDrag: () => {},
+  sizes: [],
 };
 
 export const ResizeContext = createContext<TinitialContext>(initialContext);

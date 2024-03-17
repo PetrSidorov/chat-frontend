@@ -54,7 +54,7 @@ export default function ConvosList() {
         </div>
       );
     });
-  console.log("ListOfConvoPreviews ", ListOfConvoPreviews);
+
   return (
     <>
       {ListOfConvoPreviews ? (

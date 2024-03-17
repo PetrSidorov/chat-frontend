@@ -9,10 +9,6 @@ export default function useRoomUsersStatus(
   const [changes, setChanges] = useState([]);
 
   useEffect(() => {
-    console.log("convos in  online status ", convos);
-  }, [convos]);
-
-  useEffect(() => {
     const handleUserOffline = (convoId: string) => {
       handleOnlineStatus(convoId, false);
       console.log(convoId, false);

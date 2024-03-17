@@ -40,10 +40,6 @@ export default function ActiveConvoProvider({
     initialState: "",
   });
 
-  useEffect(() => {
-    console.log("data ", convos);
-  }, [convos]);
-
   async function initConvo(data: TConvos) {
     setConvos(data);
     const convoIdArray = Object.keys(data);

@@ -39,7 +39,7 @@ export default function useFetchDB<T>(): {
 
         const response = await axios(axiosConfig);
         setData(response.data);
-      } catch (e) {
+      } catch (e: any) {
         if (axios.isCancel(e)) {
           console.log("Request canceled", e.message);
         } else {

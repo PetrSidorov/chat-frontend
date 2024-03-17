@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { TAuthContext } from "@/types";
+
 import { AuthContext } from "@/context/AuthProvider";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -29,7 +29,7 @@ const formSchema = z.object({
 
 type LoginFormValues = z.infer<typeof formSchema>;
 
-export default function LoginForm() {
+export default function LoginPage() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const form = useForm<LoginFormValues>({
@@ -39,7 +39,7 @@ export default function LoginForm() {
       password: "",
     },
   });
-  const { setUser } = useContext<TAuthContext>(AuthContext);
+  const { setUser } = useContext(AuthContext);
 
   async function onSubmit(values: LoginFormValues) {
     try {
@@ -130,12 +130,20 @@ export default function LoginForm() {
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Submit
-          </Button>
+          <div className="flex justify-between items-center">
+            <Button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Submit
+            </Button>
+            <a
+              className="font-bold text-sm text-blue-500 hover:text-blue-800 pr-4"
+              href="/register"
+            >
+              Create account
+            </a>
+          </div>
         </form>
       </Form>
     </div>
