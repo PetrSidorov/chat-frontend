@@ -45,9 +45,9 @@ export default function useMessage() {
     emit({
       content: message,
       convoId: activeConvoId,
-      receiverId: convos[activeConvoId].receiver.id,
+      // receiverId: convos[activeConvoId].receiver.id,
       createdAt: new Date().toISOString(),
-      id: crypto.randomUUID(),
+      // id: crypto.randomUUID(),
       senderId: user.id,
       // TODO: use this Uuid for optimistic updates
     });

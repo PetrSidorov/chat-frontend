@@ -10,6 +10,7 @@ import FullScreenLoading from "../../components/FullScreenLoading";
 import { AuthContext } from "../../context/AuthProvider";
 import { ResizeContext } from "../../context/ResizeProvider";
 import Sidebar from "./sidebar/Sidebar";
+import NoActiveConvo from "./NoactiveConvo";
 
 export default function ChatMain() {
   const { user } = useContext(AuthContext);
@@ -48,12 +49,16 @@ export default function ChatMain() {
                 hidden: mobileView && !activeConvoId,
               })}
             >
-              <ActiveConvo />
-              <MessageManager />
+              {activeConvoId ? (
+                <>
+                  <ActiveConvo />
+                  <MessageManager />
+                </>
+              ) : (
+                <NoActiveConvo />
+              )}
             </div>
-            {/* )} */}
           </Split>
-          {/* </ResizeProvider> */}
         </div>
       )}
     </>

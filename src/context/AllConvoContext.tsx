@@ -6,7 +6,7 @@ import useOnlineStatus from "../hooks/useOnlineStatus";
 
 // TODO: ask Artem if this could be managed in a less ugly way
 export const AllConvoContext = createContext<TConvoContext>({
-  activeConvoId: [null, () => {}],
+  activeConvoId: ["", () => {}],
   socketPoll: [null, () => {}],
   convoContext: {
     convos: null,

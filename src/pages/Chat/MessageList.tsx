@@ -15,11 +15,11 @@ const MessageList = forwardRef<
     currentUser: { username: string; avatarUrl: string | null; id: string };
     handleRemoveMessage: Function;
     activeConvoId: string;
-    receiver: TUser;
+    participants: any;
   }
 >(
   (
-    { messages, currentUser, receiver, handleRemoveMessage, activeConvoId },
+    { messages, currentUser, handleRemoveMessage, activeConvoId, participants },
     ref
   ) => {
     const initialPopupState = {
@@ -78,7 +78,10 @@ const MessageList = forwardRef<
       ({ content, createdAt, sender, id }, i: number, messages) => {
         const yours = sender.id == currentUser.id;
 
-        const avatarUrl = yours ? currentUser.avatarUrl : receiver.avatarUrl;
+        const avatarUrl = yours
+          ? currentUser.avatarUrl
+          : participants[sender.id].avatarUrl || null;
+
         const alignment = yours ? "self-end" : "self-start";
         let animationType = "";
         if (id === messageToRemove) {

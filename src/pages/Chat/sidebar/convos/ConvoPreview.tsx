@@ -48,8 +48,10 @@ export default function ConvoPreview({
           key={createdAt}
           content={trimmedContent}
           createdAt={createdAt}
-          username={receiver.username}
-          avatarUrl={receiver.avatarUrl}
+          // username={receiver.username}
+          username="test"
+          // avatarUrl={receiver.avatarUrl}
+          avatarUrl=""
           showOnlyAvatars={showOnlyAvatars}
           style={style}
         />
@@ -60,8 +62,10 @@ export default function ConvoPreview({
       <Message
         createdAt={""}
         content={"This convo is empty, start messaging now =)"}
-        username={receiver.username}
-        avatarUrl={receiver.avatarUrl}
+        // username={receiver.username}
+        username="Test"
+        // avatarUrl={receiver.avatarUrl}
+        avatarUrl=""
         showOnlyAvatars={showOnlyAvatars}
         style={style}
       />

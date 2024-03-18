@@ -20,7 +20,8 @@ export default function ActiveConvo() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { mobileView } = useContext(ResizeContext);
   const [blockOffset, setBlockOffset] = useState(false);
-  const onlineStatus = convos?.[activeConvoId]?.receiver.onlineStatus;
+  // const onlineStatus = convos?.[activeConvoId]?.receiver.onlineStatus;
+  const onlineStatus = false;
 
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
@@ -65,43 +66,36 @@ export default function ActiveConvo() {
   //   };
   // }
 
-  const startMessaging =
-    convos && Object.keys(convos).length > 0 ? (
-      <p>Select convo to start messaging</p>
-    ) : (
-      <p>You have no convos yet, find users and start messaging now</p>
-    );
+  // const startMessaging =
+  //   convos && Object.keys(convos).length > 0 ? (
+  //     <p>Select convo to start messaging</p>
+  //   ) : (
+  //     <p>You have no convos yet, find users and start messaging now</p>
+  //   );
 
   return (
     <div
       ref={scrollContainerRef}
       className="flex flex-col flex-grow p-4 overflow-y-auto overflow-x-hidden"
     >
-      {activeConvoId && (
-        // the 100% below are not working
-        <div className="w-[100%] h-10 bg-slate-600 fixed -mt-4 -ml-4 z-1 flex items-center">
-          {/* classes for bottom IsOnline should be different */}
-          {mobileView && (
-            <button onClick={() => handleActiveConvoId(null)}>
-              <ChevronLeft />
-            </button>
-          )}
+      <div className="w-[100%] h-10 bg-slate-600 fixed -mt-4 -ml-4 z-1 flex items-center">
+        {/* classes for bottom IsOnline should be different */}
+        {mobileView && (
+          <button onClick={() => handleActiveConvoId(null)}>
+            <ChevronLeft />
+          </button>
+        )}
 
-          <div className="flex align-center justify-between w-[40%]">
-            <p>
+        <div className="flex align-center justify-between w-[40%]">
+          {/* <p>
               <span>{convos?.[activeConvoId].receiver.username}</span> is{" "}
               {onlineStatus ? "online" : "offline"}
-            </p>
-
-            <IsOnline online={onlineStatus} />
-          </div>
+            </p> */}
+          <IsOnline online={onlineStatus} />
         </div>
-      )}
+      </div>
       {!online && <p>Waiting for network</p>}
-      {activeConvoId &&
-      convos?.[activeConvoId] &&
-      user &&
-      Object.keys(user).length > 0 ? (
+      {user && Object.keys(user).length > 0 ? (
         <MessageList
           ref={observeRef}
           messages={convos?.[activeConvoId].messages}
@@ -111,11 +105,11 @@ export default function ActiveConvo() {
             id: user.id,
           }}
           activeConvoId={activeConvoId}
-          receiver={convos?.[activeConvoId].receiver}
+          participants={convos?.[activeConvoId].participants}
           handleRemoveMessage={handleRemoveMessage}
         />
       ) : (
-        startMessaging
+        "startMessaging"
       )}
       <div ref={endOfMessagesRef} />
     </div>

@@ -21,6 +21,7 @@ export default function useSockets<T, I>({
   const [socketLoading, setSocketLoading] = useState(false);
 
   function basicEmit(dataToEmit: T) {
+    console.log("dataToEmit ", dataToEmit);
     setSocketLoading(true);
     socket.emit(emitFlag, dataToEmit);
   }

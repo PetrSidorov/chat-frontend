@@ -63,7 +63,7 @@ export type TConvos = {
   [key: string]: {
     messages: TMessage[];
     // actors: Tactors;
-    receiver: TUser;
+    // receiver: TUser;
     // onlineStatus: boolean;
     // actors: {
     //   initiator: {
@@ -94,7 +94,7 @@ export type TConvoContext = {
     handleRemoveMessage: Function;
     initConvo: Function;
   };
-  activeConvoId: [string | null, Function];
+  activeConvoId: [string, Function];
   socketPoll: [string[] | null, Dispatch<SetStateAction<string[] | null>>];
 };
 

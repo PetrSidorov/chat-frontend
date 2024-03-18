@@ -25,6 +25,10 @@ export default function SettingsTab() {
   }
 
   useEffect(() => {
+    console.log("user ", user);
+  }, [user]);
+
+  useEffect(() => {
     if (data?.message == "loggedout") {
       navigate("/login");
       if (socket) socket.disconnect();

@@ -64,7 +64,7 @@ function UploadAndCropAvatar() {
       if (!imageSrc) return;
       const croppedImageBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
       const formData = new FormData();
-      formData.append("avatar", croppedImageBlob, "avatar.jpg");
+      formData.append("avatar", croppedImageBlob, `${crypto.randomUUID()}.jpg`);
 
       const response = await fetch("http://localhost:3007/api/user-avatar/", {
         method: "POST",

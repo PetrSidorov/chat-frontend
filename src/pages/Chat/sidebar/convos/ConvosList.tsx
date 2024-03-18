@@ -20,15 +20,9 @@ export default function ConvosList() {
       url: "http://localhost:3007/api/convo/last-ten-convos-with-ten-messages",
     });
   }, []);
-
-  // useEffect(() => {
-  //   if (error == "notoken") {
-  //     navigate("/login");
-  //   }
-  // }, [error]);
-
   useEffect(() => {
     if (!data || !user) return;
+    console.log("data ", data);
     initConvo(data);
   }, [data, user]);
 
