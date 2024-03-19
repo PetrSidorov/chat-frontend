@@ -7,8 +7,8 @@ import MainLayout from "./pages/Chat/MainLayout";
 import FriendsTab from "./pages/Chat/sidebar/FriendsTab";
 import SettingsTab from "./pages/Chat/sidebar/SettingsTab";
 import ConvosList from "./pages/Chat/sidebar/convos/ConvosList";
-import LoginPage from "./pages/Login/LoginPage";
-import RegisterPage from "./pages/Login/RegisterPage";
+import LoginPage from "./pages/Auth/LoginPage";
+import RegisterPage from "./pages/Auth/RegisterPage";
 
 function App() {
   return (
