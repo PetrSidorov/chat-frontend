@@ -57,6 +57,8 @@ export default function ActiveConvo() {
   useEffect(() => {
     // TODO: i need scroll into view but on new message
     // (maybe on some other cases too)
+    console.log("convos ", convos);
+    console.log("convos?.[activeConvoId] ", convos?.[activeConvoId]);
     endOfMessagesRef.current?.scrollIntoView();
   }, [convos]);
 
@@ -98,14 +100,14 @@ export default function ActiveConvo() {
       {user && Object.keys(user).length > 0 ? (
         <MessageList
           ref={observeRef}
-          messages={convos?.[activeConvoId].messages}
+          messages={convos?.[activeConvoId]?.messages || []}
           currentUser={{
             username: user.username,
             avatarUrl: user.avatarUrl,
             id: user.id,
           }}
           activeConvoId={activeConvoId}
-          participants={convos?.[activeConvoId].participants}
+          participants={convos?.[activeConvoId]?.participants}
           handleRemoveMessage={handleRemoveMessage}
         />
       ) : (

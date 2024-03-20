@@ -18,9 +18,9 @@ export default function AuthRequired() {
   //   console.log("-----");
   // }, [isLoaded, user]);
 
-  if (!userData && isLoaded) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
+  // if (!userData && isLoaded) {
+  //   return <Navigate to="/login" state={{ from: location }} replace />;
+  // }
 
   return <Outlet />;
 }

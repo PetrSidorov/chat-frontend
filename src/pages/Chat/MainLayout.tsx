@@ -10,7 +10,7 @@ import FullScreenLoading from "../../components/FullScreenLoading";
 import { AuthContext } from "../../context/AuthProvider";
 import { ResizeContext } from "../../context/ResizeProvider";
 import Sidebar from "./sidebar/Sidebar";
-import NoActiveConvo from "./NoactiveConvo";
+import NoActiveConvo from "./NoActiveConvo";
 
 export default function ChatMain() {
   const { user } = useContext(AuthContext);

@@ -2,7 +2,6 @@ import React, { forwardRef, useContext, useEffect, useState } from "react";
 import Message from "./message/Message";
 import { TMessage, TUser, Tactors } from "../../types";
 import MessageContextMenu from "./sidebar/convos/MessageContextMenu";
-import HandleClickOutside from "../../hooks/ClickOutsideHandler";
 import { ResizeContext } from "../../context/ResizeProvider";
 import { AnimatePresence } from "framer-motion";
 import isSameDayAsPreviousMessage from "../../utils/isSameDayAsPreviousMessage";
@@ -91,10 +90,10 @@ const MessageList = forwardRef<
         return (
           <React.Fragment key={id}>
             {i === 3 ? <div ref={ref} /> : null}
-            {!isSameDayAsPreviousMessage(
+            {/* {!isSameDayAsPreviousMessage(
               createdAt,
               messages[i - 1]?.createdAt || ""
-            ) && <MonthAndYear createdAt={createdAt} />}
+            ) && <MonthAndYear createdAt={createdAt} />} */}
             <div
               onContextMenu={(e) => togglePopup(yours, id, e)}
               id={id}

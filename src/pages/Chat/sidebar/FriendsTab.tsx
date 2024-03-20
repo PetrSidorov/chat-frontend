@@ -19,10 +19,10 @@ export default function FriendsTab() {
     debounceFlag: true,
   });
 
-  function createNewConvo(secondUserId: string) {
-    console.log("secondUserId ", secondUserId);
-    emitNewConvo(secondUserId);
-  }
+  // function createNewConvo(secondUserId: string) {
+  //   console.log("secondUserId ", secondUserId);
+  //   emitNewConvo(secondUserId);
+  // }
 
   useEffect(() => {
     if (!searchInput && foundUsers.length > 0) {
@@ -35,6 +35,7 @@ export default function FriendsTab() {
 
   useEffect(() => {
     if (data && data.length > 0) {
+      console.log("found users ", data);
       setFoundUsers(data);
     }
   }, [data]);
@@ -77,7 +78,7 @@ export default function FriendsTab() {
                     console.log("user.convos[0] ", user.convos[0]?.id);
                     return user.convos[0]?.id
                       ? setActiveConvoId(user.convos[0].id)
-                      : createNewConvo(user.id);
+                      : emitNewConvo([user.id]);
                   }}
                 >
                   {/* <MessageSquare

@@ -16,11 +16,13 @@ export default function useNewConvo() {
   });
 
   useEffect(() => {
+    console.log("data in use new convo ", data);
     if (data && Object.keys(data).length === 0) return;
-    const [convoId, messages] = Object.entries(data)[0];
+    // const [convoId, messages] = Object.entries(data)[0];
+    const [convoId] = Object.entries(data)[0];
 
+    // unshiftMessagesToConvo({ id: convoId, newMessages: [] });
     setActiveConvoId(convoId);
-    unshiftMessagesToConvo({ id: convoId, newMessages: messages });
     joinRoom(convoId);
   }, [data]);
 

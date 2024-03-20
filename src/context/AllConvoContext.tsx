@@ -16,6 +16,7 @@ export const AllConvoContext = createContext<TConvoContext>({
     handleOnlineStatuses: () => {},
     handleRemoveMessage: () => {},
     initConvo: () => {},
+    // initConvo: () => {},
   },
 });
 
@@ -132,6 +133,21 @@ export default function ActiveConvoProvider({
       }
 
       return updatedConvos;
+    });
+  }
+
+  function addNewConvo(newConvo: any) {
+    const newConvos = {};
+    newConvos[newConvo.id] = {
+      messages: newConvo.messages,
+      participants: newConvo.participants,
+    };
+    setConvos((currConvos) => {
+      if (!currConvos) {
+        return newConvos;
+      } else {
+        return { ...currConvos, newConvos };
+      }
     });
   }
 

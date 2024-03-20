@@ -22,13 +22,14 @@ export default function Message({
   style?: TCSSclampLines;
   prevMessageSender?: string;
 }) {
-  const date = createdAt
-    ? new Date(createdAt).toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      })
-    : "";
+  // const date = createdAt
+  //   ? new Date(createdAt).toLocaleTimeString("en-US", {
+  //       hour: "2-digit",
+  //       minute: "2-digit",
+  //       hour12: false,
+  //     })
+  //   : "";
+  const date = createdAt;
 
   // TODO: ${alignment} ${classes} - gives undefined undefined - fix
   // TODO:   text-overflow: ellipsis (maybe);
