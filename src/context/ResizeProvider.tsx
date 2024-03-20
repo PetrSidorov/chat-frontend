@@ -57,7 +57,7 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const [leftPanelWidth, rightPanelWidth] = sizes;
-    const leftNarrow = leftPanelWidth < 20;
+    const leftNarrow = leftPanelWidth < 25;
     const rightNarrow = rightPanelWidth < 35;
     setFullWidthMessagesInActiveConvo(rightNarrow || window.innerWidth < 800);
     setShowOnlyAvatars(leftNarrow || (window.innerWidth < 800 && !mobileView));

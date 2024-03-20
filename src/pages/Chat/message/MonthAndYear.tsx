@@ -13,12 +13,12 @@ export default function MonthAndYear({ createdAt }: { createdAt: string }) {
 
   return (
     <motion.div
-      className="w-fit mx-auto"
+      className="w-fit mx-auto mt-10"
       layout
-      initial={animations["enter"].initial}
-      animate={animations["enter"].animate}
-      exit={animations["enter"].exit}
-      transition={animations["enter"].transition}
+      initial={animations.enter.initial}
+      animate={animations.enter.animate}
+      exit={animations.enter.exit}
+      transition={animations.enter.transition}
     >
       <p>{dateString}</p>
     </motion.div>

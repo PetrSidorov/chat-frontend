@@ -26,10 +26,11 @@ export default function ConvosList() {
     initConvo(data);
   }, [data, user]);
 
-  const ListOfConvoPreviews =
+  const listOfConvoPreviews =
     convos &&
     Object.entries(convos)?.map((convo: any) => {
       const [id, data] = convo;
+
       return (
         <div
           // className="h-[132px]"
@@ -41,7 +42,7 @@ export default function ConvosList() {
           }}
         >
           <ConvoPreview
-            receiver={data.receiver}
+            participants={data.participants}
             messages={data.messages}
             online={data?.receiver?.onlineStatus}
           />
@@ -51,12 +52,14 @@ export default function ConvosList() {
 
   return (
     <>
-      {ListOfConvoPreviews ? (
-        <ul className="font-semibold">{ListOfConvoPreviews}</ul>
+      {listOfConvoPreviews && listOfConvoPreviews.length > 0 ? (
+        <ul className="font-semibold">{listOfConvoPreviews}</ul>
       ) : (
-        <p className="text-white text-lg italic mt-2">
-          You have no messages yet
-        </p>
+        <div className="text-center">
+          <h3 className="mt-2 text-2xl font-semibold text-white-900">
+            You have no messages yet
+          </h3>
+        </div>
       )}
     </>
   );

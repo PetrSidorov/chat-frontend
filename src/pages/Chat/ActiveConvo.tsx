@@ -20,8 +20,8 @@ export default function ActiveConvo() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { mobileView } = useContext(ResizeContext);
   const [blockOffset, setBlockOffset] = useState(false);
-  // const onlineStatus = convos?.[activeConvoId]?.receiver.onlineStatus;
-  const onlineStatus = false;
+  const onlineStatus = convos?.[activeConvoId]?.participants[0].onlineStatus;
+  // const onlineStatus = true;
 
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
@@ -57,8 +57,7 @@ export default function ActiveConvo() {
   useEffect(() => {
     // TODO: i need scroll into view but on new message
     // (maybe on some other cases too)
-    console.log("convos ", convos);
-    console.log("convos?.[activeConvoId] ", convos?.[activeConvoId]);
+
     endOfMessagesRef.current?.scrollIntoView();
   }, [convos]);
 
@@ -89,10 +88,10 @@ export default function ActiveConvo() {
         )}
 
         <div className="flex align-center justify-between w-[40%]">
-          {/* <p>
-              <span>{convos?.[activeConvoId].receiver.username}</span> is{" "}
-              {onlineStatus ? "online" : "offline"}
-            </p> */}
+          <p>
+            <span>{convos?.[activeConvoId].participants[0].username}</span> is{" "}
+            {onlineStatus ? "online" : "offline"}
+          </p>
           <IsOnline online={onlineStatus} />
         </div>
       </div>

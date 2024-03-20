@@ -86,12 +86,12 @@ export type ConvoProps = {
 
 export type TConvoContext = {
   convoContext: {
-    convos: TConvos | null;
+    convos: TConvos | {};
     unshiftMessagesToConvo: Function;
     pushNewMessageToConvo: Function;
     pushNewMessagesToConvo: Function;
-    handleOnlineStatuses: Function;
     handleRemoveMessage: Function;
+    handleOnlineStatus: Function;
     initConvo: Function;
   };
   activeConvoId: [string, Function];

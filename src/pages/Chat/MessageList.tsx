@@ -90,10 +90,10 @@ const MessageList = forwardRef<
         return (
           <React.Fragment key={id}>
             {i === 3 ? <div ref={ref} /> : null}
-            {/* {!isSameDayAsPreviousMessage(
+            {!isSameDayAsPreviousMessage(
               createdAt,
               messages[i - 1]?.createdAt || ""
-            ) && <MonthAndYear createdAt={createdAt} />} */}
+            ) && <MonthAndYear createdAt={createdAt} />}
             <div
               onContextMenu={(e) => togglePopup(yours, id, e)}
               id={id}

@@ -9,11 +9,11 @@ export const AllConvoContext = createContext<TConvoContext>({
   activeConvoId: ["", () => {}],
   socketPoll: [null, () => {}],
   convoContext: {
-    convos: null,
+    convos: {},
     unshiftMessagesToConvo: () => {},
     pushNewMessageToConvo: () => {},
     pushNewMessagesToConvo: () => {},
-    handleOnlineStatuses: () => {},
+    handleOnlineStatus: () => {},
     handleRemoveMessage: () => {},
     initConvo: () => {},
     // initConvo: () => {},
@@ -180,17 +180,18 @@ export default function ActiveConvoProvider({
   }
 
   function handleOnlineStatus(convoId: string, onlineStatus: boolean) {
+    console.log("convoId ", convoId);
     setConvos((currConvos) => {
       if (!currConvos || !currConvos[convoId]) {
         return currConvos;
       }
-
+      console.log(currConvos);
       const updatedConvos = { ...currConvos };
-      updatedConvos[convoId].receiver = {
-        ...updatedConvos[convoId].receiver,
+      updatedConvos[convoId].participants[0] = {
+        ...updatedConvos[convoId].participants[0],
         onlineStatus: onlineStatus,
       };
-
+      console.log("updatedConvos ", updatedConvos);
       return updatedConvos;
     });
   }
@@ -203,7 +204,7 @@ export default function ActiveConvoProvider({
           unshiftMessagesToConvo,
           pushNewMessageToConvo,
           pushNewMessagesToConvo,
-          handleOnlineStatuses: handleOnlineStatus,
+          handleOnlineStatus,
           handleRemoveMessage,
           initConvo,
         },
