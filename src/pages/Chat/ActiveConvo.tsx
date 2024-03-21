@@ -8,6 +8,7 @@ import useOnlineStatus from "../../hooks/useNetworkStatus";
 import IsOnline from "./sidebar/convos/IsOnline";
 import { ChevronLeft } from "lucide-react";
 import { ResizeContext } from "../../context/ResizeProvider";
+import useRoomUsersStatus from "@/hooks/useRoomUsersStatus";
 
 export default function ActiveConvo() {
   const [activeConvoId, handleActiveConvoId] =
@@ -15,13 +16,17 @@ export default function ActiveConvo() {
   const { user } = useContext(AuthContext);
   const { convos, unshiftMessagesToConvo, handleRemoveMessage } =
     useContext(AllConvoContext).convoContext;
-  const online = useOnlineStatus();
+  const userOnlineStatus = useOnlineStatus();
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { mobileView } = useContext(ResizeContext);
   const [blockOffset, setBlockOffset] = useState(false);
-  const onlineStatus = convos?.[activeConvoId]?.participants[0].onlineStatus;
-  // const onlineStatus = true;
+  // const onlineStatuses = useRoomUsersStatus();
+  // const participantOnlineStatus = convos?[activeConvoId]?.participants.find(participant => participant.id === onlineStatuses?[activeConvoId])
+  // const participants = onlineStatuses;
+  //  convos[activeConvoId].participants[0].id;
+  // console.log("participants ", onlineStatuses);
+  const onlineStatus = true;
 
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
@@ -90,12 +95,12 @@ export default function ActiveConvo() {
         <div className="flex align-center justify-between w-[40%]">
           <p>
             <span>{convos?.[activeConvoId].participants[0].username}</span> is{" "}
-            {onlineStatus ? "online" : "offline"}
+            {onlineStatuses ? "online" : "offline"}
           </p>
           <IsOnline online={onlineStatus} />
         </div>
       </div>
-      {!online && <p>Waiting for network</p>}
+      {!userOnlineStatus && <p>Waiting for network</p>}
       {user && Object.keys(user).length > 0 ? (
         <MessageList
           ref={observeRef}

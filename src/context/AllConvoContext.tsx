@@ -1,8 +1,8 @@
 import { ReactNode, createContext, useEffect, useState } from "react";
-import { TConvoContext, TConvos, TMessage } from "../types";
 import useConvoSocketPoll from "../hooks/useConvoSocketPoll";
 import useSockets from "../hooks/useSockets";
-import useOnlineStatus from "../hooks/useOnlineStatus";
+import { TConvoContext, TConvos, TMessage, TOnlineStatuses } from "../types";
+import useRoomUsersStatus from "@/hooks/useRoomUsersStatus";
 
 // TODO: ask Artem if this could be managed in a less ugly way
 export const AllConvoContext = createContext<TConvoContext>({
@@ -13,7 +13,6 @@ export const AllConvoContext = createContext<TConvoContext>({
     unshiftMessagesToConvo: () => {},
     pushNewMessageToConvo: () => {},
     pushNewMessagesToConvo: () => {},
-    handleOnlineStatus: () => {},
     handleRemoveMessage: () => {},
     initConvo: () => {},
     // initConvo: () => {},
@@ -29,7 +28,14 @@ export default function ActiveConvoProvider({
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
   const { joinRoom } = useConvoSocketPoll();
-  useOnlineStatus(convos, handleOnlineStatus);
+  const onlineStatuses = useRoomUsersStatus();
+
+  function getParticipantOnlineStatus(userId: string) {
+    if (!activeConvoId) return;
+    return onlineStatuses[activeConvoId].participants.filter(
+      (participant) => participant.id == userId
+    );
+  }
 
   const {
     socketLoading,
@@ -119,7 +125,6 @@ export default function ActiveConvoProvider({
   }
 
   function pushNewMessageToConvo(convoId: string, message: TMessage) {
-    // if (!convoId || !message) return;
     setConvos((currentConvos) => {
       if (!currentConvos) return {};
       const updatedConvos = { ...currentConvos };
@@ -179,23 +184,6 @@ export default function ActiveConvoProvider({
     });
   }
 
-  function handleOnlineStatus(convoId: string, onlineStatus: boolean) {
-    console.log("convoId ", convoId);
-    setConvos((currConvos) => {
-      if (!currConvos || !currConvos[convoId]) {
-        return currConvos;
-      }
-      console.log(currConvos);
-      const updatedConvos = { ...currConvos };
-      updatedConvos[convoId].participants[0] = {
-        ...updatedConvos[convoId].participants[0],
-        onlineStatus: onlineStatus,
-      };
-      console.log("updatedConvos ", updatedConvos);
-      return updatedConvos;
-    });
-  }
-
   return (
     <AllConvoContext.Provider
       value={{
@@ -204,7 +192,6 @@ export default function ActiveConvoProvider({
           unshiftMessagesToConvo,
           pushNewMessageToConvo,
           pushNewMessagesToConvo,
-          handleOnlineStatus,
           handleRemoveMessage,
           initConvo,
         },

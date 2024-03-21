@@ -84,6 +84,10 @@ export type ConvoProps = {
   data: TConvos;
 };
 
+export type TOnlineStatuses = {
+  [convoId: string]: { [userId: string]: boolean };
+};
+
 export type TConvoContext = {
   convoContext: {
     convos: TConvos | {};
@@ -91,7 +95,6 @@ export type TConvoContext = {
     pushNewMessageToConvo: Function;
     pushNewMessagesToConvo: Function;
     handleRemoveMessage: Function;
-    handleOnlineStatus: Function;
     initConvo: Function;
   };
   activeConvoId: [string, Function];
