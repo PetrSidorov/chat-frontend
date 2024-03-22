@@ -5,6 +5,7 @@ import { AuthContext } from "../../../../context/AuthProvider";
 import useFetchDB from "../../../../hooks/useFetchDB";
 import ConvoPreview from "./ConvoPreview";
 import { useNavigate } from "react-router-dom";
+import useRoomUsersStatus from "@/hooks/useRoomUsersStatus";
 
 export default function ConvosList() {
   const { convos, unshiftMessagesToConvo, initConvo } =
@@ -13,6 +14,8 @@ export default function ConvosList() {
   const { loading, isLoaded, data, error, setFetchData } = useFetchDB<any>();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const onlineStatuses = useRoomUsersStatus();
 
   useEffect(() => {
     setFetchData({
@@ -30,7 +33,9 @@ export default function ConvosList() {
     convos &&
     Object.entries(convos)?.map((convo: any) => {
       const [id, data] = convo;
-
+      const participantOnlineStatus = onlineStatuses[id]?.includes(
+        data.participants[0].id
+      );
       return (
         <div
           // className="h-[132px]"
@@ -44,7 +49,7 @@ export default function ConvosList() {
           <ConvoPreview
             participants={data.participants}
             messages={data.messages}
-            online={data?.receiver?.onlineStatus}
+            online={participantOnlineStatus}
           />
         </div>
       );

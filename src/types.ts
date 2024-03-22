@@ -85,7 +85,7 @@ export type ConvoProps = {
 };
 
 export type TOnlineStatuses = {
-  [convoId: string]: { [userId: string]: boolean };
+  [convoId: string]: string[];
 };
 
 export type TConvoContext = {
@@ -96,6 +96,7 @@ export type TConvoContext = {
     pushNewMessagesToConvo: Function;
     handleRemoveMessage: Function;
     initConvo: Function;
+    getParticipantOnlineStatus: () => void;
   };
   activeConvoId: [string, Function];
   socketPoll: [string[] | null, Dispatch<SetStateAction<string[] | null>>];

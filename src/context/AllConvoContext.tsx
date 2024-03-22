@@ -15,6 +15,7 @@ export const AllConvoContext = createContext<TConvoContext>({
     pushNewMessagesToConvo: () => {},
     handleRemoveMessage: () => {},
     initConvo: () => {},
+    getParticipantOnlineStatus: () => {},
     // initConvo: () => {},
   },
 });
@@ -30,12 +31,20 @@ export default function ActiveConvoProvider({
   const { joinRoom } = useConvoSocketPoll();
   const onlineStatuses = useRoomUsersStatus();
 
-  function getParticipantOnlineStatus(userId: string) {
-    if (!activeConvoId) return;
-    return onlineStatuses[activeConvoId].participants.filter(
-      (participant) => participant.id == userId
-    );
-  }
+  // function getParticipantOnlineStatus(userId: string, convoId: string) {
+  //   if (
+  //     !convoId ||
+  //     Object.keys(onlineStatuses).length == 0 ||
+  //     !onlineStatuses ||
+  //     !onlineStatuses[convoId]
+  //   )
+  //     return;
+  //   console.log("yo");
+  //   console.log("onlineStatuses ", onlineStatuses[convoId]);
+  //   return (
+  //     Object.keys(onlineStatuses[convoId]).find((id) => id === userId) || false
+  //   );
+  // }
 
   const {
     socketLoading,
@@ -194,6 +203,7 @@ export default function ActiveConvoProvider({
           pushNewMessagesToConvo,
           handleRemoveMessage,
           initConvo,
+          onlineStatuses,
         },
         activeConvoId: [activeConvoId, handleActiveConvoId],
         socketPoll: [socketPoll, setSocketPoll],

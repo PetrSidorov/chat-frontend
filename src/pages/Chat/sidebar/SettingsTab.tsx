@@ -20,13 +20,10 @@ export default function SettingsTab() {
       url: "http://localhost:3007/logout",
       method: "POST",
     });
+
     // TODO: if there is response
     // navigate("/login");
   }
-
-  useEffect(() => {
-    console.log("user ", user);
-  }, [user]);
 
   useEffect(() => {
     if (data?.message == "loggedout") {

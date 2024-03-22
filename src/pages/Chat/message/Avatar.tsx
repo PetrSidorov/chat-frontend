@@ -13,7 +13,7 @@ export default function Avatar({
   username?: string;
   showOnlyAvatars?: boolean;
 }) {
-  const size = showOnlyAvatars ? 80 : 100;
+  const size = showOnlyAvatars ? 92 : 92;
   return (
     <>
       {avatarUrl ? (
