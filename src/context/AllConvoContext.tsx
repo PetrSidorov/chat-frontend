@@ -151,19 +151,23 @@ export default function ActiveConvoProvider({
   }
 
   function addNewConvo(newConvo: any) {
-    const newConvos = {};
-    newConvos[newConvo.id] = {
-      messages: newConvo.messages,
-      participants: newConvo.participants,
-    };
+    // console.log("newConvo ", {}...newConvo]);
+    console.log("convos ", convos);
     setConvos((currConvos) => {
+      console.log("currConvos ", currConvos);
       if (!currConvos) {
-        return newConvos;
+        console.log("test 222 ", { ...newConvo });
+        return { ...newConvo };
       } else {
-        return { ...currConvos, newConvos };
+        console.log("test 111 ", { ...currConvos, ...newConvo });
+        return { ...currConvos, ...newConvo };
       }
     });
   }
+
+  useEffect(() => {
+    console.log("convos new ", convos);
+  }, [convos]);
 
   function unshiftMessagesToConvo({
     id,
@@ -204,6 +208,7 @@ export default function ActiveConvoProvider({
           handleRemoveMessage,
           initConvo,
           onlineStatuses,
+          addNewConvo,
         },
         activeConvoId: [activeConvoId, handleActiveConvoId],
         socketPoll: [socketPoll, setSocketPoll],

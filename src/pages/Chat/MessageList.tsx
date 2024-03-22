@@ -79,7 +79,7 @@ const MessageList = forwardRef<
 
         const avatarUrl = yours
           ? currentUser.avatarUrl
-          : participants[sender.id].avatarUrl || null;
+          : participants[sender.id]?.avatarUrl || null;
 
         const alignment = yours ? "self-end" : "self-start";
         let animationType = "";

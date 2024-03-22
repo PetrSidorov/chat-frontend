@@ -8,7 +8,6 @@ import useOnlineStatus from "../../hooks/useNetworkStatus";
 import IsOnline from "./sidebar/convos/IsOnline";
 import { ChevronLeft } from "lucide-react";
 import { ResizeContext } from "../../context/ResizeProvider";
-// import useRoomUsersStatus from "@/hooks/useRoomUsersStatus";
 
 export default function ActiveConvo() {
   const [activeConvoId, handleActiveConvoId] =
@@ -28,12 +27,6 @@ export default function ActiveConvo() {
   const participantOnlineStatus = onlineStatuses[activeConvoId]?.includes(
     convos[activeConvoId].participants[0].id
   );
-
-  // const onlineStatuses = useRoomUsersStatus();
-  // const participantOnlineStatus = convos?[activeConvoId]?.participants.find(participant => participant.id === onlineStatuses?[activeConvoId])
-  // const participants = onlineStatuses;
-  //  convos[activeConvoId].participants[0].id;
-  // console.log("participants ", onlineStatuses);
 
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
@@ -56,9 +49,7 @@ export default function ActiveConvo() {
     const savedScrollPosition = scrollContainerRef.current.scrollTop;
 
     socket.on("msg:send-offset", (data) => {
-      if (!data || !scrollContainerRef.current || !activeConvoId) {
-        return;
-      }
+      if (!data || !scrollContainerRef.current || !activeConvoId) return;
 
       unshiftMessagesToConvo({ id: data.convoId, newMessages: data.messages });
       scrollContainerRef.current.scrollTop = savedScrollPosition;
@@ -67,47 +58,46 @@ export default function ActiveConvo() {
   }, [activeConvoId]);
 
   useEffect(() => {
-    // TODO: i need scroll into view but on new message
-    // (maybe on some other cases too)
-
     endOfMessagesRef.current?.scrollIntoView();
   }, [convos]);
 
-  // function generateRemoveMessage(convoId: string) {
-  //   return function removeMessage(messageIdToDelete: string) {
-  //     handleRemoveMessage(convoId, messageIdToDelete);
-  //   };
-  // }
-
-  // const startMessaging =
-  //   convos && Object.keys(convos).length > 0 ? (
-  //     <p>Select convo to start messaging</p>
-  //   ) : (
-  //     <p>You have no convos yet, find users and start messaging now</p>
-  //   );
+  if (!convos[activeConvoId])
+    return (
+      <div className="flex justify-center items-center h-full">Loading...</div>
+    );
 
   return (
     <div
       ref={scrollContainerRef}
-      className="flex flex-col flex-grow p-4 overflow-y-auto overflow-x-hidden"
+      className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden"
     >
-      <div className="w-[100%] h-10 bg-slate-600 fixed -mt-4 -ml-4 z-1 flex items-center">
-        {/* classes for bottom IsOnline should be different */}
+      <div className="sticky top-0 bg-slate-600 p-2 z-10 flex items-center justify-between">
         {mobileView && (
-          <button onClick={() => handleActiveConvoId(null)}>
-            <ChevronLeft />
+          <button
+            className="text-white"
+            onClick={() => handleActiveConvoId(null)}
+          >
+            <ChevronLeft size={24} />
           </button>
         )}
 
-        <div className="flex align-center justify-between w-[40%]">
-          <p>
+        <div className="flex items-center justify-between flex-grow">
+          <p className="text-white">
             <span>{convos?.[activeConvoId].participants[0].username}</span> is{" "}
-            {participantOnlineStatus ? "online" : "offline"}
+            <span
+              className={`${
+                participantOnlineStatus ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              {participantOnlineStatus ? "online" : "offline"}
+            </span>
           </p>
           <IsOnline online={participantOnlineStatus} />
         </div>
       </div>
-      {!userOnlineStatus && <p>Waiting for network</p>}
+      {!userOnlineStatus && (
+        <p className="text-center my-2">Waiting for network...</p>
+      )}
       {user && Object.keys(user).length > 0 ? (
         <MessageList
           ref={observeRef}
@@ -122,7 +112,9 @@ export default function ActiveConvo() {
           handleRemoveMessage={handleRemoveMessage}
         />
       ) : (
-        "startMessaging"
+        <p className="text-center my-2">
+          Start messaging by selecting a conversation
+        </p>
       )}
       <div ref={endOfMessagesRef} />
     </div>

@@ -1,13 +1,12 @@
-import { useEffect, useState, useCallback, useContext } from "react";
-import { Loader, MessageSquareDashed } from "lucide-react";
+import { useEffect, useState, useContext } from "react";
+import { Loader, UserPlus, UserCheck, Mail } from "lucide-react"; // Replace these with appropriate icons
 import useSockets from "../../../hooks/useSockets";
-import { MessageSquare } from "lucide-react";
 import { AllConvoContext } from "../../../context/AllConvoContext";
 import useNewConvo from "../../../hooks/useNewConvo";
 import { motion } from "framer-motion";
 
 export default function FriendsTab() {
-  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchInput, setSearchInput] = useState("");
   const [foundUsers, setFoundUsers] = useState([]);
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
   const emitNewConvo = useNewConvo();
@@ -18,11 +17,6 @@ export default function FriendsTab() {
     initialState: [],
     debounceFlag: true,
   });
-
-  // function createNewConvo(secondUserId: string) {
-  //   console.log("secondUserId ", secondUserId);
-  //   emitNewConvo(secondUserId);
-  // }
 
   useEffect(() => {
     if (!searchInput && foundUsers.length > 0) {
@@ -35,65 +29,64 @@ export default function FriendsTab() {
 
   useEffect(() => {
     if (data && data.length > 0) {
-      console.log("found users ", data);
       setFoundUsers(data);
     }
   }, [data]);
 
   return (
-    <div>
-      <form>
+    <div className="p-4">
+      <form className="mb-4">
         <input
-          required={true}
+          required
           type="text"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="w-full p-2 rounded border border-gray-300 text-black"
+          className="w-full p-3 rounded-lg border border-gray-300 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           placeholder="Find anybody..."
         />
       </form>
       {socketLoading && (
-        <div>
-          <Loader />
+        <div className="flex justify-center items-center">
+          <Loader className="text-indigo-500" size={32} />
         </div>
       )}
-      {!socketLoading && foundUsers.length === 0 && <div>No users found</div>}
+      {!socketLoading && foundUsers.length === 0 && (
+        <div className="text-center text-gray-600">No users found</div>
+      )}
       {!socketLoading && foundUsers.length > 0 && (
-        <ul>
-          {foundUsers.map((user) => {
-            const color = user.online ? "green" : "gray";
-            // TODO: pack all animation code in one variable to reuse it
-            return (
-              <motion.li
-                key={user.id}
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
+        <ul className="space-y-2">
+          {foundUsers.map((user) => (
+            <motion.li
+              key={user.id}
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+              className="cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
+            >
+              <button
+                className="flex items-center space-x-3"
+                onClick={() => {
+                  return user.convos[0]?.id
+                    ? setActiveConvoId(user.convos[0].id)
+                    : emitNewConvo([user.id]);
+                }}
               >
-                <button
-                  className="flex items-center"
-                  onClick={() => {
-                    console.log("user.convos[0] ", user.convos[0]?.id);
-                    return user.convos[0]?.id
-                      ? setActiveConvoId(user.convos[0].id)
-                      : emitNewConvo([user.id]);
-                  }}
-                >
-                  {/* <MessageSquare
-                  
-                /> */}
-                  {user.convos.length > 0 ? (
-                    <MessageSquare color={color} />
-                  ) : (
-                    <MessageSquareDashed color={color} />
-                  )}
-                  {user.username}
-                </button>
-              </motion.li>
-            );
-          })}
+                {user.online ? (
+                  <UserCheck size={20} className="text-green-500" />
+                ) : (
+                  <UserPlus size={20} className="text-gray-500" />
+                )}
+                <span className="flex-grow text-gray-800">{user.username}</span>
+                {user.convos.length > 0 ? (
+                  <Mail size={20} className="text-blue-500" />
+                ) : (
+                  <Mail size={20} className="text-gray-400" />
+                )}
+              </button>
+            </motion.li>
+          ))}
         </ul>
       )}
     </div>

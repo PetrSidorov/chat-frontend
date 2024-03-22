@@ -33,7 +33,7 @@ export default function ChatMain() {
             sizes={sizes}
           >
             <div
-              className={clsx("flex flex-col bg-gray-800 text-white p-4", {
+              className={clsx("flex flex-col bg-white text-black p-4", {
                 hidden: mobileView && activeConvoId,
                 "w-1/3": !mobileView && activeConvoId,
                 "w-full": mobileView && !activeConvoId,

@@ -1,14 +1,15 @@
+import React, { ChangeEvent, useContext, useEffect, useState } from "react";
+import Cropper from "react-easy-crop";
+import getCroppedImg from "../../../utils/getCroppedImg";
+import { AuthContext } from "../../../context/AuthProvider";
+import FocusLock from "react-focus-lock";
+
 type Area = {
   x: number;
   y: number;
   width: number;
   height: number;
 };
-
-import React, { ChangeEvent, useContext, useEffect, useState } from "react";
-import Cropper from "react-easy-crop";
-import getCroppedImg from "../../../utils/getCroppedImg";
-import { AuthContext } from "../../../context/AuthProvider";
 
 function UploadAndCropAvatar() {
   const { user, setUser } = useContext(AuthContext);
@@ -50,7 +51,6 @@ function UploadAndCropAvatar() {
 
   useEffect(() => {
     window.addEventListener("keydown", handleCropCancel);
-
     return () => window.removeEventListener("keydown", handleCropCancel);
   }, []);
 
@@ -93,40 +93,52 @@ function UploadAndCropAvatar() {
   };
 
   return (
-    <div>
-      <input type="file" onChange={handleImageChange} accept="image/*" />
+    <div className="space-y-4">
+      <input
+        type="file"
+        onChange={handleImageChange}
+        accept="image/*"
+        className="file:mr-4 file:py-2 file:px-4
+          file:rounded-full file:border-0
+          file:text-sm file:font-semibold
+          file:bg-violet-50 file:text-violet-700
+          hover:file:bg-violet-100"
+      />
       {imageSrc && (
-        <>
-          <div className="crop-container">
-            <Cropper
-              image={imageSrc}
-              crop={crop}
-              zoom={zoom}
-              aspect={1}
-              onCropChange={setCrop}
-              onCropComplete={onCropComplete}
-              onZoomChange={setZoom}
-            />
-          </div>
-          <div className="controls bg-slate-700 flex justify-around p-10">
-            <input
-              type="range"
-              value={zoom}
-              min={1}
-              max={3}
-              step={0.1}
-              onChange={(e) => setZoom(Number(e.target.value))}
-            />
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              onClick={handleUpload}
-            >
-              Upload Image
-            </button>
-          </div>
-        </>
+        <FocusLock>
+          <>
+            <div className="crop-container relative w-full h-64">
+              <Cropper
+                image={imageSrc}
+                crop={crop}
+                zoom={zoom}
+                aspect={1}
+                onCropChange={setCrop}
+                onCropComplete={onCropComplete}
+                onZoomChange={setZoom}
+              />
+            </div>
+            <div className="controls bg-slate-700 flex justify-around p-4 rounded">
+              <input
+                type="range"
+                value={zoom}
+                min={1}
+                max={3}
+                step={0.1}
+                onChange={(e) => setZoom(Number(e.target.value))}
+                className="zoom-slider"
+              />
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                onClick={handleUpload}
+              >
+                Upload Image
+              </button>
+            </div>
+          </>
+        </FocusLock>
       )}
-      {uploadStatus && <div>{uploadStatus}</div>}
+      {uploadStatus && <div className="text-center">{uploadStatus}</div>}
     </div>
   );
 }
