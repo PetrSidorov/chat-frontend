@@ -1,10 +1,15 @@
-import { ReactNode, createContext, useEffect, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import useConvoSocketPoll from "../hooks/useConvoSocketPoll";
 import useSockets from "../hooks/useSockets";
-import { TConvoContext, TConvos, TMessage, TOnlineStatuses } from "../types";
+import { TConvoContext, TConvos, TMessage } from "../types";
 import useRoomUsersStatus from "@/hooks/useRoomUsersStatus";
+import { socket } from "../utils/socket";
 
-// TODO: ask Artem if this could be managed in a less ugly way
 export const AllConvoContext = createContext<TConvoContext>({
   activeConvoId: ["", () => {}],
   socketPoll: [null, () => {}],
@@ -15,8 +20,7 @@ export const AllConvoContext = createContext<TConvoContext>({
     pushNewMessagesToConvo: () => {},
     handleRemoveMessage: () => {},
     initConvo: () => {},
-    getParticipantOnlineStatus: () => {},
-    // initConvo: () => {},
+    getParticipantOnlineStatus: () => false,
   },
 });
 
@@ -27,132 +31,97 @@ export default function ActiveConvoProvider({
 }) {
   const [convos, setConvos] = useState<TConvos | null>(null);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
-  const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
-  const { joinRoom } = useConvoSocketPoll();
   const onlineStatuses = useRoomUsersStatus();
-
-  // function getParticipantOnlineStatus(userId: string, convoId: string) {
-  //   if (
-  //     !convoId ||
-  //     Object.keys(onlineStatuses).length == 0 ||
-  //     !onlineStatuses ||
-  //     !onlineStatuses[convoId]
-  //   )
-  //     return;
-  //   console.log("yo");
-  //   console.log("onlineStatuses ", onlineStatuses[convoId]);
-  //   return (
-  //     Object.keys(onlineStatuses[convoId]).find((id) => id === userId) || false
-  //   );
-  // }
-
-  const {
-    socketLoading,
-    data: deleteMessageIdResponse,
-    emit,
-  } = useSockets({
+  const { joinRoom } = useConvoSocketPoll();
+  const { emit } = useSockets({
     emitFlag: "msg:delete",
     onFlag: "msg:delete:return",
     initialState: "",
   });
+  const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
 
-  async function initConvo(data: TConvos) {
-    setConvos(data);
-    const convoIdArray = Object.keys(data);
-    convoIdArray.map((id) => joinRoom(id));
-  }
-
-  function handleActiveConvoId(id: string | null) {
-    if (activeConvoId == id) return;
-    setActiveConvoId(id);
-  }
-
-  useEffect(() => {
-    if (deleteMessageIdResponse) {
-      const { id: idToRemove, convoId } = deleteMessageIdResponse as {
-        id: string;
-        convoId: string;
-      };
-
+  const subscribe = (callback: () => void) => {
+    const handleMessageDelete = ({
+      id: idToRemove,
+      convoId,
+    }: {
+      id: string;
+      convoId: string;
+    }) => {
       if (!convos || !convoId || !idToRemove) return;
-      // convos[convoId][id];
       setConvos((currentConvos) => {
         const updatedConvos = { ...currentConvos };
         const convo = updatedConvos[convoId];
         if (!convo || !convo.messages) return currentConvos;
         const filteredMessages = convo.messages.filter(
-          ({ id }) => id != idToRemove
+          ({ id }) => id !== idToRemove
         );
         updatedConvos[convoId].messages = filteredMessages;
         return updatedConvos;
       });
-    }
-  }, [deleteMessageIdResponse]);
+      callback();
+    };
 
-  function handleRemoveMessage(convoId: string, messageIdToDelete: string) {
-    // TODO: if there's no connection we should wait
-    // and excecute deletion after the connection is established
-    // also there should be a spinner or a message or something that indicates,
-    // that the message will be indeed deleted
+    socket.on("msg:delete:return", handleMessageDelete);
+    return () => socket.off("msg:delete:return", handleMessageDelete);
+  };
 
+  const getSnapshot = () => null; // Left as null, adjust if needed for synchronous access to state.
+  useSyncExternalStore(subscribe, getSnapshot);
+
+  const initConvo = (data: TConvos) => {
+    setConvos(data);
+    Object.keys(data).forEach(joinRoom);
+  };
+
+  const handleActiveConvoId = (id: string | null) => {
+    if (activeConvoId === id) return;
+    setActiveConvoId(id);
+  };
+
+  const handleRemoveMessage = (messageIdToDelete: string) => {
+    emit({ eventId: messageIdToDelete });
+  };
+
+  const pushNewMessagesToConvo = (convoId: string, messages: TMessage[]) => {
     setConvos((currentConvos) => {
-      const updatedConvos = { ...currentConvos };
-      if (
-        updatedConvos[convoId] &&
-        Array.isArray(updatedConvos[convoId].messages)
-      ) {
-        updatedConvos[convoId].messages = updatedConvos?.[
-          convoId
-        ].messages.filter((message) => {
-          return message.id != messageIdToDelete;
-        });
-      }
-
-      return updatedConvos;
-    });
-    emit(messageIdToDelete);
-  }
-
-  function pushNewMessagesToConvo(convoId: string, messages: TMessage[]) {
-    setConvos((currentConvos) => {
-      if (!currentConvos) return {};
-      const updatedConvos = { ...currentConvos };
-      if (updatedConvos[convoId]) {
-        updatedConvos[convoId] = {
-          ...updatedConvos[convoId],
-          messages: [...updatedConvos[convoId].messages, ...messages],
-        };
-      } else {
-        updatedConvos[convoId] = {
-          ...updatedConvos[convoId],
-          messages: [...messages],
-        };
-      }
-
-      return updatedConvos;
-    });
-  }
-
-  function pushNewMessageToConvo(convoId: string, message: TMessage) {
-    setConvos((currentConvos) => {
-      if (!currentConvos) return {};
       const updatedConvos = { ...currentConvos };
       if (updatedConvos[convoId]) {
         updatedConvos[convoId].messages = [
           ...updatedConvos[convoId].messages,
-          message,
+          ...messages,
         ];
       } else {
-        updatedConvos[convoId].messages = [message];
+        updatedConvos[convoId] = { messages: messages };
       }
-
       return updatedConvos;
     });
-  }
+  };
+
+  const pushNewMessageToConvo = (convoId: string, message: TMessage) => {
+    pushNewMessagesToConvo(convoId, [message]);
+  };
+
+  const subscribeT = (callback: () => void) => {
+    socket.on("msg:return", (incomingMessage) => {
+      if (incomingMessage && incomingMessage.convoId === activeConvoId) {
+        pushNewMessageToConvo(incomingMessage.convoId, incomingMessage);
+        callback();
+      }
+    });
+
+    return () => {
+      socket.off("msg:return");
+    };
+  };
+
+  const getSnapshotT = () => null;
+
+  useSyncExternalStore(subscribeT, getSnapshotT);
 
   function addNewConvo(newConvo: any) {
     // console.log("newConvo ", {}...newConvo]);
-    console.log("convos ", convos);
+
     setConvos((currConvos) => {
       console.log("currConvos ", currConvos);
       if (!currConvos) {
@@ -165,37 +134,24 @@ export default function ActiveConvoProvider({
     });
   }
 
-  useEffect(() => {
-    console.log("convos new ", convos);
-  }, [convos]);
-
-  function unshiftMessagesToConvo({
-    id,
-    newMessages,
-  }: {
-    id: string;
-    newMessages: TMessage[];
-  }) {
-    // console.log("id, newMessages ", id, newMessages);
+  const unshiftMessagesToConvo = (convoId: string, newMessages: TMessage[]) => {
     setConvos((currentConvos) => {
-      // console.log("currentConvos ", currentConvos);
-      if (!currentConvos) return {};
       const updatedConvos = { ...currentConvos };
-      if (updatedConvos[id]) {
-        updatedConvos[id] = {
-          ...updatedConvos[id],
-          messages: [...newMessages, ...updatedConvos[id].messages],
-        };
+      if (updatedConvos[convoId]) {
+        updatedConvos[convoId].messages = [
+          ...newMessages,
+          ...updatedConvos[convoId].messages,
+        ];
       } else {
-        updatedConvos[id] = {
-          ...updatedConvos[id],
-          messages: [...newMessages],
-        };
+        updatedConvos[convoId] = { messages: newMessages };
       }
-
       return updatedConvos;
     });
-  }
+  };
+
+  const getParticipantOnlineStatus = (convoId: string, userId: string) => {
+    return onlineStatuses[convoId]?.includes(userId) || false;
+  };
 
   return (
     <AllConvoContext.Provider

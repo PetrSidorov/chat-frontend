@@ -25,7 +25,7 @@ export default function ConvosList() {
   }, []);
   useEffect(() => {
     if (!data || !user) return;
-    console.log("data ", data);
+
     initConvo(data);
   }, [data, user]);
 

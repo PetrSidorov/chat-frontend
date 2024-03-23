@@ -21,6 +21,7 @@ const setUserOffline = (convoId: string, userId: string) => {
 };
 
 const setUserOnline = (convoId: string, userId: string) => {
+  // TODO: fix TypeError: onlineStatuses[convoId] is not iterable
   const updatedUserIds = [...onlineStatuses[convoId], userId];
   onlineStatuses = {
     ...onlineStatuses,
@@ -58,7 +59,6 @@ const subscribe = (callback: () => void) => {
     userId: string;
     convoId: string;
   }) {
-    console.log("convoId, userId ", convoId, userId);
     setUserOnline(convoId, userId);
     callback();
   }

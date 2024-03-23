@@ -12,7 +12,7 @@ export default function AuthRequired() {
   }
 
   // useEffect(() => {
-  //   console.log("-----");
+  //   console.log("-----");x
   //   console.log("isLoaded ", isLoaded);
   //   console.log("user ", user);
   //   console.log("-----");

@@ -18,8 +18,6 @@ export default function MessageManager() {
     if (!textareaRef.current) return;
     e.preventDefault();
     send();
-
-    // textareaRef.current.style.height = "20px";
   };
 
   return (
