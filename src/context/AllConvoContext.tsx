@@ -1,14 +1,9 @@
-import {
-  ReactNode,
-  createContext,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import { ReactNode, createContext, useState, useEffect } from "react";
 import useConvoSocketPoll from "../hooks/useConvoSocketPoll";
 import useSockets from "../hooks/useSockets";
-import { TConvoContext, TConvos, TMessage } from "../types";
 import useRoomUsersStatus from "@/hooks/useRoomUsersStatus";
 import { socket } from "../utils/socket";
+import { TConvoContext, TConvos, TMessage } from "../types";
 
 export const AllConvoContext = createContext<TConvoContext>({
   activeConvoId: ["", () => {}],
@@ -21,6 +16,7 @@ export const AllConvoContext = createContext<TConvoContext>({
     handleRemoveMessage: () => {},
     initConvo: () => {},
     getParticipantOnlineStatus: () => false,
+    addNewConvo: () => {},
   },
 });
 
@@ -40,34 +36,33 @@ export default function ActiveConvoProvider({
   });
   const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
 
-  const subscribe = (callback: () => void) => {
-    const handleMessageDelete = ({
-      id: idToRemove,
-      convoId,
-    }: {
-      id: string;
-      convoId: string;
-    }) => {
-      if (!convos || !convoId || !idToRemove) return;
-      setConvos((currentConvos) => {
-        const updatedConvos = { ...currentConvos };
-        const convo = updatedConvos[convoId];
-        if (!convo || !convo.messages) return currentConvos;
-        const filteredMessages = convo.messages.filter(
-          ({ id }) => id !== idToRemove
-        );
-        updatedConvos[convoId].messages = filteredMessages;
-        return updatedConvos;
-      });
-      callback();
+  useEffect(() => {
+    const handleMessageReturn = (incomingMessage: TMessage) => {
+      if (incomingMessage && incomingMessage.convoId === activeConvoId) {
+        setConvos((currentConvos) => {
+          if (!currentConvos) return null;
+          const updatedConvos = { ...currentConvos };
+          const convoId = incomingMessage.convoId;
+          const message = incomingMessage;
+          if (updatedConvos[convoId]) {
+            updatedConvos[convoId].messages = [
+              ...(updatedConvos[convoId].messages || []),
+              message,
+            ];
+          } else {
+            updatedConvos[convoId] = { messages: [message] };
+          }
+          return updatedConvos;
+        });
+      }
     };
 
-    socket.on("msg:delete:return", handleMessageDelete);
-    return () => socket.off("msg:delete:return", handleMessageDelete);
-  };
+    socket.on("msg:return", handleMessageReturn);
 
-  const getSnapshot = () => null; // Left as null, adjust if needed for synchronous access to state.
-  useSyncExternalStore(subscribe, getSnapshot);
+    return () => {
+      socket.off("msg:return", handleMessageReturn);
+    };
+  }, [activeConvoId]);
 
   const initConvo = (data: TConvos) => {
     setConvos(data);
@@ -85,14 +80,15 @@ export default function ActiveConvoProvider({
 
   const pushNewMessagesToConvo = (convoId: string, messages: TMessage[]) => {
     setConvos((currentConvos) => {
+      if (!currentConvos) return null;
       const updatedConvos = { ...currentConvos };
       if (updatedConvos[convoId]) {
         updatedConvos[convoId].messages = [
-          ...updatedConvos[convoId].messages,
+          ...(updatedConvos[convoId].messages || []),
           ...messages,
         ];
       } else {
-        updatedConvos[convoId] = { messages: messages };
+        updatedConvos[convoId] = { messages };
       }
       return updatedConvos;
     });
@@ -102,52 +98,44 @@ export default function ActiveConvoProvider({
     pushNewMessagesToConvo(convoId, [message]);
   };
 
-  const subscribeT = (callback: () => void) => {
-    socket.on("msg:return", (incomingMessage) => {
-      if (incomingMessage && incomingMessage.convoId === activeConvoId) {
-        pushNewMessageToConvo(incomingMessage.convoId, incomingMessage);
-        callback();
-      }
+  const addNewConvo = (newConvo: any) => {
+    setConvos((currConvos) => {
+      if (!currConvos) return null;
+      return { ...currConvos, ...newConvo };
     });
-
-    return () => {
-      socket.off("msg:return");
-    };
   };
 
-  const getSnapshotT = () => null;
-
-  useSyncExternalStore(subscribeT, getSnapshotT);
-
-  function addNewConvo(newConvo: any) {
-    // console.log("newConvo ", {}...newConvo]);
-
-    setConvos((currConvos) => {
-      console.log("currConvos ", currConvos);
-      if (!currConvos) {
-        console.log("test 222 ", { ...newConvo });
-        return { ...newConvo };
+  function unshiftMessagesToConvo({
+    id,
+    newMessages,
+  }: {
+    id: string;
+    newMessages: TMessage[];
+  }) {
+    // console.log("id, newMessages ", id, newMessages);
+    setConvos((currentConvos) => {
+      // console.log("currentConvos ", currentConvos);
+      if (!currentConvos) return {};
+      const updatedConvos = { ...currentConvos };
+      if (updatedConvos[id]) {
+        updatedConvos[id] = {
+          ...updatedConvos[id],
+          messages: [...newMessages, ...updatedConvos[id].messages],
+        };
       } else {
-        console.log("test 111 ", { ...currConvos, ...newConvo });
-        return { ...currConvos, ...newConvo };
+        updatedConvos[id] = {
+          ...updatedConvos[id],
+          messages: [...newMessages],
+        };
       }
+
+      return updatedConvos;
     });
   }
 
-  const unshiftMessagesToConvo = (convoId: string, newMessages: TMessage[]) => {
-    setConvos((currentConvos) => {
-      const updatedConvos = { ...currentConvos };
-      if (updatedConvos[convoId]) {
-        updatedConvos[convoId].messages = [
-          ...newMessages,
-          ...updatedConvos[convoId].messages,
-        ];
-      } else {
-        updatedConvos[convoId] = { messages: newMessages };
-      }
-      return updatedConvos;
-    });
-  };
+  useEffect(() => {
+    console.log("convos changed ", convos);
+  }, [convos]);
 
   const getParticipantOnlineStatus = (convoId: string, userId: string) => {
     return onlineStatuses[convoId]?.includes(userId) || false;

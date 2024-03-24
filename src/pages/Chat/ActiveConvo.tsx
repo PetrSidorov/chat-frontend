@@ -9,7 +9,7 @@ import IsOnline from "./sidebar/convos/IsOnline";
 import { ChevronLeft } from "lucide-react";
 import { ResizeContext } from "../../context/ResizeProvider";
 
-export default function ActiveConvo() {
+export default function ActiveConvo({ initialLoad }) {
   const [activeConvoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
   const { user } = useContext(AuthContext);
@@ -24,6 +24,7 @@ export default function ActiveConvo() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { mobileView } = useContext(ResizeContext);
   const [blockOffset, setBlockOffset] = useState(false);
+
   const participantOnlineStatus = onlineStatuses[activeConvoId]?.includes(
     convos[activeConvoId].participants[0].id
   );
@@ -58,8 +59,8 @@ export default function ActiveConvo() {
   }, [activeConvoId]);
 
   useEffect(() => {
-    endOfMessagesRef.current?.scrollIntoView();
-  }, [convos]);
+    initialLoad && endOfMessagesRef.current?.scrollIntoView();
+  }, [initialLoad]);
 
   if (!convos[activeConvoId])
     return (

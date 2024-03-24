@@ -20,6 +20,9 @@ export default function ConvoPreview({
   online: boolean;
   participants: TUser[];
 }) {
+  // console.log("messages ", messages);
+  // console.log("online ", online);
+  // console.log("participants ", participants);
   const notEmptyConvo = messages && messages.length > 0;
   const { showOnlyAvatars } = useContext(ResizeContext);
 
