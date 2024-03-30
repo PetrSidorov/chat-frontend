@@ -40,6 +40,8 @@ export default function ActiveConvoProvider({
     const handleMessageReturn = (incomingMessage: TMessage) => {
       if (incomingMessage && incomingMessage.convoId === activeConvoId) {
         setConvos((currentConvos) => {
+          // TODO: write something meaningful here
+          // This should never happen
           if (!currentConvos) return null;
           const updatedConvos = { ...currentConvos };
           const convoId = incomingMessage.convoId;
@@ -56,7 +58,7 @@ export default function ActiveConvoProvider({
         });
       }
     };
-
+    console.log("socket is ", socket);
     socket.on("msg:return", handleMessageReturn);
 
     return () => {
