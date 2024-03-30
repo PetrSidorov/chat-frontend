@@ -72,6 +72,7 @@ export default function ConvosList() {
           {showContextMenu && (
             <ConvoContextMenu
               id={activeContextMenuId}
+              setShowContextMenu={setShowContextMenu}
               style={{
                 position: "absolute",
                 left: `${position.left}px`,
@@ -79,7 +80,7 @@ export default function ConvosList() {
                 backgroundColor: "gray",
                 borderRadius: "md",
                 width: "max-content",
-                zIndex: 1,
+                // zIndex: 1,
               }}
             />
           )}
