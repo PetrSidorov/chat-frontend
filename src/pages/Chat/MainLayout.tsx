@@ -1,5 +1,5 @@
 import Split from "react-split";
-import { AllConvoContext } from "../../context/AllConvoContext";
+import { AllConvoContext } from "../../context/AllConvoProvider";
 import ActiveConvo from "./ActiveConvo";
 import MessageManager from "./MessageManager";
 

@@ -6,25 +6,25 @@ import useFetchDB from "../../../hooks/useFetchDB";
 import { TLoginDataBaseResponse } from "../../../types";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../../../utils/socket";
+import axios from "axios";
 
 export default function SettingsTab() {
   const { user } = useContext(AuthContext);
-  const { data, setFetchData } = useFetchDB<TLoginDataBaseResponse | null>();
   const navigate = useNavigate();
 
-  function logout() {
-    setFetchData({
-      url: "http://localhost:3007/logout",
-      method: "POST",
+  async function logout() {
+    const response = await axios.post("http://localhost:3007/logout", {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
-  }
 
-  useEffect(() => {
-    if (data?.message === "loggedout") {
+    if (response.status == 200) {
       navigate("/login");
       if (socket) socket.disconnect();
     }
-  }, [data, navigate]);
+  }
 
   return (
     <div className="space-y-4">

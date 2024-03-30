@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import useSockets from "./useSockets";
 import useConvoSocketPoll from "./useConvoSocketPoll";
-import { AllConvoContext } from "../context/AllConvoContext";
+import { AllConvoContext } from "../context/AllConvoProvider";
 
 export default function useNewConvo() {
   const [, handleActiveConvoId] = useContext(AllConvoContext).activeConvoId;

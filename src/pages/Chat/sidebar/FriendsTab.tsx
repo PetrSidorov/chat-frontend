@@ -1,22 +1,42 @@
-import { useEffect, useState, useContext } from "react";
-import { Loader, UserPlus, UserCheck, Mail } from "lucide-react"; // Replace these with appropriate icons
-import useSockets from "../../../hooks/useSockets";
-import { AllConvoContext } from "../../../context/AllConvoContext";
-import useNewConvo from "../../../hooks/useNewConvo";
+import { socket } from "@/utils/socket";
 import { motion } from "framer-motion";
+import { Loader, Mail, UserCheck, UserPlus } from "lucide-react"; // Replace these with appropriate icons
+import { useContext, useEffect, useState } from "react";
+import { AllConvoContext } from "../../../context/AllConvoProvider";
+import useNewConvo from "../../../hooks/useNewConvo";
+
+type Tuser = {
+  username: string;
+  id: string;
+  convos: string[];
+  online: boolean;
+};
+// {
+//   "username": "peter2",
+//   "id": "643d238a-fb1d-4b0d-85e8-03f643e66eb1",
+//   "convos": [
+//       "dce4b862-4851-4c27-a44c-4ad42495a879"
+//   ],
+//   "online": true
+// }
 
 export default function FriendsTab() {
   const [searchInput, setSearchInput] = useState("");
-  const [foundUsers, setFoundUsers] = useState([]);
+  const [foundUsers, setFoundUsers] = useState<Tuser[]>([]);
+  const [loading, setLoading] = useState(false);
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
   const emitNewConvo = useNewConvo();
 
-  const { socketLoading, data, emit } = useSockets({
-    emitFlag: "search-users:get",
-    onFlag: "search-users:return",
-    initialState: [],
-    debounceFlag: true,
-  });
+  function emitSearch(searchInput: string) {
+    setLoading(true);
+    socket.emit("search-users:get", searchInput);
+  }
+
+  function getSearchResults(data: Tuser[]) {
+    console.log("found ", data);
+    setFoundUsers(data);
+    setLoading(false);
+  }
 
   useEffect(() => {
     if (!searchInput && foundUsers.length > 0) {
@@ -24,14 +44,15 @@ export default function FriendsTab() {
     }
     if (!searchInput) return;
 
-    emit(searchInput);
-  }, [searchInput, emit]);
+    // socket.emit("search-users:get", searchInput);
+    emitSearch(searchInput);
+    // socket.on("search-users:return", setFoundUsers);
+    socket.on("search-users:return", getSearchResults);
 
-  useEffect(() => {
-    if (data && data.length > 0) {
-      setFoundUsers(data);
-    }
-  }, [data]);
+    return () => {
+      socket.off("search-users:get");
+    };
+  }, [searchInput]);
 
   return (
     <div className="p-4">
@@ -45,15 +66,15 @@ export default function FriendsTab() {
           placeholder="Find anybody..."
         />
       </form>
-      {socketLoading && (
+      {loading && (
         <div className="flex justify-center items-center">
           <Loader className="text-indigo-500" size={32} />
         </div>
       )}
-      {!socketLoading && foundUsers.length === 0 && (
+      {!loading && searchInput && foundUsers.length === 0 && (
         <div className="text-center text-gray-600">No users found</div>
       )}
-      {!socketLoading && foundUsers.length > 0 && (
+      {foundUsers.length > 0 && (
         <ul className="space-y-2">
           {foundUsers.map((user) => (
             <motion.li
@@ -68,8 +89,8 @@ export default function FriendsTab() {
               <button
                 className="flex items-center space-x-3"
                 onClick={() => {
-                  return user.convos[0]?.id
-                    ? setActiveConvoId(user.convos[0].id)
+                  return user.convos[0]
+                    ? setActiveConvoId(user.convos[0])
                     : emitNewConvo([user.id]);
                 }}
               >

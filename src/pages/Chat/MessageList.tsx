@@ -79,9 +79,9 @@ const MessageList = forwardRef<
 
         const avatarUrl = yours
           ? currentUser.avatarUrl
-          : participants[sender.id]?.avatarUrl || null;
+          : participants[0]?.avatarUrl || null;
 
-        const alignment = yours ? "self-end" : "self-start";
+        const alignment = yours ? "self-start" : "self-end";
         let animationType = "";
         if (id === messageToRemove) {
           animationType = "remove";

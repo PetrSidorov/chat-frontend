@@ -2,7 +2,7 @@ import { useCallback, useContext, useState } from "react";
 import { useSyncExternalStore } from "react";
 import { socket } from "../utils/socket";
 import { AuthContext } from "../context/AuthProvider";
-import { AllConvoContext } from "../context/AllConvoContext";
+import { AllConvoContext } from "../context/AllConvoProvider";
 
 export default function useMessage() {
   const { user } = useContext(AuthContext);

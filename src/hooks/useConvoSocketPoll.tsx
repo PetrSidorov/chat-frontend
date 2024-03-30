@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { AllConvoContext } from "../context/AllConvoContext";
+import { AllConvoContext } from "../context/AllConvoProvider";
 import { AuthContext } from "../context/AuthProvider";
 import { socket } from "../utils/socket";
 

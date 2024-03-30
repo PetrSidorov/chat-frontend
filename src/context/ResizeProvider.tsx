@@ -8,7 +8,7 @@ import {
   useContext,
   useRef,
 } from "react";
-import { AllConvoContext } from "./AllConvoContext";
+import { AllConvoContext } from "./AllConvoProvider";
 import { debounce } from "lodash";
 
 type TinitialContext = {

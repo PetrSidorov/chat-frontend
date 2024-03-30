@@ -1,33 +1,38 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
-import { AllConvoContext } from "../../../../context/AllConvoContext";
-import { AuthContext } from "../../../../context/AuthProvider";
-import useFetchDB from "../../../../hooks/useFetchDB";
-import ConvoPreview from "./ConvoPreview";
-import { useNavigate } from "react-router-dom";
 import useRoomUsersStatus from "@/hooks/useRoomUsersStatus";
+import axios from "axios";
+import { AllConvoContext } from "../../../../context/AllConvoProvider";
+import { AuthContext } from "../../../../context/AuthProvider";
+import ConvoPreview from "./ConvoPreview";
+import ConvoContextMenu from "./ConvoContextMenu";
 
 export default function ConvosList() {
   const { convos, unshiftMessagesToConvo, initConvo } =
     useContext(AllConvoContext).convoContext;
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
-  const { loading, isLoaded, data, error, setFetchData } = useFetchDB<any>();
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
-
   const onlineStatuses = useRoomUsersStatus();
+  const [showContextMenu, setShowContextMenu] = useState(false);
+  const [activeContextMenuId, setActiveContextMenuId] = useState("");
+  const [position, setPosition] = useState({ left: 0, top: 0 });
 
   useEffect(() => {
-    setFetchData({
-      method: "GET",
-      url: "http://localhost:3007/api/convo/last-ten-convos-with-ten-messages",
-    });
+    const getConvos = async () => {
+      if (!user) return;
+      const response = await axios.get(
+        "http://localhost:3007/api/convo/last-ten-convos-with-ten-messages",
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      initConvo(response.data);
+    };
+    getConvos();
   }, []);
-  useEffect(() => {
-    if (!data || !user) return;
-
-    initConvo(data);
-  }, [data, user]);
 
   const listOfConvoPreviews =
     convos &&
@@ -39,12 +44,16 @@ export default function ConvosList() {
 
       return (
         <div
-          // className="h-[132px]"
-          // className="h-[132px] overflow-hidden whitespace-nowrap overflow-ellipsis w-full"
           className="h-auto max-h-[132px] overflow-hidden w-full "
           key={id}
           onClick={() => {
             setActiveConvoId(id);
+          }}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setPosition({ left: e.clientX, top: e.clientY });
+            setShowContextMenu(!showContextMenu);
+            setActiveContextMenuId(id);
           }}
         >
           <ConvoPreview
@@ -59,7 +68,23 @@ export default function ConvosList() {
   return (
     <>
       {listOfConvoPreviews && listOfConvoPreviews.length > 0 ? (
-        <ul className="font-semibold">{listOfConvoPreviews}</ul>
+        <>
+          {showContextMenu && (
+            <ConvoContextMenu
+              id={activeContextMenuId}
+              style={{
+                position: "absolute",
+                left: `${position.left}px`,
+                top: `${position.top}px`,
+                backgroundColor: "gray",
+                borderRadius: "md",
+                width: "max-content",
+                zIndex: 1,
+              }}
+            />
+          )}
+          <ul className="font-semibold">{listOfConvoPreviews}</ul>
+        </>
       ) : (
         <div className="text-center">
           <h3 className="mt-2 text-2xl font-semibold text-white-900">

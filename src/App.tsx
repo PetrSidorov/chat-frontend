@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import AuthGuard from "./components/AuthGuard";
-import ActiveConvoProvider from "./context/AllConvoContext";
+import ActiveConvoProvider from "./context/AllConvoProvider";
 import AuthProvider from "./context/AuthProvider";
 import ResizeProvider from "./context/ResizeProvider";
 import MainLayout from "./pages/Chat/MainLayout";

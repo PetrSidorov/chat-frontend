@@ -58,7 +58,7 @@ export default function ActiveConvoProvider({
         });
       }
     };
-    console.log("socket is ", socket);
+
     socket.on("msg:return", handleMessageReturn);
 
     return () => {
@@ -104,6 +104,15 @@ export default function ActiveConvoProvider({
     setConvos((currConvos) => {
       if (!currConvos) return null;
       return { ...currConvos, ...newConvo };
+    });
+  };
+
+  const removeConvo = (id: string) => {
+    setConvos((currConvos) => {
+      if (!currConvos) return null;
+      const newConvos = { ...currConvos };
+      delete newConvos[id];
+      return newConvos;
     });
   };
 
@@ -156,6 +165,7 @@ export default function ActiveConvoProvider({
           onlineStatuses,
           addNewConvo,
         },
+        removeConvo,
         activeConvoId: [activeConvoId, handleActiveConvoId],
         socketPoll: [socketPoll, setSocketPoll],
       }}

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { AllConvoContext } from "../../context/AllConvoContext";
+import { AllConvoContext } from "../../context/AllConvoProvider";
 import { socket } from "../../utils/socket";
 import MessageList from "./MessageList";
 import { AuthContext } from "../../context/AuthProvider";

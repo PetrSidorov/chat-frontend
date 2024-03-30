@@ -1,6 +1,6 @@
 import { XCircle } from "lucide-react";
 import { useContext } from "react";
-import { AllConvoContext } from "../../../../context/AllConvoContext";
+import { AllConvoContext } from "../../../../context/AllConvoProvider";
 export default function MessageContextMenu({
   yours,
   handleRemoveMessage,
