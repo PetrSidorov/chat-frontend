@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 // import React from "react";
 const hiddenStyles = {
@@ -16,7 +16,7 @@ const VisuallyHidden = ({
   children,
   ...delegated
 }: {
-  children: ReactElement;
+  children: ReactNode;
 }) => {
   const [forceShow, setForceShow] = useState(false);
   useEffect(() => {

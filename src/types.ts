@@ -60,7 +60,7 @@ export type Tactors = {
 };
 
 export type TConvos = {
-  [key: string]: {
+  [convoId: string]: {
     messages: TMessage[];
     // actors: Tactors;
     // receiver: TUser;

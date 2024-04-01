@@ -47,7 +47,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
           );
           setUser(response.data);
           setStatus(response.status);
-        } catch (e) {
+          // TODO:TYPESCRIPT ask Artem
+          // if (e instanceof AxiosError... blabla else what ?)
+        } catch (e: any) {
           setStatus(e.response.status);
         }
       }

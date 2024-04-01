@@ -21,6 +21,7 @@ export default function ConvosList() {
     const getConvos = async () => {
       if (!user) return;
       const response = await axios.get(
+        // TODO: add sockets for handling more then 10 convos
         "http://localhost:3007/api/convo/last-ten-convos-with-ten-messages",
         {
           withCredentials: true,
@@ -29,7 +30,7 @@ export default function ConvosList() {
           },
         }
       );
-      // TODO: implement casting with 'as' in fetches like in the example below
+      // TODO:TYPESCRIPT implement casting with 'as' in fetches like in the example below
       // const data = fetch("bla").then((res) => {
       //   return res.json;
       // });

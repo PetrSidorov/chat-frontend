@@ -1,9 +1,9 @@
 import { MessageSquare, Search, Settings } from "lucide-react";
-import { ReactElement } from "react";
+import { ReactNode } from "react";
 import VisuallyHidden from "../../../components/VisuallyHidden";
 import { Link } from "react-router-dom";
 
-export default function Sidebar({ children }: { children: ReactElement }) {
+export default function Sidebar({ children }: { children: ReactNode }) {
   return (
     <>
       {children}
