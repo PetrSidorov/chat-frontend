@@ -33,7 +33,6 @@ export default function FriendsTab() {
   }
 
   function getSearchResults(data: Tuser[]) {
-    console.log("found ", data);
     setFoundUsers(data);
     setLoading(false);
   }

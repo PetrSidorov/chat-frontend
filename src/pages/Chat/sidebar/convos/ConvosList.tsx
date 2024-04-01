@@ -29,6 +29,12 @@ export default function ConvosList() {
           },
         }
       );
+      // TODO: implement casting with 'as' in fetches like in the example below
+      // const data = fetch("bla").then((res) => {
+      //   return res.json;
+      // });
+
+      // return data as Something
       initConvo(response.data);
     };
     getConvos();

@@ -35,17 +35,21 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     const getUser = async () => {
       setLoading(true);
       if (!user) {
-        const response = await axios.get(
-          "http://localhost:3007/api/user-data",
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        setUser(response.data);
-        setStatus(response.status);
+        try {
+          const response = await axios.get(
+            "http://localhost:3007/api/user-data",
+            {
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          setUser(response.data);
+          setStatus(response.status);
+        } catch (e) {
+          setStatus(e.response.status);
+        }
       }
       setLoading(false);
     };
@@ -54,8 +58,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    console.log(user);
-  }, [user]);
+    console.log(status);
+  }, [status]);
 
   const value = useMemo(() => {
     return { user, setUser, status, loading };
