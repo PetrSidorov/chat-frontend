@@ -23,7 +23,7 @@ export default function Avatar({
           animate={animations.avatar.animate}
           exit={animations.avatar.exit}
           transition={animations.avatar.transition}
-          className="w-[70px] h-[70px] border-black border-2 rounded-full max-w-[100%]"
+          className="min-w-[70px] w-[70px] h-[70px] border-black border-2 rounded-full max-w-[100%]"
           src={avatarUrl}
           alt={username}
           style={{ objectFit: "cover" }}
