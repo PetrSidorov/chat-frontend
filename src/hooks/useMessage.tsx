@@ -9,27 +9,9 @@ export default function useMessage() {
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
   const { pushNewMessageToConvo } = useContext(AllConvoContext).convoContext;
   const [message, setMessage] = useState("");
-
-  // const subscribe = (callback: () => void) => {
-  //   socket.on("msg:return", (incomingMessage) => {
-  //     if (incomingMessage && incomingMessage.convoId === activeConvoId) {
-  //       pushNewMessageToConvo(incomingMessage.convoId, incomingMessage);
-  //       callback();
-  //     }
-  //   });
-
-  //   return () => {
-  //     socket.off("msg:return");
-  //   };
-  // };
-
-  // const getSnapshot = () => null;
-
-  // useSyncExternalStore(subscribe, getSnapshot);
-
+  // TODO: optimistic updates!
   const send = useCallback(() => {
     if (!message.trim() || !user || !activeConvoId) {
-      console.error("Message is empty, or user/activeConvoId is not set.");
       return;
     }
 

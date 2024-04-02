@@ -45,6 +45,7 @@ export default function ConvosList() {
     convos &&
     Object.entries(convos)?.map((convo: any) => {
       const [id, data] = convo;
+      // TODO: check this thing below and make it more declarative
       const participantOnlineStatus = onlineStatuses[id]?.includes(
         data.participants[0].id
       );
@@ -87,7 +88,6 @@ export default function ConvosList() {
                 backgroundColor: "gray",
                 borderRadius: "md",
                 width: "max-content",
-                // zIndex: 1,
               }}
             />
           )}

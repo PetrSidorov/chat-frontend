@@ -10,8 +10,6 @@ export type TUser = {
   username: string;
   email: string;
   avatarUrl: string | null;
-  message?: string;
-  onlineStatus?: boolean;
 };
 // loading, user, isLoaded, data, error, setUser
 // export type TAuthContext = {
@@ -42,22 +40,22 @@ export type PixelCrop = {
   height: number;
 };
 
-export type TMessageToSend = TMessage & {
+export type TMessageForSending = TMessage & {
   convoId: string;
 };
 
-export type Tactors = {
-  initiator: {
-    id: string;
-    username: string;
-    avatarUrl: string | null;
-  };
-  joiner: {
-    id: string;
-    username: string;
-    avatarUrl: string | null;
-  };
-};
+// export type Tactors = {
+//   initiator: {
+//     id: string;
+//     username: string;
+//     avatarUrl: string | null;
+//   };
+//   joiner: {
+//     id: string;
+//     username: string;
+//     avatarUrl: string | null;
+//   };
+// };
 
 export type TConvos = {
   [convoId: string]: {
@@ -89,27 +87,6 @@ export type TOnlineStatuses = {
   [convoId: string]: string[];
 };
 
-// const x: { [key: string]: unknown } = [];
-// const y: {} = [];
-
-// const user: { login: string } | Record<string, unknown> = {};
-const user: Partial<{ login: string }> = {};
-
-function isUser(user: Partial<{ login: string }>): user is { login: string } {
-  return (
-    Boolean(user) &&
-    Object.keys(user).length > 0 &&
-    "login" in user &&
-    typeof user.login == "string"
-  );
-}
-
-// const user2 = { login: "Bruce" ....}
-
-if (isUser(user)) {
-  user.login;
-}
-
 export type TConvoContext = {
   convoContext: {
     convos: TConvos;
@@ -126,9 +103,8 @@ export type TConvoContext = {
   removeConvo: (convoId: string) => void;
 };
 
-type TypeHttpHeaders = {
-  [key: string]: string;
-};
+type TypeHttpHeaders = Record<string, string>;
+
 export type TDataBaseRequestData = {
   method: string;
   url: string;
@@ -137,8 +113,7 @@ export type TDataBaseRequestData = {
   headers?: TypeHttpHeaders;
 };
 
-// export TNavigationContext = {[string | null, Dispatch<SetStateAction<string | null>>]}
 export type TCSSclampLines = React.CSSProperties & {
-  WebkitBoxOrient?: string;
-  WebkitLineClamp?: number;
+  WebkitBoxOrient: string;
+  WebkitLineClamp: number;
 };
