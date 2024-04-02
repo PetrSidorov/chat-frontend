@@ -1,14 +1,14 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import AuthGuard from "./components/AuthGuard";
-import ActiveConvoProvider from "./context/AllConvoContext";
+import ActiveConvoProvider from "./context/AllConvoProvider";
 import AuthProvider from "./context/AuthProvider";
 import ResizeProvider from "./context/ResizeProvider";
 import MainLayout from "./pages/Chat/MainLayout";
 import FriendsTab from "./pages/Chat/sidebar/FriendsTab";
 import SettingsTab from "./pages/Chat/sidebar/SettingsTab";
 import ConvosList from "./pages/Chat/sidebar/convos/ConvosList";
-import LoginPage from "./pages/Login/LoginPage";
-import RegisterPage from "./pages/Login/RegisterPage";
+import LoginPage from "./pages/Auth/LoginPage";
+import RegisterPage from "./pages/Auth/RegisterPage";
 
 function App() {
   return (
@@ -21,6 +21,7 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route element={<AuthGuard />}>
+                <Route path="*" element={<Navigate to="/messages" replace />} />
                 <Route path="/" element={<MainLayout />}>
                   <Route path="messages" element={<ConvosList />} />
                   <Route path="search" element={<FriendsTab />} />

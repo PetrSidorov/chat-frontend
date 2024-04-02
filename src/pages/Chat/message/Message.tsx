@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { TCSSclampLines } from "../../../types";
 import { animations } from "../../../utils/animations";
 import Avatar from "./Avatar";
+import { cn } from "@/lib/utils";
 
 export default function Message({
   content,
@@ -29,12 +30,14 @@ export default function Message({
         hour12: false,
       })
     : "";
+  // const date = createdAt;
 
   // TODO: ${alignment} ${classes} - gives undefined undefined - fix
   // TODO:   text-overflow: ellipsis (maybe);
 
   // const animationType = "enter";
   const animation = animations[animationType] || animations.enter;
+
   const showAvatarAndUsername = prevMessageSender != username;
   // console.log("showAvatarAndUsername ", showAvatarAndUsername);
   // console.log("style ", style);
@@ -57,9 +60,11 @@ export default function Message({
       )}
       {!showOnlyAvatars && (
         <div
-          className={`ml-2 w-full ${
-            style ? "overflow-x-hidden" : "whitespace-pre-wrap"
-          }`}
+          className={cn(
+            "ml-2 w-full",
+            style ? "overflow-x-hidden" : "whitespace-pre-wrap",
+            !showAvatarAndUsername ? "ml-[70px]" : ""
+          )}
         >
           <div className="flex justify-between mb-3 flex-nowrap">
             {showAvatarAndUsername && <span className="mr-2">{username}</span>}

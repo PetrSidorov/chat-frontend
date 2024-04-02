@@ -4,67 +4,78 @@ import Message from "../../message/Message";
 import IsOnline from "./IsOnline";
 import { ResizeContext } from "../../../../context/ResizeProvider";
 
+const style: TCSSclampLines = {
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  WebkitLineClamp: 2,
+  overflow: "hidden",
+};
+
 export default function ConvoPreview({
   messages,
   online,
-  receiver,
+  participants,
 }: {
   messages: TMessage[];
   online: boolean;
-  receiver: TUser;
+  participants: TUser[];
 }) {
+  // console.log("messages ", messages);
+  // console.log("online ", online);
+  // console.log("participants ", participants);
   const notEmptyConvo = messages && messages.length > 0;
   const { showOnlyAvatars } = useContext(ResizeContext);
-  const style: TCSSclampLines = {
-    display: "-webkit-box",
-    WebkitBoxOrient: "vertical",
-    WebkitLineClamp: 2,
-    overflow: "hidden",
-  };
+
+  const userNameToShow =
+    Object.keys(participants)?.length > 1
+      ? Object.values(participants)
+          .map(({ username }) => username)
+          .join(", ")
+      : Object.values(participants)[0].username;
+
+  const avatarUrl =
+    Object.keys(participants)?.length > 1
+      ? ""
+      : Object.values(participants)[0].avatarUrl;
+
+  let trimmedContent = "";
+  let createdAt = "";
+  let content = "";
 
   if (notEmptyConvo) {
-    let { content, createdAt, sender } = messages[messages.length - 1];
+    ({ content, createdAt } = messages[messages.length - 1]);
 
-    let trimmedContent;
     if (content.length > 30) {
       trimmedContent = content.slice(0, 100) + "...";
     } else {
       trimmedContent = content;
     }
+  }
 
-    return (
-      <div className="relative">
-        {online && (
-          <>
-            <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full absolute top-2 right-4"></div>
-            {/* <div>Hello everynan</div> */}
-          </>
-        )}
-        <div className="absolute top-2 right-4">
-          <IsOnline online={online} />
-        </div>
-
-        <Message
-          key={createdAt}
-          content={trimmedContent}
-          createdAt={createdAt}
-          username={receiver.username}
-          avatarUrl={receiver.avatarUrl}
-          showOnlyAvatars={showOnlyAvatars}
-          style={style}
-        />
+  return (
+    <div>
+      {online && (
+        <>
+          <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full absolute top-2 right-4"></div>
+        </>
+      )}
+      <div className="absolute top-2 right-4">
+        <IsOnline online={online} />
       </div>
-    );
-  } else {
-    return (
+
       <Message
-        createdAt={""}
-        content={"This convo is empty, start messaging now =)"}
-        username={receiver.username}
-        avatarUrl={receiver.avatarUrl}
+        key={notEmptyConvo ? createdAt : ""}
+        content={
+          notEmptyConvo
+            ? trimmedContent
+            : "This convo is empty, start messaging now =)"
+        }
+        createdAt={notEmptyConvo ? createdAt : ""}
+        username={userNameToShow}
+        avatarUrl={avatarUrl}
         showOnlyAvatars={showOnlyAvatars}
         style={style}
       />
-    );
-  }
+    </div>
+  );
 }

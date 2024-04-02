@@ -2,7 +2,6 @@ import React, { forwardRef, useContext, useEffect, useState } from "react";
 import Message from "./message/Message";
 import { TMessage, TUser, Tactors } from "../../types";
 import MessageContextMenu from "./sidebar/convos/MessageContextMenu";
-import HandleClickOutside from "../../hooks/ClickOutsideHandler";
 import { ResizeContext } from "../../context/ResizeProvider";
 import { AnimatePresence } from "framer-motion";
 import isSameDayAsPreviousMessage from "../../utils/isSameDayAsPreviousMessage";
@@ -15,11 +14,11 @@ const MessageList = forwardRef<
     currentUser: { username: string; avatarUrl: string | null; id: string };
     handleRemoveMessage: Function;
     activeConvoId: string;
-    receiver: TUser;
+    participants: any;
   }
 >(
   (
-    { messages, currentUser, receiver, handleRemoveMessage, activeConvoId },
+    { messages, currentUser, handleRemoveMessage, activeConvoId, participants },
     ref
   ) => {
     const initialPopupState = {
@@ -78,8 +77,11 @@ const MessageList = forwardRef<
       ({ content, createdAt, sender, id }, i: number, messages) => {
         const yours = sender.id == currentUser.id;
 
-        const avatarUrl = yours ? currentUser.avatarUrl : receiver.avatarUrl;
-        const alignment = yours ? "self-end" : "self-start";
+        const avatarUrl = yours
+          ? currentUser.avatarUrl
+          : participants[0]?.avatarUrl || null;
+
+        const alignment = yours ? "self-start" : "self-end";
         let animationType = "";
         if (id === messageToRemove) {
           animationType = "remove";

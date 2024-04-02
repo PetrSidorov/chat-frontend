@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useEffect, useRef } from "react";
 import useMessage from "../../hooks/useMessage";
 
 export default function MessageManager() {
@@ -7,10 +7,10 @@ export default function MessageManager() {
 
   const adjustTextareaHeight = () => {
     if (!textareaRef.current) return;
-
     const textarea = textareaRef.current;
-
-    // textarea.style.height = "auto";
+    // Minimal height before readjusting helps to avoid slow height change
+    // on text deletion. Might be fixed later, because it seems hacky
+    textareaRef.current.style.height = "1px";
     textarea.style.height = `${textarea.scrollHeight}px`;
   };
 
@@ -18,8 +18,6 @@ export default function MessageManager() {
     if (!textareaRef.current) return;
     e.preventDefault();
     send();
-
-    // textareaRef.current.style.height = "20px";
   };
 
   return (
@@ -33,7 +31,7 @@ export default function MessageManager() {
         }}
         placeholder="Type a message..."
         // style={{ transition: "height 0.2s ease-out" }}
-        className="textarea w-full p-2 rounded border border-gray-300 overflow-hidden resize-none h-15 transition ease-out duration-200"
+        className="textarea w-full p-2 rounded border border-gray-300 overflow-hidden resize-none h-10 transition ease-out duration-200"
         onKeyDown={(e) => {
           if (e.key === "Enter" && e.shiftKey) {
           } else if (e.key === "Enter" && !e.shiftKey) {

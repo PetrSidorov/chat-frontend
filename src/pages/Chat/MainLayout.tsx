@@ -1,5 +1,5 @@
 import Split from "react-split";
-import { AllConvoContext } from "../../context/AllConvoContext";
+import { AllConvoContext } from "../../context/AllConvoProvider";
 import ActiveConvo from "./ActiveConvo";
 import MessageManager from "./MessageManager";
 
@@ -10,6 +10,7 @@ import FullScreenLoading from "../../components/FullScreenLoading";
 import { AuthContext } from "../../context/AuthProvider";
 import { ResizeContext } from "../../context/ResizeProvider";
 import Sidebar from "./sidebar/Sidebar";
+import NoActiveConvo from "./NoActiveConvo";
 
 export default function ChatMain() {
   const { user } = useContext(AuthContext);
@@ -32,7 +33,7 @@ export default function ChatMain() {
             sizes={sizes}
           >
             <div
-              className={clsx("flex flex-col bg-gray-800 text-white p-4", {
+              className={clsx("flex flex-col bg-white text-black p-4", {
                 hidden: mobileView && activeConvoId,
                 "w-1/3": !mobileView && activeConvoId,
                 "w-full": mobileView && !activeConvoId,
@@ -48,12 +49,16 @@ export default function ChatMain() {
                 hidden: mobileView && !activeConvoId,
               })}
             >
-              <ActiveConvo />
-              <MessageManager />
+              {activeConvoId ? (
+                <>
+                  <ActiveConvo initialLoad={true} />
+                  <MessageManager />
+                </>
+              ) : (
+                <NoActiveConvo />
+              )}
             </div>
-            {/* )} */}
           </Split>
-          {/* </ResizeProvider> */}
         </div>
       )}
     </>

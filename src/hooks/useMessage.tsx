@@ -1,59 +1,47 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import { TMessage } from "../types";
+import { useCallback, useContext, useState } from "react";
+import { useSyncExternalStore } from "react";
+import { socket } from "../utils/socket";
 import { AuthContext } from "../context/AuthProvider";
-import { AllConvoContext } from "../context/AllConvoContext";
-import useSockets from "./useSockets";
-import isEmpty from "../utils/isEmpty";
+import { AllConvoContext } from "../context/AllConvoProvider";
 
 export default function useMessage() {
   const { user } = useContext(AuthContext);
-  const [message, setMessage] = useState("");
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
-  const { convos, pushNewMessageToConvo } =
-    useContext(AllConvoContext).convoContext;
+  const { pushNewMessageToConvo } = useContext(AllConvoContext).convoContext;
+  const [message, setMessage] = useState("");
 
-  const {
-    socketLoading,
-    data: incomingMessage,
-    emit,
-  } = useSockets({
-    emitFlag: "msg:create",
-    onFlag: "msg:return",
-    initialState: {},
-  });
+  // const subscribe = (callback: () => void) => {
+  //   socket.on("msg:return", (incomingMessage) => {
+  //     if (incomingMessage && incomingMessage.convoId === activeConvoId) {
+  //       pushNewMessageToConvo(incomingMessage.convoId, incomingMessage);
+  //       callback();
+  //     }
+  //   });
 
-  useEffect(() => {
-    if (!incomingMessage || !incomingMessage.id) return;
+  //   return () => {
+  //     socket.off("msg:return");
+  //   };
+  // };
 
-    if (incomingMessage != activeConvoId) {
-      // TODO:add unread here
-    }
-    const { convoId, ...message } = incomingMessage;
-    pushNewMessageToConvo(convoId, message);
-  }, [incomingMessage]);
+  // const getSnapshot = () => null;
+
+  // useSyncExternalStore(subscribe, getSnapshot);
 
   const send = useCallback(() => {
-    if (!message.trim()) {
-      console.log("Message is empty or only whitespace");
-      return;
-    }
-    if (!user || isEmpty(user) || !activeConvoId || !convos) {
-      console.log("User, active conversation, or convos are not properly set");
+    if (!message.trim() || !user || !activeConvoId) {
+      console.error("Message is empty, or user/activeConvoId is not set.");
       return;
     }
 
-    emit({
+    socket.emit("msg:create", {
       content: message,
       convoId: activeConvoId,
-      receiverId: convos[activeConvoId].receiver.id,
       createdAt: new Date().toISOString(),
-      id: crypto.randomUUID(),
       senderId: user.id,
-      // TODO: use this Uuid for optimistic updates
     });
 
     setMessage("");
-  }, [message, user, activeConvoId, convos, emit]);
+  }, [message, user, activeConvoId]);
 
   return { message, setMessage, send };
 }

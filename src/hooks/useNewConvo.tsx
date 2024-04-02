@@ -1,11 +1,11 @@
 import { useContext, useEffect } from "react";
 import useSockets from "./useSockets";
 import useConvoSocketPoll from "./useConvoSocketPoll";
-import { AllConvoContext } from "../context/AllConvoContext";
+import { AllConvoContext } from "../context/AllConvoProvider";
 
 export default function useNewConvo() {
-  const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
-  const { convos, unshiftMessagesToConvo } =
+  const [, handleActiveConvoId] = useContext(AllConvoContext).activeConvoId;
+  const { convos, unshiftMessagesToConvo, addNewConvo } =
     useContext(AllConvoContext).convoContext;
   const { joinRoom } = useConvoSocketPoll();
 
@@ -16,12 +16,13 @@ export default function useNewConvo() {
   });
 
   useEffect(() => {
-    if (data && Object.keys(data).length === 0) return;
-    const [convoId, messages] = Object.entries(data)[0];
+    console.log("data in use new convo ", data);
+    if (!data || Object.keys(data).length == 0) return;
+    const newConvoId = Object.keys(data)[0];
 
-    setActiveConvoId(convoId);
-    unshiftMessagesToConvo({ id: convoId, newMessages: messages });
-    joinRoom(convoId);
+    addNewConvo(data);
+    joinRoom(newConvoId);
+    handleActiveConvoId(newConvoId);
   }, [data]);
 
   return emit;

@@ -60,6 +60,7 @@ const checkIfUsernameIsUnique = async (username: string) => {
 
     return response.data;
   } catch (error) {
+    // TODO:TYPESCRIPT + something more meaningful
     return false;
   }
 };
@@ -72,6 +73,7 @@ const checkIfEmailIsUnique = async (email: string) => {
 
     return response.data;
   } catch (error) {
+    // TODO:TYPESCRIPT + something more meaningful
     return false;
   }
 };
@@ -151,6 +153,7 @@ export default function RegisterPage() {
         navigate("/messages");
       }
     } catch (error: any) {
+      // TODO:TYPESCRIPT + something more meaningful
       if (error.response) {
         form.setError("username", {
           type: "server",
@@ -289,7 +292,7 @@ export default function RegisterPage() {
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
-              Submit
+              Register
             </Button>
             <a
               className="font-bold text-sm text-blue-500 hover:text-blue-800 pr-4"

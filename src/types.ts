@@ -60,10 +60,11 @@ export type Tactors = {
 };
 
 export type TConvos = {
-  [key: string]: {
+  [convoId: string]: {
     messages: TMessage[];
+    participants: TUser[];
     // actors: Tactors;
-    receiver: TUser;
+    // receiver: TUser;
     // onlineStatus: boolean;
     // actors: {
     //   initiator: {
@@ -84,18 +85,45 @@ export type ConvoProps = {
   data: TConvos;
 };
 
+export type TOnlineStatuses = {
+  [convoId: string]: string[];
+};
+
+// const x: { [key: string]: unknown } = [];
+// const y: {} = [];
+
+// const user: { login: string } | Record<string, unknown> = {};
+const user: Partial<{ login: string }> = {};
+
+function isUser(user: Partial<{ login: string }>): user is { login: string } {
+  return (
+    Boolean(user) &&
+    Object.keys(user).length > 0 &&
+    "login" in user &&
+    typeof user.login == "string"
+  );
+}
+
+// const user2 = { login: "Bruce" ....}
+
+if (isUser(user)) {
+  user.login;
+}
+
 export type TConvoContext = {
   convoContext: {
-    convos: TConvos | null;
+    convos: TConvos;
     unshiftMessagesToConvo: Function;
     pushNewMessageToConvo: Function;
-    pushNewMessagesToConvo: Function;
-    handleOnlineStatuses: Function;
+    pushNewMessagesToConvo: (...args: unknown[]) => void;
     handleRemoveMessage: Function;
     initConvo: Function;
+    getParticipantOnlineStatus: () => void;
+    onlineStatuses: { [key: string]: string[] };
   };
-  activeConvoId: [string | null, Function];
+  activeConvoId: [string, Function];
   socketPoll: [string[] | null, Dispatch<SetStateAction<string[] | null>>];
+  removeConvo: (convoId: string) => void;
 };
 
 type TypeHttpHeaders = {

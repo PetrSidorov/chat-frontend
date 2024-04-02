@@ -1,16 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { socket } from "../utils/socket";
-import { AllConvoContext } from "../context/AllConvoContext";
+import { AllConvoContext } from "../context/AllConvoProvider";
 import { AuthContext } from "../context/AuthProvider";
+import { socket } from "../utils/socket";
 
 export default function useConvoSocketPoll() {
   const [isConnected, setIsConnected] = useState(socket.connected);
-
-  // const { convos, handleOnlineStatuses } =
-  //   useContext(AllConvoContext).convoContext;
   const [socketPoll, setSocketPoll] = useContext(AllConvoContext).socketPoll;
-  //   const [activeConvoContext, setActiveConvoContext] =
-  //     useContext(ActiveConvoContext).convoContext;
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
@@ -31,6 +26,7 @@ export default function useConvoSocketPoll() {
       socket.off("connect");
       socket.off("disconnect");
       socket.off("connect_error");
+      socket.off("room:onlineUsers");
     };
   }, [user]);
 
