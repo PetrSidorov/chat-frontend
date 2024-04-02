@@ -43,15 +43,16 @@ export default function useFetchDB<T>(): {
 
         const response = await axios(axiosConfig);
         setData(response.data);
-      } catch (e) {
-        if (axios.isCancel(e)) {
-          console.log("Request canceled", e.message);
-        } else if (e instanceof AxiosError) {
-          setError(e.response?.data?.message || String(e));
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          console.log("Request canceled", error.message);
+        } else if (error instanceof AxiosError) {
+          setError(error.response?.data?.message || String(error));
         } else {
           // TODO: ask Artem if something even could be thrown here,
           // since we are in axios related try catch block
-          throw new Error(e);
+          // and why it's not 'new' in this case
+          throw error;
         }
       } finally {
         setLoading(false);
