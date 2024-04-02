@@ -87,6 +87,7 @@ function UploadAndCropAvatar() {
         throw new Error("Upload failed with status: " + response.status);
       }
     } catch (error) {
+      // TODO:TYPESCRIPT + something more meaningful
       console.error("Error:", error);
       setUploadStatus("Upload failed.");
     }

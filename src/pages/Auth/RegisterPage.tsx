@@ -60,6 +60,7 @@ const checkIfUsernameIsUnique = async (username: string) => {
 
     return response.data;
   } catch (error) {
+    // TODO:TYPESCRIPT + something more meaningful
     return false;
   }
 };
@@ -72,6 +73,7 @@ const checkIfEmailIsUnique = async (email: string) => {
 
     return response.data;
   } catch (error) {
+    // TODO:TYPESCRIPT + something more meaningful
     return false;
   }
 };
@@ -151,6 +153,7 @@ export default function RegisterPage() {
         navigate("/messages");
       }
     } catch (error: any) {
+      // TODO:TYPESCRIPT + something more meaningful
       if (error.response) {
         form.setError("username", {
           type: "server",

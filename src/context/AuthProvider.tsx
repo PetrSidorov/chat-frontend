@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import {
   Dispatch,
   ReactNode,
@@ -49,8 +49,12 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
           setStatus(response.status);
           // TODO:TYPESCRIPT ask Artem
           // if (e instanceof AxiosError... blabla else what ?)
-        } catch (e: any) {
-          setStatus(e.response.status);
+        } catch (e) {
+          if (e instanceof AxiosError && e.response) {
+            setStatus(e.response.status);
+          } else {
+            throw new Error(e);
+          }
         }
       }
       setLoading(false);

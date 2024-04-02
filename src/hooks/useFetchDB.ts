@@ -1,5 +1,9 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import axios, { AxiosRequestConfig, CancelTokenSource } from "axios";
+import axios, {
+  AxiosError,
+  AxiosRequestConfig,
+  CancelTokenSource,
+} from "axios";
 import { TDataBaseRequestData } from "../types";
 
 export default function useFetchDB<T>(): {
@@ -39,11 +43,15 @@ export default function useFetchDB<T>(): {
 
         const response = await axios(axiosConfig);
         setData(response.data);
-      } catch (e: any) {
+      } catch (e) {
         if (axios.isCancel(e)) {
           console.log("Request canceled", e.message);
-        } else {
+        } else if (e instanceof AxiosError) {
           setError(e.response?.data?.message || String(e));
+        } else {
+          // TODO: ask Artem if something even could be thrown here,
+          // since we are in axios related try catch block
+          throw new Error(e);
         }
       } finally {
         setLoading(false);
