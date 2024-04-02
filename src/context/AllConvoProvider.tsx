@@ -17,6 +17,7 @@ export const AllConvoContext = createContext<TConvoContext>({
     initConvo: () => {},
     getParticipantOnlineStatus: () => false,
     addNewConvo: () => {},
+    onlineStatuses: null,
   },
 });
 

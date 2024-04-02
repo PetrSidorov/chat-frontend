@@ -9,7 +9,7 @@ import IsOnline from "./sidebar/convos/IsOnline";
 import { ChevronLeft } from "lucide-react";
 import { ResizeContext } from "../../context/ResizeProvider";
 
-export default function ActiveConvo({ initialLoad }) {
+export default function ActiveConvo({ initialLoad }: { initialLoad: boolean }) {
   const [activeConvoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
   const { user } = useContext(AuthContext);

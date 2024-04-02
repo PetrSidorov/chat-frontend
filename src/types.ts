@@ -62,6 +62,7 @@ export type Tactors = {
 export type TConvos = {
   [convoId: string]: {
     messages: TMessage[];
+    participants: TUser[];
     // actors: Tactors;
     // receiver: TUser;
     // onlineStatus: boolean;
@@ -111,16 +112,18 @@ if (isUser(user)) {
 
 export type TConvoContext = {
   convoContext: {
-    convos: TConvos | {};
+    convos: TConvos;
     unshiftMessagesToConvo: Function;
     pushNewMessageToConvo: Function;
     pushNewMessagesToConvo: (...args: unknown[]) => void;
     handleRemoveMessage: Function;
     initConvo: Function;
     getParticipantOnlineStatus: () => void;
+    onlineStatuses: { [key: string]: string[] };
   };
   activeConvoId: [string, Function];
   socketPoll: [string[] | null, Dispatch<SetStateAction<string[] | null>>];
+  removeConvo: (convoId: string) => void;
 };
 
 type TypeHttpHeaders = {

@@ -60,8 +60,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    console.log(status);
-  }, [status]);
+    console.log("user ", user);
+  }, [user]);
 
   const value = useMemo(() => {
     return { user, setUser, status, loading };

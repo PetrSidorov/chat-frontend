@@ -21,6 +21,7 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route element={<AuthGuard />}>
+                <Route path="*" element={<Navigate to="/messages" replace />} />
                 <Route path="/" element={<MainLayout />}>
                   <Route path="messages" element={<ConvosList />} />
                   <Route path="search" element={<FriendsTab />} />
