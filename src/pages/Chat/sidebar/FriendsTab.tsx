@@ -54,6 +54,9 @@ export default function FriendsTab() {
   }, [searchInput]);
 
   return (
+    // TODO:CSS move this padding up if possible
+    // review why here is padding and the padding on the form inside,
+    //  is it necessary?
     <div className="p-4">
       <form className="mb-4">
         <input

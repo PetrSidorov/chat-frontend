@@ -44,6 +44,7 @@ export default function Message({
   // console.log("username ", username);
   return (
     <motion.li
+      // TODO:CSS move this margin up
       className={`flex m-2 p-4 bg-gray-200 items-start justify-center`}
       layout
       initial={animation.initial}

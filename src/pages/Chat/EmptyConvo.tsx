@@ -1,5 +1,6 @@
 export default function EmptyConvo() {
   return (
+    // TODO:CSS move this margin up
     <li className="flex items-center m-2 p-2 bg-gray-200 rounded">
       <div className="ml-2">
         <div className="flex justify-between mb-3">

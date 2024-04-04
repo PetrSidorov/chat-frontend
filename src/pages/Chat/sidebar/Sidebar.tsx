@@ -7,6 +7,7 @@ export default function Sidebar({ children }: { children: ReactNode }) {
   return (
     <>
       {children}
+      // TODO:CSS move this margin up
       <ul className="mt-auto flex justify-around">
         <li>
           <Link
