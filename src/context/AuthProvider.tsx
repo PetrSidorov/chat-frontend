@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, isAxiosError } from "axios";
 import {
   Dispatch,
   ReactNode,
@@ -32,10 +32,16 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    // server nor functioning
+    // user not found
+    // permission denied
+
     const getUser = async () => {
+      // TODO: early return
       setLoading(true);
       if (!user) {
         try {
+          // TODO: api/me naming
           const response = await axios.get(
             "http://localhost:3007/api/user-data",
             {
@@ -50,10 +56,14 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
           // TODO:TYPESCRIPT ask Artem
           // if (e instanceof AxiosError... blabla else what ?)
         } catch (e) {
+          // if (isAxiosError(e)) {
+          //   e.
+          // }
           if (e instanceof AxiosError && e.response) {
+            // TODO: if no response
             setStatus(e.response.status);
           } else {
-            throw new Error(e);
+            // ignore error
           }
         }
       }
@@ -68,7 +78,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, [user]);
 
   const value = useMemo(() => {
-    return { user, setUser, status, loading };
+    return { user, setUser, setStatus, status, loading };
   }, [user, status, loading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

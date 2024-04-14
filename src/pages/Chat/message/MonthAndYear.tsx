@@ -10,10 +10,10 @@ export default function MonthAndYear({ createdAt }: { createdAt: string }) {
     day: "numeric",
     ...(isSameYear ? {} : { year: "numeric" }),
   });
+  // TODO:CSS move this margin up
 
   return (
     <motion.div
-      // TODO:CSS move this margin up
       className="w-fit mx-auto mt-10"
       layout
       initial={animations.enter.initial}

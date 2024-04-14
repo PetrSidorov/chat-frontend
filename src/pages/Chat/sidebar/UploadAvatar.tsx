@@ -92,10 +92,8 @@ function UploadAndCropAvatar() {
       setUploadStatus("Upload failed.");
     }
   };
-
+  // TODO:CSS move this margin up
   return (
-    // TODO:CSS move this margin up
-
     <div className="space-y-4">
       <input
         type="file"

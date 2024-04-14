@@ -4,10 +4,11 @@ import VisuallyHidden from "../../../components/VisuallyHidden";
 import { Link } from "react-router-dom";
 
 export default function Sidebar({ children }: { children: ReactNode }) {
+  // TODO:CSS move this margin up
   return (
     <>
       {children}
-      // TODO:CSS move this margin up
+
       <ul className="mt-auto flex justify-around">
         <li>
           <Link

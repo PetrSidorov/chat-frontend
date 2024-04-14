@@ -11,13 +11,15 @@ import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 
 function App() {
+  // TODO: it would be cool to implment portals here for learning purposes
+  // if it makes sense of course
   return (
     <BrowserRouter>
       <AuthProvider>
         <ActiveConvoProvider>
           <ResizeProvider>
             <Routes>
-              {/* <Route path="*" element={<Navigate to="/login" replace />} /> */}
+              <Route path="*" element={<Navigate to="/login" replace />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route element={<AuthGuard />}>

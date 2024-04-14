@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -39,7 +39,13 @@ export default function LoginPage() {
       password: "",
     },
   });
-  const { setUser } = useContext(AuthContext);
+  const { setUser, user, setStatus } = useContext(AuthContext);
+
+  // useEffect(() => {
+  //   if (user) {
+  //     navigate("/messages");
+  //   }
+  // }, [user]);
 
   async function onSubmit(values: LoginFormValues) {
     try {
@@ -53,7 +59,9 @@ export default function LoginPage() {
       const data = response.data;
       if (data && data?.token) {
         setUser(data.user);
+        setStatus(200);
         navigate("/messages");
+        console.log("setUser() && navigate()");
       }
     } catch (error: any) {
       if (error.response) {

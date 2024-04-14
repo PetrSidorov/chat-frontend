@@ -13,8 +13,8 @@ export default function LoginFormField({
   name: string;
   type: string;
 }) {
+  // TODO:CSS move this margin up
   return (
-    // TODO:CSS move this margin up
     <div className="mb-6">
       <label
         className="block text-gray-700 text-sm font-bold mb-2"
