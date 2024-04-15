@@ -1,7 +1,8 @@
 import { animations } from "@/utils/animations";
 import { motion } from "framer-motion";
 import { CircleUserRound } from "lucide-react";
-
+import usernameToHexColor from "@/utils/usernameToHexColor";
+import { cn } from "@/utils/cn";
 // TODO: should show name of the person under avatar,
 // when message and date are hidden in preview
 export default function Avatar({
@@ -13,7 +14,9 @@ export default function Avatar({
   username?: string;
   showOnlyAvatars?: boolean;
 }) {
-  const size = showOnlyAvatars ? 92 : 92;
+  // const size = showOnlyAvatars ? 92 : 92;
+  const bgColor = usernameToHexColor(username);
+  console.log("bgColor ", bgColor);
   return (
     <>
       {avatarUrl ? (
@@ -30,12 +33,14 @@ export default function Avatar({
         />
       ) : (
         <div>
-          <CircleUserRound
-            className="flex-none mx-auto max-w-[100%]"
-            size={size}
-            strokeWidth={1}
-          />
-          {showOnlyAvatars && <p className="text-center">{username}</p>}
+          <div
+            className="min-w-[70px] w-[70px] h-[70px] rounded-full flex"
+            style={{ backgroundColor: bgColor }}
+          >
+            <p className="m-auto text-2xl font-semibold">
+              {username!.slice(0, 1).toUpperCase()}
+            </p>
+          </div>
         </div>
       )}
     </>
