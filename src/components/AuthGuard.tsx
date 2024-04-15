@@ -8,17 +8,11 @@ export default function AuthGuard() {
   const location = useLocation();
   const { hash, pathname, search } = location;
 
-  // useEffect(() => {
-  //   console.log("user ", user);
-  // }, [user]);
-
-  console.log("<AuthGuard />", user, loading, status);
-
   if (loading) {
-    // console.log("if (loading) {");
     return <FullScreenLoading />;
   }
 
+  // TODO: no need for checking status here
   if ((!user && status == 200) || status == 401) {
     // TODO: if 401 do something meaningful
     // console.log("if ((!user && status == 200) || status == 401) {");
@@ -27,10 +21,6 @@ export default function AuthGuard() {
   }
 
   if ((user && pathname == "/login") || pathname == "/register") {
-    // console.log(
-    //   'if ((user && pathname == "/login") || pathname == "/register") {'
-    // );
-
     return <Navigate to="/messages" state={{ from: location }} replace />;
   }
 
