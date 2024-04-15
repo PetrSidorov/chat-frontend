@@ -15,8 +15,9 @@ export default function Avatar({
   showOnlyAvatars?: boolean;
 }) {
   // const size = showOnlyAvatars ? 92 : 92;
+  // TODO: optimize this, there's no need to recalculate it every time
   const bgColor = usernameToHexColor(username);
-  console.log("bgColor ", bgColor);
+
   return (
     <>
       {avatarUrl ? (

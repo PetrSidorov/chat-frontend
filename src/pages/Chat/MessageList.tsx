@@ -31,7 +31,7 @@ const MessageList = forwardRef<
     const [popupState, setPopupState] = useState(initialPopupState);
     // animation related states
     const [messageToRemove, setMessageToRemove] = useState("");
-
+    // TODO: animation type through useState
     // animation related states
     const { fullWidthMessagesInActiveConvo } = useContext(ResizeContext);
 
