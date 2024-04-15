@@ -35,7 +35,7 @@ export default function Avatar({
       ) : (
         <div>
           <div
-            className="min-w-[70px] w-[70px] h-[70px] rounded-full flex"
+            className="min-w-[70px] w-[70px] h-[70px] rounded-full flex border-black border-2"
             style={{ backgroundColor: bgColor }}
           >
             <p className="m-auto text-2xl font-semibold">
