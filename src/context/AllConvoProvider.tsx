@@ -101,7 +101,7 @@ export default function ActiveConvoProvider({
     });
   }
 
-  const handleRemoveMessage = (convoId: string, messageIdToDelete: string) => {
+  const handleRemoveMessage = (messageIdToDelete: string) => {
     // TODO: optimistic updates ?
     emit(messageIdToDelete);
   };

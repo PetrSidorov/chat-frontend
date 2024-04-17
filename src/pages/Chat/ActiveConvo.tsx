@@ -99,6 +99,7 @@ export default function ActiveConvo({ initialLoad }: { initialLoad: boolean }) {
       {!userOnlineStatus && (
         <p className="text-center my-2">Waiting for network...</p>
       )}
+      // TODO add confirmation modal
       {user && Object.keys(user).length > 0 ? (
         <MessageList
           ref={observeRef}

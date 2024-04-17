@@ -3,6 +3,10 @@ import { TCSSclampLines } from "../../../types";
 import { animations } from "../../../utils/animations";
 import Avatar from "./Avatar";
 import { cn } from "@/lib/utils";
+import { PopupTrigger } from "@/components/ui/popuptrigger";
+import MessageContextMenu from "../sidebar/convos/MessageContextMenu";
+import { useContext } from "react";
+import { AllConvoContext } from "@/context/AllConvoProvider";
 
 export default function Message({
   content,
@@ -14,6 +18,9 @@ export default function Message({
   style,
   prevMessageSender = "",
   shouldAnimate,
+  yours,
+
+  id,
 }: {
   content: string;
   createdAt: string;
@@ -24,7 +31,11 @@ export default function Message({
   style?: TCSSclampLines;
   prevMessageSender?: string;
   shouldAnimate: boolean;
+  yours: boolean;
+
+  id: string;
 }) {
+  const { handleRemoveMessage } = useContext(AllConvoContext).convoContext;
   const date = createdAt
     ? new Date(createdAt).toLocaleTimeString("en-US", {
         hour: "2-digit",
@@ -47,36 +58,49 @@ export default function Message({
   const showAvatarAndUsername = prevMessageSender != username;
 
   return (
-    <motion.li
-      // TODO:CSS move this margin up
-      className="flex m-2 p-4 bg-gray-200 items-start justify-center"
-      layout
-      {...animationProps}
-    >
-      {showAvatarAndUsername && (
-        <Avatar
-          showOnlyAvatars={showOnlyAvatars}
-          username={username}
-          avatarUrl={avatarUrl}
-          shouldAnimate={shouldAnimate}
-          animationType={animationType}
+    <PopupTrigger
+      popup={
+        <MessageContextMenu
+          yours={yours}
+          handleRemoveMessage={() => handleRemoveMessage(id)}
+          // handleDismiss={handleDismiss}
+          id={id}
         />
-      )}
-      {!showOnlyAvatars && (
-        <div
-          className={cn(
-            "ml-2 w-full",
-            style ? "overflow-x-hidden" : "whitespace-pre-wrap",
-            !showAvatarAndUsername ? "ml-[70px]" : ""
-          )}
-        >
-          <div className="flex justify-between mb-3 flex-nowrap">
-            {showAvatarAndUsername && <span className="mr-2">{username}</span>}
-            <span className="whitespace-nowrap ml-auto">{date}</span>
+      }
+    >
+      <motion.li
+        // TODO:CSS move this margin up
+        className="flex m-2 p-4 bg-gray-200 items-start justify-center"
+        layout
+        {...animationProps}
+      >
+        {showAvatarAndUsername && (
+          <Avatar
+            showOnlyAvatars={showOnlyAvatars}
+            username={username}
+            avatarUrl={avatarUrl}
+            shouldAnimate={shouldAnimate}
+            animationType={animationType}
+          />
+        )}
+        {!showOnlyAvatars && (
+          <div
+            className={cn(
+              "ml-2 w-full",
+              style ? "overflow-x-hidden" : "whitespace-pre-wrap",
+              !showAvatarAndUsername ? "ml-[70px]" : ""
+            )}
+          >
+            <div className="flex justify-between mb-3 flex-nowrap">
+              {showAvatarAndUsername && (
+                <span className="mr-2">{username}</span>
+              )}
+              <span className="whitespace-nowrap ml-auto">{date}</span>
+            </div>
+            <p style={style}>{content}</p>
           </div>
-          <p style={style}>{content}</p>
-        </div>
-      )}
-    </motion.li>
+        )}
+      </motion.li>
+    </PopupTrigger>
   );
 }
