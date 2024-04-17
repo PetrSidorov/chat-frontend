@@ -65,6 +65,8 @@ const MessageList = forwardRef<
     }
 
     function handleRemoveMessageAndClose(activeConvoId: string, id: string) {
+      // console.log("activeConvoId ", activeConvoId);
+      // console.log("id ", id);
       setMessageToRemove(id);
       setTimeout(() => {
         handleRemoveMessage(activeConvoId, id);
@@ -85,6 +87,7 @@ const MessageList = forwardRef<
         let animationType = "";
         if (id === messageToRemove) {
           animationType = "remove";
+          console.log("yooooo");
         }
 
         return (

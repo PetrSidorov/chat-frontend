@@ -61,21 +61,6 @@ export type TConvos = {
   [convoId: string]: {
     messages: TMessage[];
     participants: TUser[];
-    // actors: Tactors;
-    // receiver: TUser;
-    // onlineStatus: boolean;
-    // actors: {
-    //   initiator: {
-    //     id: string;
-    //     username: string;
-    //     avatarUrl: string | null;
-    //   };
-    //   joiner: {
-    //     id: string;
-    //     username: string;
-    //     avatarUrl: string | null;
-    //   };
-    // };
   };
 };
 

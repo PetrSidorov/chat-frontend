@@ -1,6 +1,8 @@
 import { XCircle } from "lucide-react";
 import { useContext } from "react";
 import { AllConvoContext } from "../../../../context/AllConvoProvider";
+import VisuallyHidden from "@/components/VisuallyHidden";
+import { motion } from "framer-motion";
 export default function MessageContextMenu({
   yours,
   handleRemoveMessage,
@@ -31,14 +33,22 @@ export default function MessageContextMenu({
               width: "max-content",
             }}
           >
-            <li>
-              <button
-                className="flex p-4"
-                onClick={() => handleRemoveMessage(activeConvoId, id)}
-              >
+            <li className="flex p-4">
+              <button onClick={() => handleRemoveMessage(activeConvoId, id)}>
                 <span className="mr-2">Delete message</span>
-                <XCircle />
               </button>
+              <motion.button
+                onClick={() => handleDismiss()}
+                whileHover={{
+                  scale: 1.1,
+                  rotate: [0, -5, 5, -5, 5, 0],
+                  transition: { duration: 1 },
+                }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <XCircle />
+                <VisuallyHidden>Dismiss </VisuallyHidden>
+              </motion.button>
             </li>
           </ul>
         </div>

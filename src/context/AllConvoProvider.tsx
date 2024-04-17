@@ -61,9 +61,11 @@ export default function ActiveConvoProvider({
     };
 
     socket.on("msg:return", handleMessageReturn);
+    socket.on("msg:delete:return", handleMessageDelete);
 
     return () => {
       socket.off("msg:return", handleMessageReturn);
+      socket.off("msg:delete:return", handleMessageDelete);
     };
   }, [activeConvoId]);
 
@@ -77,8 +79,31 @@ export default function ActiveConvoProvider({
     setActiveConvoId(id);
   };
 
-  const handleRemoveMessage = (messageIdToDelete: string) => {
-    emit({ eventId: messageIdToDelete });
+  function handleMessageDelete({
+    id: messageToDelete,
+    convoId,
+  }: {
+    id: string;
+    convoId: string;
+  }) {
+    setConvos((currConvos) => {
+      const updatedConvos = { ...currConvos };
+      if (updatedConvos[convoId]) {
+        const updatedMessages = updatedConvos[convoId].messages.filter(
+          ({ id }) => id !== messageToDelete
+        );
+        updatedConvos[convoId].messages = updatedMessages;
+        return updatedConvos;
+      }
+      // The line below exists for
+      // typescript error fixing
+      return currConvos;
+    });
+  }
+
+  const handleRemoveMessage = (convoId: string, messageIdToDelete: string) => {
+    // TODO: optimistic updates ?
+    emit(messageIdToDelete);
   };
 
   const pushNewMessagesToConvo = (convoId: string, messages: TMessage[]) => {

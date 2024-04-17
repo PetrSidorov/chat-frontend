@@ -33,9 +33,14 @@ export const animations: Tanimations = {
 
 type Tanimations = {
   [key: string]: {
-    initial: { opacity: number; y: number };
-    animate: { opacity: number; y: number };
-    exit: { opacity: number; y: number };
-    transition: { duration: number };
+    initial: { opacity: number; y?: number; x?: number };
+    animate: { opacity: number; y?: number; x?: number };
+    exit: {
+      opacity: number;
+      y?: number;
+      x?: number;
+      transition?: { duration: number; ease?: string };
+    };
+    transition: { duration: number; ease?: string };
   };
 };

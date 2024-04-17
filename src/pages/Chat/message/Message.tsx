@@ -36,6 +36,9 @@ export default function Message({
   // TODO:   text-overflow: ellipsis (maybe);
 
   // const animationType = "enter";
+  // console.log("animationType yooo", animationType);
+  // console.log("deleted message ", content);
+  // console.log("animations[animationType]  ", animations[animationType]);
   const animation = animations[animationType] || animations.enter;
 
   const showAvatarAndUsername = prevMessageSender != username;
