@@ -70,7 +70,7 @@ export default function ActiveConvo({ initialLoad }: { initialLoad: boolean }) {
   return (
     <div
       ref={scrollContainerRef}
-      className="flex flex-col flex-grow overflow-y-scroll "
+      className="flex flex-col flex-grow overflow-y-scroll overflow-x-hidden"
     >
       <div className="sticky top-0 bg-slate-600 p-2 z-10 flex items-center justify-between">
         {mobileView && (
