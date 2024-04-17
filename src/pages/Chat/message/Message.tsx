@@ -14,7 +14,7 @@ export default function Message({
   username,
   avatarUrl,
   showOnlyAvatars = false,
-  animationType = "enter",
+  // animationType = "enter",
   style,
   prevMessageSender = "",
   shouldAnimate,
@@ -27,15 +27,15 @@ export default function Message({
   username: string;
   avatarUrl: string | null;
   showOnlyAvatars?: boolean;
-  animationType?: string;
+  // animationType?: string;
   style?: TCSSclampLines;
   prevMessageSender?: string;
   shouldAnimate: boolean;
   yours: boolean;
-
   id: string;
 }) {
-  const { handleRemoveMessage } = useContext(AllConvoContext).convoContext;
+  const { handleRemoveMessage, animationType } =
+    useContext(AllConvoContext).convoContext;
   const date = createdAt
     ? new Date(createdAt).toLocaleTimeString("en-US", {
         hour: "2-digit",
@@ -63,7 +63,6 @@ export default function Message({
         <MessageContextMenu
           yours={yours}
           handleRemoveMessage={() => handleRemoveMessage(id)}
-          // handleDismiss={handleDismiss}
           id={id}
         />
       }

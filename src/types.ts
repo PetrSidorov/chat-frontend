@@ -82,6 +82,7 @@ export type TConvoContext = {
     initConvo: Function;
     getParticipantOnlineStatus: () => void;
     onlineStatuses: { [key: string]: string[] };
+    animationType: string;
   };
   activeConvoId: [string, Function];
   socketPoll: [string[] | null, Dispatch<SetStateAction<string[] | null>>];

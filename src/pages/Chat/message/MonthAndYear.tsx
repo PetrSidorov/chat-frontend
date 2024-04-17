@@ -3,7 +3,7 @@ import { animations } from "../../../utils/animations";
 
 export default function MonthAndYear({
   createdAt,
-  animationType,
+  animationType = "enter",
   shouldAnimate,
 }: {
   createdAt: string;

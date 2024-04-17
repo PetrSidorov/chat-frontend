@@ -32,14 +32,14 @@ const MessageList = forwardRef<
     // const [popupState, setPopupState] = useState(initialPopupState);
     const [messageToRemove, setMessageToRemove] = useState("");
     const [shouldAnimate, setShouldAnimate] = useState(true);
-    const [animationType, setAnimationType] = useState("enter");
+    // const [animationType, setAnimationType] = useState("enter");
     const { fullWidthMessagesInActiveConvo } = useContext(ResizeContext);
 
-    useEffect(() => {
-      // setPopupState(initialPopupState);
-      setAnimationType("");
-      setShouldAnimate(false);
-    }, [activeConvoId]);
+    // useEffect(() => {
+    //   // setPopupState(initialPopupState);
+    //   setAnimationType("");
+    //   setShouldAnimate(false);
+    // }, [activeConvoId]);
 
     // function togglePopup(
     //   yours: boolean,
@@ -60,11 +60,11 @@ const MessageList = forwardRef<
     //   });
     // }
 
-    useEffect(() => {
-      if (messageToRemove) {
-        setAnimationType("remove");
-      }
-    }, [messageToRemove]);
+    // useEffect(() => {
+    //   if (messageToRemove) {
+    //     setAnimationType("remove");
+    //   }
+    // }, [messageToRemove]);
 
     // function handleDismiss() {
     //   setPopupState((curr) => {
@@ -100,7 +100,6 @@ const MessageList = forwardRef<
               messages[i - 1]?.createdAt || ""
             ) && (
               <MonthAndYear
-                animationType={animationType}
                 createdAt={createdAt}
                 shouldAnimate={shouldAnimate}
               />
@@ -117,7 +116,7 @@ const MessageList = forwardRef<
                 createdAt={createdAt}
                 username={sender.username}
                 avatarUrl={avatarUrl}
-                animationType={animationType}
+                // animationType={animationType}
                 id={id}
                 shouldAnimate={shouldAnimate}
                 prevMessageSender={messages[i - 1]?.sender?.username || ""}

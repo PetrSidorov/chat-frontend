@@ -18,6 +18,7 @@ export const AllConvoContext = createContext<TConvoContext>({
     getParticipantOnlineStatus: () => false,
     addNewConvo: () => {},
     onlineStatuses: null,
+    animationType: "",
   },
 });
 
@@ -26,6 +27,7 @@ export default function ActiveConvoProvider({
 }: {
   children: ReactNode;
 }) {
+  const [animationType, setAnimationType] = useState("enter");
   const [convos, setConvos] = useState<TConvos | null>(null);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
   const onlineStatuses = useRoomUsersStatus();
@@ -39,6 +41,7 @@ export default function ActiveConvoProvider({
 
   useEffect(() => {
     const handleMessageReturn = (incomingMessage: TMessage) => {
+      setAnimationType("enter");
       if (incomingMessage && incomingMessage.convoId === activeConvoId) {
         setConvos((currentConvos) => {
           // TODO: write something meaningful here
@@ -103,6 +106,8 @@ export default function ActiveConvoProvider({
 
   const handleRemoveMessage = (messageIdToDelete: string) => {
     // TODO: optimistic updates ?
+    // TODO add confirmation modal
+    setAnimationType("remove");
     emit(messageIdToDelete);
   };
 
@@ -190,6 +195,7 @@ export default function ActiveConvoProvider({
           initConvo,
           onlineStatuses,
           addNewConvo,
+          animationType,
         },
         removeConvo,
         activeConvoId: [activeConvoId, handleActiveConvoId],

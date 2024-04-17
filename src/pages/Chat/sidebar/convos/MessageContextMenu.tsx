@@ -6,8 +6,6 @@ export default function MessageContextMenu({
   yours: boolean;
   handleRemoveMessage: Function;
   id: string;
-  top: number;
-  left: number;
 }) {
   return (
     <>
