@@ -47,7 +47,7 @@ export default function MessageContextMenu({
                 whileTap={{ scale: 0.9 }}
               >
                 <XCircle />
-                <VisuallyHidden>Dismiss </VisuallyHidden>
+                <VisuallyHidden>Dismiss message deletion</VisuallyHidden>
               </motion.button>
             </li>
           </ul>

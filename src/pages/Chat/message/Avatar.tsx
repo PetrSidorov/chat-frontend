@@ -9,24 +9,40 @@ export default function Avatar({
   avatarUrl,
   username,
   showOnlyAvatars,
+  shouldAnimate,
+  animationType,
 }: {
   avatarUrl?: string | null;
   username?: string;
   showOnlyAvatars?: boolean;
+  shouldAnimate: boolean;
+  animationType: string;
 }) {
   // const size = showOnlyAvatars ? 92 : 92;
   // TODO: optimize this, there's no need to recalculate it every time
   const bgColor = usernameToHexColor(username);
-
+  const animationProps = shouldAnimate
+    ? {
+        initial: animations[animationType]?.initial,
+        animate: animations[animationType]?.animate,
+        exit: animations[animationType]?.exit,
+        transition: animations[animationType]?.transition,
+      }
+    : {};
   return (
     <>
       {avatarUrl ? (
-        <motion.img
-          layout
-          initial={animations.avatar.initial}
-          animate={animations.avatar.animate}
-          exit={animations.avatar.exit}
-          transition={animations.avatar.transition}
+        // <motion.img
+        //   layout
+        //   {...animationProps}
+        //   className="min-w-[70px] w-[70px] h-[70px] border-black border-2 rounded-full max-w-[100%]"
+        //   src={avatarUrl}
+        //   alt={username}
+        //   style={{ objectFit: "cover" }}
+        // />
+        <img
+          // layout
+          // {...animationProps}
           className="min-w-[70px] w-[70px] h-[70px] border-black border-2 rounded-full max-w-[100%]"
           src={avatarUrl}
           alt={username}

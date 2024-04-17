@@ -29,14 +29,15 @@ const MessageList = forwardRef<
       yours: false,
     };
     const [popupState, setPopupState] = useState(initialPopupState);
-    // animation related states
     const [messageToRemove, setMessageToRemove] = useState("");
-    // TODO: animation type through useState
-    // animation related states
+    const [shouldAnimate, setShouldAnimate] = useState(true);
+    const [animationType, setAnimationType] = useState("enter");
     const { fullWidthMessagesInActiveConvo } = useContext(ResizeContext);
 
     useEffect(() => {
       setPopupState(initialPopupState);
+      setShouldAnimate(false);
+      setAnimationType("");
     }, [activeConvoId]);
 
     function togglePopup(
@@ -58,6 +59,13 @@ const MessageList = forwardRef<
       });
     }
 
+    useEffect(() => {
+      if (messageToRemove) {
+        setAnimationType((curr) => "remove");
+        setAnimationType((curr) => "");
+      }
+    }, [messageToRemove]);
+
     function handleDismiss() {
       setPopupState((curr) => {
         return { ...curr, show: false };
@@ -65,8 +73,7 @@ const MessageList = forwardRef<
     }
 
     function handleRemoveMessageAndClose(activeConvoId: string, id: string) {
-      // console.log("activeConvoId ", activeConvoId);
-      // console.log("id ", id);
+      setShouldAnimate(true);
       setMessageToRemove(id);
       setTimeout(() => {
         handleRemoveMessage(activeConvoId, id);
@@ -84,11 +91,6 @@ const MessageList = forwardRef<
           : participants[0]?.avatarUrl || null;
 
         const alignment = yours ? "self-start" : "self-end";
-        let animationType = "";
-        if (id === messageToRemove) {
-          animationType = "remove";
-          console.log("yooooo");
-        }
 
         return (
           <React.Fragment key={id}>
@@ -96,7 +98,13 @@ const MessageList = forwardRef<
             {!isSameDayAsPreviousMessage(
               createdAt,
               messages[i - 1]?.createdAt || ""
-            ) && <MonthAndYear createdAt={createdAt} />}
+            ) && (
+              <MonthAndYear
+                animationType={animationType}
+                createdAt={createdAt}
+                shouldAnimate={shouldAnimate}
+              />
+            )}
             <div
               onContextMenu={(e) => togglePopup(yours, id, e)}
               id={id}
@@ -110,6 +118,7 @@ const MessageList = forwardRef<
                 username={sender.username}
                 avatarUrl={avatarUrl}
                 animationType={animationType}
+                shouldAnimate={shouldAnimate}
                 prevMessageSender={messages[i - 1]?.sender?.username || ""}
               />
             </div>
@@ -117,7 +126,8 @@ const MessageList = forwardRef<
         );
       }
     );
-
+    console.log("shouldAnimate ", shouldAnimate);
+    console.log("animationType ", animationType);
     return (
       <>
         {popupState.show && (

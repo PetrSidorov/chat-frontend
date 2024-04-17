@@ -13,6 +13,7 @@ export default function Message({
   animationType = "enter",
   style,
   prevMessageSender = "",
+  shouldAnimate,
 }: {
   content: string;
   createdAt: string;
@@ -22,6 +23,7 @@ export default function Message({
   animationType?: string;
   style?: TCSSclampLines;
   prevMessageSender?: string;
+  shouldAnimate: boolean;
 }) {
   const date = createdAt
     ? new Date(createdAt).toLocaleTimeString("en-US", {
@@ -30,36 +32,34 @@ export default function Message({
         hour12: false,
       })
     : "";
-  // const date = createdAt;
 
   // TODO: ${alignment} ${classes} - gives undefined undefined - fix
   // TODO:   text-overflow: ellipsis (maybe);
 
-  // const animationType = "enter";
-  // console.log("animationType yooo", animationType);
-  // console.log("deleted message ", content);
-  // console.log("animations[animationType]  ", animations[animationType]);
-  const animation = animations[animationType] || animations.enter;
-
+  const animationProps = shouldAnimate
+    ? {
+        initial: animations[animationType]?.initial,
+        animate: animations[animationType]?.animate,
+        exit: animations[animationType]?.exit,
+        transition: animations[animationType]?.transition,
+      }
+    : {};
   const showAvatarAndUsername = prevMessageSender != username;
-  // console.log("showAvatarAndUsername ", showAvatarAndUsername);
-  // console.log("style ", style);
-  // console.log("username ", username);
+
   return (
     <motion.li
       // TODO:CSS move this margin up
-      className={`flex m-2 p-4 bg-gray-200 items-start justify-center`}
+      className="flex m-2 p-4 bg-gray-200 items-start justify-center"
       layout
-      initial={animation.initial}
-      animate={animation.animate}
-      exit={animation.exit}
-      transition={animation.transition}
+      {...animationProps}
     >
       {showAvatarAndUsername && (
         <Avatar
           showOnlyAvatars={showOnlyAvatars}
           username={username}
           avatarUrl={avatarUrl}
+          shouldAnimate={shouldAnimate}
+          animationType={animationType}
         />
       )}
       {!showOnlyAvatars && (
