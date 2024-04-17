@@ -36,8 +36,8 @@ const MessageList = forwardRef<
 
     useEffect(() => {
       setPopupState(initialPopupState);
-      setShouldAnimate(false);
       setAnimationType("");
+      setShouldAnimate(false);
     }, [activeConvoId]);
 
     function togglePopup(
@@ -61,8 +61,7 @@ const MessageList = forwardRef<
 
     useEffect(() => {
       if (messageToRemove) {
-        setAnimationType((curr) => "remove");
-        setAnimationType((curr) => "");
+        setAnimationType("remove");
       }
     }, [messageToRemove]);
 
@@ -77,7 +76,7 @@ const MessageList = forwardRef<
       setMessageToRemove(id);
       setTimeout(() => {
         handleRemoveMessage(activeConvoId, id);
-      }, 0);
+      }, 100);
 
       handleDismiss();
     }
