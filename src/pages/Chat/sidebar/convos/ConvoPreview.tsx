@@ -1,8 +1,9 @@
 import { useContext } from "react";
+import { ResizeContext } from "../../../../context/ResizeProvider";
 import { TCSSclampLines, TMessage, TUser } from "../../../../types";
 import Message from "../../message/Message";
+import ConvoContextMenu from "./ConvoContextMenu";
 import IsOnline from "./IsOnline";
-import { ResizeContext } from "../../../../context/ResizeProvider";
 
 const style: TCSSclampLines = {
   display: "-webkit-box",
@@ -15,9 +16,11 @@ export default function ConvoPreview({
   messages,
   online,
   participants,
+  id,
 }: {
   messages: TMessage[];
   online: boolean;
+  id: string;
   participants: TUser[];
 }) {
   // console.log("messages ", messages);
@@ -70,6 +73,7 @@ export default function ConvoPreview({
             ? trimmedContent
             : "This convo is empty, start messaging now =)"
         }
+        popup={<ConvoContextMenu id={id} />}
         createdAt={notEmptyConvo ? createdAt : ""}
         username={userNameToShow}
         avatarUrl={avatarUrl}

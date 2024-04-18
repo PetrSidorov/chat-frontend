@@ -14,13 +14,10 @@ export default function Message({
   username,
   avatarUrl,
   showOnlyAvatars = false,
-  // animationType = "enter",
+  popup,
   style,
   prevMessageSender = "",
   shouldAnimate,
-  yours,
-
-  id,
 }: {
   content: string;
   createdAt: string;
@@ -31,8 +28,7 @@ export default function Message({
   style?: TCSSclampLines;
   prevMessageSender?: string;
   shouldAnimate: boolean;
-  yours: boolean;
-  id: string;
+  popup: JSX.Element;
 }) {
   const { handleRemoveMessage, animationType } =
     useContext(AllConvoContext).convoContext;
@@ -58,15 +54,7 @@ export default function Message({
   const showAvatarAndUsername = prevMessageSender != username;
 
   return (
-    <PopupTrigger
-      popup={
-        <MessageContextMenu
-          yours={yours}
-          handleRemoveMessage={() => handleRemoveMessage(id)}
-          id={id}
-        />
-      }
-    >
+    <PopupTrigger popup={popup}>
       <motion.li
         // TODO:CSS move this margin up
         className="flex m-2 p-4 bg-gray-200 items-start justify-center"

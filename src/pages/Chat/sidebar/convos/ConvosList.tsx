@@ -5,7 +5,6 @@ import axios from "axios";
 import { AllConvoContext } from "../../../../context/AllConvoProvider";
 import { AuthContext } from "../../../../context/AuthProvider";
 import ConvoPreview from "./ConvoPreview";
-import ConvoContextMenu from "./ConvoContextMenu";
 
 export default function ConvosList() {
   const { convos, unshiftMessagesToConvo, initConvo } =
@@ -13,9 +12,6 @@ export default function ConvosList() {
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
   const { user } = useContext(AuthContext);
   const onlineStatuses = useRoomUsersStatus();
-  const [showContextMenu, setShowContextMenu] = useState(false);
-  const [activeContextMenuId, setActiveContextMenuId] = useState("");
-  const [position, setPosition] = useState({ left: 0, top: 0 });
 
   useEffect(() => {
     const getConvos = async () => {
@@ -57,17 +53,12 @@ export default function ConvosList() {
           onClick={() => {
             setActiveConvoId(id);
           }}
-          onContextMenu={(e) => {
-            e.preventDefault();
-            setPosition({ left: e.clientX, top: e.clientY });
-            setShowContextMenu(!showContextMenu);
-            setActiveContextMenuId(id);
-          }}
         >
           <ConvoPreview
             participants={data.participants}
             messages={data.messages}
             online={participantOnlineStatus}
+            id={id}
           />
         </div>
       );
@@ -77,20 +68,6 @@ export default function ConvosList() {
     <>
       {listOfConvoPreviews && listOfConvoPreviews.length > 0 ? (
         <>
-          {showContextMenu && (
-            <ConvoContextMenu
-              id={activeContextMenuId}
-              setShowContextMenu={setShowContextMenu}
-              style={{
-                position: "absolute",
-                left: `${position.left}px`,
-                top: `${position.top}px`,
-                backgroundColor: "gray",
-                borderRadius: "md",
-                width: "max-content",
-              }}
-            />
-          )}
           <ul className="font-semibold">{listOfConvoPreviews}</ul>
         </>
       ) : (
