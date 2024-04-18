@@ -41,7 +41,8 @@ export default function ConvosList() {
     convos &&
     Object.entries(convos)?.map((convo: any) => {
       const [id, data] = convo;
-      // TODO: check this thing below and make it more declarative
+      // TODO: check this thing below and
+      // make it more declarative and make it work, lol
       const participantOnlineStatus = onlineStatuses[id]?.includes(
         data.participants[0].id
       );

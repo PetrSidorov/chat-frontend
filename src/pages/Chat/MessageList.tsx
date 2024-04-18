@@ -22,9 +22,7 @@ const MessageList = forwardRef<
     { messages, currentUser, handleRemoveMessage, activeConvoId, participants },
     ref
   ) => {
-    const [messageToRemove, setMessageToRemove] = useState("");
     const [shouldAnimate, setShouldAnimate] = useState(true);
-
     const { fullWidthMessagesInActiveConvo } = useContext(ResizeContext);
 
     const messageList = messages.map(
