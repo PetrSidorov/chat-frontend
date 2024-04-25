@@ -22,7 +22,6 @@ const setUserOffline = (convoId: string, userId: string) => {
 };
 
 const setUserOnline = (convoId: string, userId: string) => {
-  console.log();
   onlineStatuses[convoId] = onlineStatuses[convoId] || [];
   const updatedUserIds = [...onlineStatuses[convoId], userId];
   onlineStatuses = {
