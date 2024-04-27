@@ -9,11 +9,16 @@ import { socket } from "@/utils/socket";
 import FullScreenLoading from "@/components/FullScreenLoading";
 
 export default function ConvosList() {
-  const { convos, unshiftMessagesToConvo, initConvo } =
-    useContext(AllConvoContext).convoContext;
+  const {
+    convos,
+    unshiftMessagesToConvo,
+    initConvo,
+    setAnimationType,
+    setShouldAnimate,
+    onlineStatuses,
+  } = useContext(AllConvoContext)?.convoContext;
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
-  const { setAnimationType, setShouldAnimate, onlineStatuses } =
-    useContext(AllConvoContext).convoContext;
+
   const { user } = useContext(AuthContext);
   // const onlineStatuses = useRoomUsersStatus();
   const [loaded, setLoaded] = useState(false);
