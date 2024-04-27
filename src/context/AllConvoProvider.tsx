@@ -1,46 +1,94 @@
-import { ReactNode, createContext, useState, useEffect } from "react";
-import useConvoSocketPoll from "../hooks/useConvoSocketPoll";
-import useSockets from "../hooks/useSockets";
 import useRoomUsersStatus from "@/hooks/useRoomUsersStatus";
-import { socket } from "../utils/socket";
+import { ReactNode, createContext, useEffect, useState } from "react";
 import { TConvoContext, TConvos, TMessage } from "../types";
+import { socket } from "../utils/socket";
 
-export const AllConvoContext = createContext<TConvoContext>({
-  activeConvoId: ["", () => {}],
-  socketPoll: [null, () => {}],
-  convoContext: {
-    convos: {},
-    unshiftMessagesToConvo: () => {},
-    pushNewMessageToConvo: () => {},
-    pushNewMessagesToConvo: () => {},
-    handleRemoveMessage: () => {},
-    initConvo: () => {},
-    getParticipantOnlineStatus: () => false,
-    addNewConvo: () => {},
-    onlineStatuses: null,
-    animationType: "",
-  },
-});
+export const AllConvoContext = createContext<TConvoContext>(null);
 
 export default function ActiveConvoProvider({
   children,
 }: {
   children: ReactNode;
 }) {
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  const [shouldAnimate, setShouldAnimate] = useState(true);
   const [animationType, setAnimationType] = useState("enter");
+
   const [convos, setConvos] = useState<TConvos | null>(null);
-  const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
+  const [activeConvoId, setActiveConvoId] = useState<string>("");
   const onlineStatuses = useRoomUsersStatus();
-  const { joinRoom } = useConvoSocketPoll();
-  const { emit } = useSockets({
-    emitFlag: "msg:delete",
-    onFlag: "msg:delete:return",
-    initialState: "",
-  });
+
   const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
 
+  function waitForSocketConnection() {
+    return new Promise((resolve, reject) => {
+      const onConnect = () => {
+        socket.off("connect", onConnect);
+        socket.off("connect_error", onConnectError);
+        resolve(null);
+      };
+      const onConnectError = (error: any) => {
+        socket.off("connect", onConnect);
+        socket.off("connect_error", onConnectError);
+        reject(error);
+      };
+
+      if (socket.connected) {
+        resolve(null);
+      } else {
+        socket.on("connect", onConnect);
+        socket.on("connect_error", onConnectError);
+        socket.connect();
+      }
+    });
+  }
+
+  async function joinRoom(convoId: string) {
+    console.log("Attempting to join room", convoId);
+    console.log("socketPoll is ", socketPoll);
+    // if (!convoId || socketPoll?.includes(convoId)) return;
+
+    try {
+      await waitForSocketConnection();
+
+      socket.emit("room:join", convoId);
+      setSocketPoll((currSocketPoll) => [
+        ...new Set([...(currSocketPoll || []), convoId]),
+      ]);
+    } catch (error) {
+      console.log("Failed to connect to socket:", error);
+    }
+  }
+
   useEffect(() => {
-    const handleMessageReturn = (incomingMessage: TMessage) => {
+    if (!socket.connected) {
+      socket.connect();
+    }
+
+    socket.on("connect", () => {
+      setIsConnected(true);
+      console.log("socket connected!!!!");
+    });
+    socket.on("disconnect", () => setIsConnected(false));
+    socket.on("connect_error", (error) => {
+      console.log("Connection Error:", error);
+      setIsConnected(false);
+    });
+
+    setIsConnected(socket.connected);
+
+    return () => {
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("connect_error");
+      socket.off("room:onlineUsers");
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleMessageReturn = (
+      incomingMessage: TMessage & { convoId: string }
+    ) => {
       setAnimationType("enter");
       if (incomingMessage && incomingMessage.convoId === activeConvoId) {
         setConvos((currentConvos) => {
@@ -74,10 +122,11 @@ export default function ActiveConvoProvider({
 
   const initConvo = (data: TConvos) => {
     setConvos(data);
+    console.log("data in init convo ", Object.keys(data));
     Object.keys(data).forEach(joinRoom);
   };
 
-  const handleActiveConvoId = (id: string | null) => {
+  const handleActiveConvoId = (id: string) => {
     if (activeConvoId === id) return;
     setActiveConvoId(id);
   };
@@ -107,11 +156,15 @@ export default function ActiveConvoProvider({
   const handleRemoveMessage = (messageIdToDelete: string) => {
     // TODO: optimistic updates ?
     // TODO add confirmation modal
+    setShouldAnimate(true);
     setAnimationType("remove");
-    emit(messageIdToDelete);
+    // emit(messageIdToDelete);
+    socket.emit("msg:delete", messageIdToDelete);
   };
 
   const pushNewMessagesToConvo = (convoId: string, messages: TMessage[]) => {
+    setShouldAnimate(true);
+    setAnimationType("initial");
     setConvos((currentConvos) => {
       if (!currentConvos) return null;
       const updatedConvos = { ...currentConvos };
@@ -166,7 +219,6 @@ export default function ActiveConvoProvider({
         };
       } else {
         updatedConvos[id] = {
-          ...updatedConvos[id],
           messages: [...newMessages],
         };
       }
@@ -196,6 +248,10 @@ export default function ActiveConvoProvider({
           onlineStatuses,
           addNewConvo,
           animationType,
+          setAnimationType,
+          joinRoom,
+          shouldAnimate,
+          setShouldAnimate,
         },
         removeConvo,
         activeConvoId: [activeConvoId, handleActiveConvoId],

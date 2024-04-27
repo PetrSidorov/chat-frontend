@@ -17,7 +17,6 @@ export default function Message({
   popup,
   style,
   prevMessageSender = "",
-  shouldAnimate,
 }: {
   content: string;
   createdAt: string;
@@ -27,10 +26,10 @@ export default function Message({
   // animationType?: string;
   style?: TCSSclampLines;
   prevMessageSender?: string;
-  shouldAnimate: boolean;
+
   popup: JSX.Element;
 }) {
-  const { handleRemoveMessage, animationType } =
+  const { handleRemoveMessage, animationType, shouldAnimate } =
     useContext(AllConvoContext).convoContext;
   const date = createdAt
     ? new Date(createdAt).toLocaleTimeString("en-US", {
@@ -49,16 +48,17 @@ export default function Message({
         animate: animations[animationType]?.animate,
         exit: animations[animationType]?.exit,
         transition: animations[animationType]?.transition,
+        layout: true,
       }
     : {};
   const showAvatarAndUsername = prevMessageSender != username;
-
+  const Wrapper = shouldAnimate ? motion.li : "li";
   return (
     <PopupTrigger popup={popup}>
-      <motion.li
+      <Wrapper
         // TODO:CSS move this margin up
         className="flex m-2 p-4 bg-gray-200 items-start justify-center"
-        layout
+        // layout
         {...animationProps}
       >
         {showAvatarAndUsername && (
@@ -87,7 +87,7 @@ export default function Message({
             <p style={style}>{content}</p>
           </div>
         )}
-      </motion.li>
+      </Wrapper>
     </PopupTrigger>
   );
 }

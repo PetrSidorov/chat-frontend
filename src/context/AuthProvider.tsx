@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { TUser } from "../types";
+import { socket } from "@/utils/socket";
 
 type TAuthContext = {
   loading: boolean;
@@ -74,7 +75,16 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    console.log("user ", user);
+    // console.log("user ", user);
+    // socket.on("connect", () => {
+    //   console.log("Connected to the server!");
+    //   console.log("socket is ", socket.connected);
+    // });
+    // if (user) {
+    //   console.log("socket ", socket.connected);
+    //   socket.connect();
+    //   console.log("socket connect ", socket.connected);
+    // }
   }, [user]);
 
   const value = useMemo(() => {

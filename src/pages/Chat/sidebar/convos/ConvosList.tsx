@@ -5,17 +5,30 @@ import axios from "axios";
 import { AllConvoContext } from "../../../../context/AllConvoProvider";
 import { AuthContext } from "../../../../context/AuthProvider";
 import ConvoPreview from "./ConvoPreview";
+import { socket } from "@/utils/socket";
+import FullScreenLoading from "@/components/FullScreenLoading";
 
 export default function ConvosList() {
   const { convos, unshiftMessagesToConvo, initConvo } =
     useContext(AllConvoContext).convoContext;
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
+  const { setAnimationType, setShouldAnimate, onlineStatuses } =
+    useContext(AllConvoContext).convoContext;
   const { user } = useContext(AuthContext);
-  const onlineStatuses = useRoomUsersStatus();
+  // const onlineStatuses = useRoomUsersStatus();
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const getConvos = async () => {
       if (!user) return;
+      // if (!socket.connected) {
+      //   socket.connect();
+      // }
+      // await new Promise((resolve, reject) => {
+      //   socket.on("connect", () => resolve(null));
+      //   socket.on("connect_error", reject);
+      // });
+
       const response = await axios.get(
         // TODO: add sockets for handling more then 10 convos
         "http://localhost:3007/api/convo/last-ten-convos-with-ten-messages",
@@ -26,6 +39,7 @@ export default function ConvosList() {
           },
         }
       );
+
       // TODO:TYPESCRIPT implement casting with 'as' in fetches like in the example below
       // const data = fetch("bla").then((res) => {
       //   return res.json;
@@ -33,9 +47,10 @@ export default function ConvosList() {
 
       // return data as Something
       initConvo(response.data);
+      setLoaded(true);
     };
     getConvos();
-  }, []);
+  }, [user]);
 
   const listOfConvoPreviews =
     convos &&
@@ -53,6 +68,8 @@ export default function ConvosList() {
           key={id}
           onClick={() => {
             setActiveConvoId(id);
+            setShouldAnimate(false);
+            setAnimationType("");
           }}
         >
           <ConvoPreview
@@ -64,6 +81,8 @@ export default function ConvosList() {
         </div>
       );
     });
+
+  if (!loaded) return <FullScreenLoading />;
 
   return (
     <>

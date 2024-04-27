@@ -51,7 +51,7 @@ export default function ChatMain() {
             >
               {activeConvoId ? (
                 <>
-                  <ActiveConvo initialLoad={true} />
+                  <ActiveConvo />
                   <MessageManager />
                 </>
               ) : (

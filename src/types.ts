@@ -60,7 +60,7 @@ export type TMessageForSending = TMessage & {
 export type TConvos = {
   [convoId: string]: {
     messages: TMessage[];
-    participants: TUser[];
+    // participants: TUser[];
   };
 };
 
@@ -74,12 +74,17 @@ export type TOnlineStatuses = {
 
 export type TConvoContext = {
   convoContext: {
-    convos: TConvos;
+    convos: TConvos | null;
     unshiftMessagesToConvo: Function;
     pushNewMessageToConvo: Function;
-    pushNewMessagesToConvo: (...args: unknown[]) => void;
+    pushNewMessagesToConvo: (convoId: string, messages: TMessage[]) => void;
     handleRemoveMessage: Function;
     initConvo: Function;
+    addNewConvo: Function;
+    setAnimationType: Function;
+    joinRoom: Function;
+    shouldAnimate: Function;
+    setShouldAnimate: Function;
     getParticipantOnlineStatus: () => void;
     onlineStatuses: { [key: string]: string[] };
     animationType: string;
@@ -87,7 +92,7 @@ export type TConvoContext = {
   activeConvoId: [string, Function];
   socketPoll: [string[] | null, Dispatch<SetStateAction<string[] | null>>];
   removeConvo: (convoId: string) => void;
-};
+} | null;
 
 type TypeHttpHeaders = Record<string, string>;
 

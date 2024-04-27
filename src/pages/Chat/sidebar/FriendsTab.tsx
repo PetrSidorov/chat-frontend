@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Loader, Mail, UserCheck, UserPlus } from "lucide-react"; // Replace these with appropriate icons
 import { useContext, useEffect, useState } from "react";
 import { AllConvoContext } from "../../../context/AllConvoProvider";
-import useNewConvo from "../../../hooks/useNewConvo";
 
 type Tuser = {
   username: string;
@@ -25,7 +24,25 @@ export default function FriendsTab() {
   const [foundUsers, setFoundUsers] = useState<Tuser[]>([]);
   const [loading, setLoading] = useState(false);
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
-  const emitNewConvo = useNewConvo();
+  const [, handleActiveConvoId] = useContext(AllConvoContext).activeConvoId;
+  const { convos, unshiftMessagesToConvo, addNewConvo, joinRoom } =
+    useContext(AllConvoContext).convoContext;
+  // const emitNewConvo = useNewConvo();
+  useEffect(() => {
+    socket.on("convo:return", createNewConvo);
+
+    return () => {
+      socket.off("convo:return", createNewConvo);
+    };
+  }, []);
+
+  function createNewConvo(data: any) {
+    if (!data || Object.keys(data).length == 0) return;
+    const newConvoId = Object.keys(data)[0];
+    addNewConvo(data);
+    joinRoom(newConvoId);
+    handleActiveConvoId(newConvoId);
+  }
 
   function emitSearch(searchInput: string) {
     setLoading(true);
@@ -93,7 +110,8 @@ export default function FriendsTab() {
                 onClick={() => {
                   return user.convos[0]
                     ? setActiveConvoId(user.convos[0])
-                    : emitNewConvo([user.id]);
+                    : socket.emit("convo:create", [user.id]);
+                  // : emitNewConvo([user.id]);
                 }}
               >
                 {user.online ? (

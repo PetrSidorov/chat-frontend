@@ -1,15 +1,16 @@
 import { motion } from "framer-motion";
 import { animations } from "../../../utils/animations";
+import { useContext } from "react";
+import { AllConvoContext } from "@/context/AllConvoProvider";
 
 export default function MonthAndYear({
   createdAt,
   animationType = "enter",
-  shouldAnimate,
 }: {
   createdAt: string;
-  animationType: string;
-  shouldAnimate: boolean;
+  animationType?: string;
 }) {
+  const { shouldAnimate } = useContext(AllConvoContext).convoContext;
   const createdAtDate = new Date(createdAt);
   const isSameYear = createdAtDate.getFullYear() === new Date().getFullYear();
   const dateString = createdAtDate.toLocaleString("en-US", {
@@ -23,13 +24,14 @@ export default function MonthAndYear({
         animate: animations[animationType]?.animate,
         exit: animations[animationType]?.exit,
         transition: animations[animationType]?.transition,
+        layout: true,
       }
     : {};
   // TODO:CSS move this margin up
-
+  const Wrapper = shouldAnimate ? motion.div : "div";
   return (
-    <motion.div className="w-fit mx-auto mt-10" layout {...animationProps}>
+    <Wrapper className="w-fit mx-auto mt-10" {...animationProps}>
       <p>{dateString}</p>
-    </motion.div>
+    </Wrapper>
   );
 }

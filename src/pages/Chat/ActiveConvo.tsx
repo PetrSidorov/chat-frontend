@@ -9,7 +9,7 @@ import IsOnline from "./sidebar/convos/IsOnline";
 import { ChevronLeft } from "lucide-react";
 import { ResizeContext } from "../../context/ResizeProvider";
 
-export default function ActiveConvo({ initialLoad }: { initialLoad: boolean }) {
+export default function ActiveConvo() {
   const [activeConvoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
   const { user } = useContext(AuthContext);
@@ -59,8 +59,8 @@ export default function ActiveConvo({ initialLoad }: { initialLoad: boolean }) {
   }, [activeConvoId]);
 
   useEffect(() => {
-    initialLoad && endOfMessagesRef.current?.scrollIntoView();
-  }, [initialLoad]);
+    endOfMessagesRef.current?.scrollIntoView();
+  }, [convos]);
 
   if (!convos[activeConvoId])
     return (

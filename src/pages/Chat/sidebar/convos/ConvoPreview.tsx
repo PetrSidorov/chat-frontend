@@ -56,13 +56,10 @@ export default function ConvoPreview({
   }
 
   return (
-    <div className="relative">
-      {online && (
-        <IsOnline className="absolute top-0 right-0" online={online} />
-      )}
-      {/* <div className="absolute top-2 right-4"> */}
-
-      {/* </div> */}
+    <div>
+      <div className="relative">
+        <IsOnline className="absolute top-2 right-4" online={online} />
+      </div>
 
       <Message
         key={notEmptyConvo ? createdAt : ""}

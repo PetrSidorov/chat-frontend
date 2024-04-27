@@ -1,12 +1,11 @@
-import React, { forwardRef, useContext, useEffect, useState } from "react";
-import Message from "./message/Message";
-import { TMessage, TUser, Tactors } from "../../types";
-import MessageContextMenu from "./sidebar/convos/MessageContextMenu";
-import { ResizeContext } from "../../context/ResizeProvider";
 import { AnimatePresence } from "framer-motion";
+import React, { forwardRef, useContext } from "react";
+import { ResizeContext } from "../../context/ResizeProvider";
+import { TMessage } from "../../types";
 import isSameDayAsPreviousMessage from "../../utils/isSameDayAsPreviousMessage";
+import Message from "./message/Message";
 import MonthAndYear from "./message/MonthAndYear";
-import { PopupTrigger } from "@/components/ui/popuptrigger";
+import MessageContextMenu from "./sidebar/convos/MessageContextMenu";
 
 const MessageList = forwardRef<
   HTMLDivElement,
@@ -22,7 +21,6 @@ const MessageList = forwardRef<
     { messages, currentUser, handleRemoveMessage, activeConvoId, participants },
     ref
   ) => {
-    const [shouldAnimate, setShouldAnimate] = useState(true);
     const { fullWidthMessagesInActiveConvo } = useContext(ResizeContext);
 
     const messageList = messages.map(
@@ -41,12 +39,7 @@ const MessageList = forwardRef<
             {!isSameDayAsPreviousMessage(
               createdAt,
               messages[i - 1]?.createdAt || ""
-            ) && (
-              <MonthAndYear
-                createdAt={createdAt}
-                shouldAnimate={shouldAnimate}
-              />
-            )}
+            ) && <MonthAndYear createdAt={createdAt} />}
             <div
               id={id}
               className={`${alignment} ${
@@ -65,7 +58,6 @@ const MessageList = forwardRef<
                 }
                 username={sender.username}
                 avatarUrl={avatarUrl}
-                shouldAnimate={shouldAnimate}
                 prevMessageSender={messages[i - 1]?.sender?.username || ""}
               />
             </div>

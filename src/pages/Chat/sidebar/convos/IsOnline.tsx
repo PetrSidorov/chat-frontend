@@ -12,7 +12,7 @@ export default function IsOnline({
       {online && (
         <div
           className={cn("w-2.5 h-2.5 bg-emerald-500 rounded-full", className)}
-        ></div>
+        />
       )}
     </>
   );
