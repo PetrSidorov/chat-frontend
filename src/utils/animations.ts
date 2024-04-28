@@ -19,7 +19,7 @@ export const animations: Tanimations = {
       opacity: 0,
       transition: { duration: 0.8, ease: "easeInOut" },
     },
-  }
+  },
   convoSwitch: {
     initial: { x: 0, opacity: 1 },
     animate: { x: 0, opacity: 1 },

@@ -133,7 +133,7 @@ export default function RegisterPage() {
     }
     handleUniqueEmail();
   }, [watchedEmail]);
-
+  //TODO: after successful registration - redirect to messages
   async function onSubmit(values: LoginFormValues) {
     try {
       const response = await axios.post(

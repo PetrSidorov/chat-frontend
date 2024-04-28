@@ -74,6 +74,10 @@ export default function FriendsTab() {
     // TODO:CSS move this padding up if possible
     // review why here is padding and the padding on the form inside,
     //  is it necessary?
+    // TODO:search doesn't work initially (inifinite loading)
+    // TODO: duplicate conversations (when there's no convo
+    // i am able to create multiple convos which are the same)
+    // TODO: can't start convo with some of the participants
     <div className="p-4">
       <form className="mb-4">
         <input

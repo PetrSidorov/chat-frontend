@@ -8,7 +8,7 @@ import useOnlineStatus from "../../hooks/useNetworkStatus";
 import IsOnline from "./sidebar/convos/IsOnline";
 import { ChevronLeft } from "lucide-react";
 import { ResizeContext } from "../../context/ResizeProvider";
-
+// TODO:active convo - error when convos are deleted (sometimes)
 export default function ActiveConvo() {
   const [activeConvoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
