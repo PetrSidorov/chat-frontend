@@ -26,8 +26,8 @@ export default function ConvoContextMenu({ id }: ConvoContextMenuProps) {
 
     if (response.status == 200 && response.data.id == id) {
       // TODO: animation for convo deletion
-      removeConvoLocally(id);
       handleActiveConvoId(null);
+      removeConvoLocally(id);
     }
   }
 

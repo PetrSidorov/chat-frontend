@@ -34,6 +34,10 @@ export default function ActiveConvo() {
 
     socket.emit("msg:get-offset", {
       currMessagesLength: convos?.[activeConvoId]?.messages.length,
+      // timestamp:
+      //   convos?.[activeConvoId]?.messages[
+      //     convos?.[activeConvoId]?.messages.length - 1
+      //   ],
       convoId: activeConvoId,
     });
     setBlockOffset(true);
@@ -62,10 +66,11 @@ export default function ActiveConvo() {
     endOfMessagesRef.current?.scrollIntoView();
   }, [convos]);
 
-  if (!convos[activeConvoId])
+  if (!convos[activeConvoId]) {
     return (
       <div className="flex justify-center items-center h-full">Loading...</div>
     );
+  }
 
   return (
     <div

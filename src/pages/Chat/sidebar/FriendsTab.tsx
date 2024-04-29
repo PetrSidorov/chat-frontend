@@ -10,14 +10,6 @@ type Tuser = {
   convos: string[];
   online: boolean;
 };
-// {
-//   "username": "peter2",
-//   "id": "643d238a-fb1d-4b0d-85e8-03f643e66eb1",
-//   "convos": [
-//       "dce4b862-4851-4c27-a44c-4ad42495a879"
-//   ],
-//   "online": true
-// }
 
 export default function FriendsTab() {
   const [searchInput, setSearchInput] = useState("");
@@ -37,11 +29,36 @@ export default function FriendsTab() {
   }, []);
 
   function createNewConvo(data: any) {
-    if (!data || Object.keys(data).length == 0) return;
-    const newConvoId = Object.keys(data)[0];
-    addNewConvo(data);
+    if (!data || Object.keys(data.convo).length == 0) return;
+
+    const newConvoId = Object.keys(data.convo)[0];
+    addNewConvo(data.convo);
     joinRoom(newConvoId);
     handleActiveConvoId(newConvoId);
+    setFoundUsers((currUsers) => {
+      const updatedUsers = currUsers.map((user) => {
+        if (
+          data.participants.some(
+            (participant: string) => participant === user.id
+          )
+        ) {
+          return {
+            ...user,
+            convos: [
+              ...user.convos,
+              {
+                participants: data.convo[newConvoId].participants,
+                id: newConvoId,
+              },
+            ],
+          };
+        } else {
+          return user;
+        }
+      });
+      console.log("updatedUsers ", updatedUsers);
+      return updatedUsers;
+    });
   }
 
   function emitSearch(searchInput: string) {
@@ -50,6 +67,7 @@ export default function FriendsTab() {
   }
 
   function getSearchResults(data: Tuser[]) {
+    console.log("data is ", data);
     setFoundUsers(data);
     setLoading(false);
   }
@@ -112,10 +130,14 @@ export default function FriendsTab() {
               <button
                 className="flex items-center space-x-3"
                 onClick={() => {
-                  return user.convos[0]
-                    ? setActiveConvoId(user.convos[0])
-                    : socket.emit("convo:create", [user.id]);
-                  // : emitNewConvo([user.id]);
+                  // console.log("click on user ", user);
+                  if (user.convos[0]) {
+                    console.log("if (user.convos[0]) ", user.convos[0]);
+                    setActiveConvoId(user.convos[0].id);
+                  } else {
+                    console.log("socket emit");
+                    socket.emit("convo:create", [user.id]);
+                  }
                 }}
               >
                 {user.online ? (
