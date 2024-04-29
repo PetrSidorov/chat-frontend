@@ -62,12 +62,14 @@ export default function FriendsTab() {
   }
 
   function emitSearch(searchInput: string) {
+    console.log("socket state is ", socket);
+    console.log("searchInput is emitted ", searchInput);
     setLoading(true);
     socket.emit("search-users:get", searchInput);
   }
 
   function getSearchResults(data: Tuser[]) {
-    console.log("data is ", data);
+    // console.log("data is ", data);
     setFoundUsers(data);
     setLoading(false);
   }

@@ -11,7 +11,6 @@ export default function SettingsTab() {
   const navigate = useNavigate();
 
   async function logout() {
-    //TODO: check this for actual working
     // TODO:TYPESCRIPT
     const response = await axios.post(
       "http://localhost:3007/logout",

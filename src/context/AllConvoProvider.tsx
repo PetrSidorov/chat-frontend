@@ -20,28 +20,41 @@ export default function ActiveConvoProvider({
 
   const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
 
-  function waitForSocketConnection() {
-    return new Promise((resolve, reject) => {
-      const onConnect = () => {
-        socket.off("connect", onConnect);
-        socket.off("connect_error", onConnectError);
-        resolve(null);
-      };
-      const onConnectError = (error: any) => {
-        socket.off("connect", onConnect);
-        socket.off("connect_error", onConnectError);
-        reject(error);
-      };
+  // useEffect(() => {
+  //   async function socketConnectionHandler() {
+  //     try {
+  //       await waitForSocketConnection();
+  //     } catch (e) {
+  //       console.error(e);
+  //     }
+  //   }
 
-      if (socket.connected) {
-        resolve(null);
-      } else {
-        socket.on("connect", onConnect);
-        socket.on("connect_error", onConnectError);
-        socket.connect();
-      }
-    });
-  }
+  //   socketConnectionHandler();
+  // }, []);
+
+  // function waitForSocketConnection() {
+  //   console.log("waitForSocketConnection");
+  //   return new Promise((resolve, reject) => {
+  //     const onConnect = () => {
+  //       socket.off("connect", onConnect);
+  //       socket.off("connect_error", onConnectError);
+  //       resolve(null);
+  //     };
+  //     const onConnectError = (error: any) => {
+  //       socket.off("connect", onConnect);
+  //       socket.off("connect_error", onConnectError);
+  //       reject(error);
+  //     };
+
+  //     if (socket.connected) {
+  //       resolve(null);
+  //     } else {
+  //       socket.on("connect", onConnect);
+  //       socket.on("connect_error", onConnectError);
+  //       socket.connect();
+  //     }
+  //   });
+  // }
 
   async function joinRoom(convoId: string) {
     console.log("Attempting to join room", convoId);
@@ -49,7 +62,7 @@ export default function ActiveConvoProvider({
     // if (!convoId || socketPoll?.includes(convoId)) return;
 
     try {
-      await waitForSocketConnection();
+      //await waitForSocketConnection();
 
       socket.emit("room:join", convoId);
       setSocketPoll((currSocketPoll) => [
