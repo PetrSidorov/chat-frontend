@@ -26,7 +26,7 @@ export default function ActiveConvo() {
   const [blockOffset, setBlockOffset] = useState(false);
 
   const participantOnlineStatus = onlineStatuses[activeConvoId]?.includes(
-    convos[activeConvoId].participants[0].id
+    convos[activeConvoId]?.participants[0].id
   );
 
   function emitGettingOffset(currentlyInView: boolean) {

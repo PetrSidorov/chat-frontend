@@ -140,6 +140,7 @@ export default function ActiveConvoProvider({
   };
 
   const handleActiveConvoId = (id: string) => {
+    console.log("handleActiveConvoId is called");
     if (activeConvoId === id) return;
     setActiveConvoId(id);
   };

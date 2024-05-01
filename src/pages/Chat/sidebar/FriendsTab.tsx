@@ -62,8 +62,8 @@ export default function FriendsTab() {
   }
 
   function emitSearch(searchInput: string) {
-    console.log("socket state is ", socket);
-    console.log("searchInput is emitted ", searchInput);
+    // console.log("socket state is ", socket);
+    // console.log("searchInput is emitted ", searchInput);
     setLoading(true);
     socket.emit("search-users:get", searchInput);
   }
@@ -127,7 +127,7 @@ export default function FriendsTab() {
               className="cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
             >
               <button
-                className="flex items-center space-x-3"
+                className="w-full"
                 onClick={() => {
                   // console.log("click on user ", user);
                   if (user.convos[0]) {
@@ -139,17 +139,19 @@ export default function FriendsTab() {
                   }
                 }}
               >
-                {user.online ? (
-                  <UserCheck size={20} className="text-green-500" />
-                ) : (
-                  <UserPlus size={20} className="text-gray-500" />
-                )}
-                <span className="flex-grow text-gray-800">{user.username}</span>
-                {user.convos.length > 0 ? (
-                  <Mail size={20} className="text-blue-500" />
-                ) : (
-                  <Mail size={20} className="text-gray-400" />
-                )}
+                <div className="flex w-[60%]">
+                  {user.online ? (
+                    <UserCheck size={20} className="text-green-500" />
+                  ) : (
+                    <UserPlus size={20} className="text-gray-500" />
+                  )}
+                  <span className="text-gray-800 ml-3">{user.username}</span>
+                  {user.convos.length > 0 ? (
+                    <Mail size={20} className="text-blue-500 ml-auto" />
+                  ) : (
+                    <Mail size={20} className="text-gray-400 ml-auto" />
+                  )}
+                </div>
               </button>
             </motion.li>
           ))}

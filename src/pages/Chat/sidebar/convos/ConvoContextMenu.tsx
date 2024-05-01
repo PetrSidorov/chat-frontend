@@ -10,7 +10,12 @@ export default function ConvoContextMenu({ id }: ConvoContextMenuProps) {
   const { removeConvo: removeConvoLocally } = useContext(AllConvoContext);
   const [activeConvoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
-  async function removeConvo(id: string) {
+
+  async function removeConvo(
+    e: React.MouseEvent<HTMLButtonElement>,
+    id: string
+  ) {
+    e.stopPropagation();
     const response = await axios.delete(
       `http://localhost:3007/api/convo/${id}`,
       {
@@ -34,7 +39,7 @@ export default function ConvoContextMenu({ id }: ConvoContextMenuProps) {
   return (
     <div>
       <button
-        onClick={() => removeConvo(id)}
+        onClick={(e) => removeConvo(e, id)}
         className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded shadow-lg"
       >
         Delete convo

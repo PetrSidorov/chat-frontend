@@ -4,7 +4,7 @@ import ActiveConvo from "./ActiveConvo";
 import MessageManager from "./MessageManager";
 
 import clsx from "clsx";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { Outlet } from "react-router-dom";
 import FullScreenLoading from "../../components/FullScreenLoading";
 import { AuthContext } from "../../context/AuthProvider";
@@ -18,6 +18,10 @@ export default function ChatMain() {
   const { sizes, handleDrag, mobileView } = useContext(ResizeContext);
 
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
+
+  useEffect(() => {
+    console.log("activeConvoId ", activeConvoId);
+  }, [activeConvoId]);
 
   return (
     <>

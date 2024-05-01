@@ -10,7 +10,7 @@ export interface PopupProps {
 export const PopupTrigger: React.FC<PopupProps> = ({ children, popup }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [coordinates, setCoordinates] = useState({ left: 0, top: 0 });
-  const handleShowPopup = (e: React.MouseEvent<HTMLElement>) => {
+  const handleShowPopup = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const left = e.clientX;
     const top = e.clientY;
@@ -18,16 +18,22 @@ export const PopupTrigger: React.FC<PopupProps> = ({ children, popup }) => {
     setCoordinates({ left, top });
     setShowPopup(true);
   };
+
+  const handleDismiss = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setShowPopup(false);
+  };
+
   return (
     <>
       <div
         className={showPopup ? "fixed inset-0 z-1 " : ""}
-        onClick={() => {
-          showPopup ? setShowPopup(false) : "";
+        onClick={(e) => {
+          showPopup ? handleDismiss(e) : "";
         }}
         onContextMenu={(e) => {
           e.preventDefault();
-          showPopup ? setShowPopup(false) : "";
+          showPopup ? handleDismiss(e) : "";
         }}
       />
       <div onContextMenu={handleShowPopup}>

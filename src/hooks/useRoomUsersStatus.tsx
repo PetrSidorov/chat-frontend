@@ -48,7 +48,6 @@ export default function useRoomUsersStatus() {
       convoId: string;
       onlineUserIds: string[];
     }) => {
-      console.log("handleUsersOnline (many) ", convoId, onlineUserIds);
       updateOnlineStatuses(convoId, onlineUserIds);
     };
 
