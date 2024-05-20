@@ -38,54 +38,40 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     // permission denied
 
     const getUser = async () => {
-      // TODO: early return
       setLoading(true);
-      if (!user) {
-        try {
-          // TODO: api/me naming
-          const response = await axios.get(
-            "http://localhost:3007/api/user-data",
-            {
-              withCredentials: true,
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          setUser(response.data);
-          setStatus(response.status);
-          // TODO:TYPESCRIPT ask Artem
-          // if (e instanceof AxiosError... blabla else what ?)
-        } catch (e) {
-          // if (isAxiosError(e)) {
-          //   e.
-          // }
-          if (e instanceof AxiosError && e.response) {
-            // TODO: if no response
-            setStatus(e.response.status);
-          } else {
-            // ignore error
+      if (user) return;
+      try {
+        // TODO: api/me naming
+        const response = await axios.get(
+          "http://localhost:3007/api/user-data",
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
+        );
+        setUser(response.data);
+        setStatus(response.status);
+        // TODO:TYPESCRIPT ask Artem
+        // if (e instanceof AxiosError... blabla else what ?)
+      } catch (e) {
+        // if (isAxiosError(e)) {
+        //   e.
+        // }
+        if (e instanceof AxiosError && e.response) {
+          // TODO: if no response
+          setStatus(e.response.status);
+        } else {
+          // ignore error
         }
       }
+
       setLoading(false);
     };
 
     getUser();
   }, []);
-
-  useEffect(() => {
-    // console.log("user ", user);
-    // socket.on("connect", () => {
-    //   console.log("Connected to the server!");
-    //   console.log("socket is ", socket.connected);
-    // });
-    // if (user) {
-    //   console.log("socket ", socket.connected);
-    //   socket.connect();
-    //   console.log("socket connect ", socket.connected);
-    // }
-  }, [user]);
 
   const value = useMemo(() => {
     return { user, setUser, setStatus, status, loading };

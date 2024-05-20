@@ -71,9 +71,7 @@ export default function ConvosList() {
         <div
           className="h-auto max-h-[132px] overflow-hidden w-full "
           key={id}
-          onClick={(e) => {
-            // e.stopPropagation();
-            console.log("Current target:", e.currentTarget);
+          onClick={() => {
             setActiveConvoId(id);
             setShouldAnimate(false);
             setAnimationType("");

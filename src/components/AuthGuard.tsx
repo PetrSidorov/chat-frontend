@@ -12,11 +12,7 @@ export default function AuthGuard() {
     return <FullScreenLoading />;
   }
 
-  // TODO: no need for checking status here
-  if ((!user && status == 200) || status == 401) {
-    // TODO: if 401 do something meaningful
-    // console.log("if ((!user && status == 200) || status == 401) {");
-
+  if (!user || status == 401) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

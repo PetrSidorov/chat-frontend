@@ -20,6 +20,10 @@ export default function ActiveConvoProvider({
 
   const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
 
+  useEffect(() => {
+    console.log("animationType: ", animationType);
+  }, [animationType]);
+
   // useEffect(() => {
   //   async function socketConnectionHandler() {
   //     try {
@@ -105,8 +109,8 @@ export default function ActiveConvoProvider({
       setAnimationType("enter");
       if (incomingMessage && incomingMessage.convoId === activeConvoId) {
         setConvos((currentConvos) => {
-          // TODO: write something meaningful here
-          // This should never happen
+          // This should never happen, but
+          // this check is required
           if (!currentConvos) return null;
           const updatedConvos = { ...currentConvos };
           const convoId = incomingMessage.convoId;
