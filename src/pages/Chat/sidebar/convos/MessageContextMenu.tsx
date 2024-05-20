@@ -1,18 +1,18 @@
 export default function MessageContextMenu({
   yours,
   handleRemoveMessage,
-  id,
+  uuid,
 }: {
   yours: boolean;
   handleRemoveMessage: Function;
-  id: string;
+  uuid: string;
 }) {
   return (
     <>
       {yours ? (
         <ul>
           <li>
-            <button onClick={() => handleRemoveMessage(id)}>
+            <button onClick={() => handleRemoveMessage(uuid)}>
               <span className="mr-2">Delete message</span>
             </button>
           </li>

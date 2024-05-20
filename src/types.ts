@@ -24,7 +24,7 @@ export type TUser = {
 // };
 
 export type TMessage = {
-  id: string;
+  uuid: string;
   content: string;
   createdAt: string;
   sender: {

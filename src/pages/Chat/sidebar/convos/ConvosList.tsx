@@ -51,6 +51,7 @@ export default function ConvosList() {
       // });
 
       // return data as Something
+      console.log("response.data ", response.data);
       initConvo(response.data);
       setLoaded(true);
     };

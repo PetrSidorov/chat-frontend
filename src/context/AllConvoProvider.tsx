@@ -150,17 +150,17 @@ export default function ActiveConvoProvider({
   };
 
   function handleMessageDelete({
-    id: messageToDelete,
+    uuid: messageToDelete,
     convoId,
   }: {
-    id: string;
+    uuid: string;
     convoId: string;
   }) {
     setConvos((currConvos) => {
       const updatedConvos = { ...currConvos };
       if (updatedConvos[convoId]) {
         const updatedMessages = updatedConvos[convoId].messages.filter(
-          ({ id }) => id !== messageToDelete
+          ({ uuid }) => uuid !== messageToDelete
         );
         updatedConvos[convoId].messages = updatedMessages;
         return updatedConvos;

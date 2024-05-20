@@ -24,7 +24,8 @@ const MessageList = forwardRef<
     const { fullWidthMessagesInActiveConvo } = useContext(ResizeContext);
 
     const messageList = messages.map(
-      ({ content, createdAt, sender, id }, i: number, messages) => {
+      ({ content, createdAt, sender, uuid }, i: number, messages) => {
+        console.log("uuid ", uuid);
         const yours = sender.id == currentUser.id;
 
         const avatarUrl = yours
@@ -34,14 +35,14 @@ const MessageList = forwardRef<
         const alignment = yours ? "self-start" : "self-end";
 
         return (
-          <React.Fragment key={id}>
+          <React.Fragment key={uuid}>
             {i === 3 ? <div ref={ref} /> : null}
             {!isSameDayAsPreviousMessage(
               createdAt,
               messages[i - 1]?.createdAt || ""
             ) && <MonthAndYear createdAt={createdAt} />}
             <div
-              id={id}
+              id={uuid}
               className={`${alignment} ${
                 fullWidthMessagesInActiveConvo ? "w-full" : "w-[80%]"
               }`}
@@ -52,8 +53,8 @@ const MessageList = forwardRef<
                 popup={
                   <MessageContextMenu
                     yours={yours}
-                    handleRemoveMessage={() => handleRemoveMessage(id)}
-                    id={id}
+                    handleRemoveMessage={() => handleRemoveMessage(uuid)}
+                    uuid={uuid}
                   />
                 }
                 username={sender.username}
