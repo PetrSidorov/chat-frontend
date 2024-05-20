@@ -8,6 +8,8 @@ export default function AuthGuard() {
   const location = useLocation();
   const { hash, pathname, search } = location;
 
+  // TODO: bugfix needed here,
+  // redirection from messages to login happens when user is loggedin
   if (loading) {
     return <FullScreenLoading />;
   }
