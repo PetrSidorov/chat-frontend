@@ -90,6 +90,7 @@ export type TConvoContext = {
     animationType: string;
     newMessage: boolean;
     setNewMessage: Dispatch<SetStateAction<boolean>>;
+    handleEditMessage: () => {};
   };
   activeConvoId: [string, Function];
   socketPoll: [string[] | null, Dispatch<SetStateAction<string[] | null>>];

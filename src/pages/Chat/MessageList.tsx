@@ -6,6 +6,7 @@ import isSameDayAsPreviousMessage from "../../utils/isSameDayAsPreviousMessage";
 import Message from "./message/Message";
 import MonthAndYear from "./message/MonthAndYear";
 import MessageContextMenu from "./sidebar/convos/MessageContextMenu";
+import { AllConvoContext } from "@/context/AllConvoProvider";
 
 const MessageList = forwardRef<
   HTMLDivElement,
@@ -22,7 +23,7 @@ const MessageList = forwardRef<
     ref
   ) => {
     const { fullWidthMessagesInActiveConvo } = useContext(ResizeContext);
-
+    const { handleEditMessage } = useContext(AllConvoContext).convoContext;
     const messageList = messages.map(
       ({ content, createdAt, sender, uuid }, i: number, messages) => {
         const yours = sender.id == currentUser.id;
@@ -53,6 +54,9 @@ const MessageList = forwardRef<
                   <MessageContextMenu
                     yours={yours}
                     handleRemoveMessage={() => handleRemoveMessage(uuid)}
+                    handleEditMessage={() =>
+                      handleEditMessage(sender.id, uuid, content)
+                    }
                     uuid={uuid}
                   />
                 }

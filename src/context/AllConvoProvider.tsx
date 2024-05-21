@@ -26,42 +26,6 @@ export default function ActiveConvoProvider({
     console.log("animationType: ", animationType);
   }, [animationType]);
 
-  // useEffect(() => {
-  //   async function socketConnectionHandler() {
-  //     try {
-  //       await waitForSocketConnection();
-  //     } catch (e) {
-  //       console.error(e);
-  //     }
-  //   }
-
-  //   socketConnectionHandler();
-  // }, []);
-
-  // function waitForSocketConnection() {
-  //   console.log("waitForSocketConnection");
-  //   return new Promise((resolve, reject) => {
-  //     const onConnect = () => {
-  //       socket.off("connect", onConnect);
-  //       socket.off("connect_error", onConnectError);
-  //       resolve(null);
-  //     };
-  //     const onConnectError = (error: any) => {
-  //       socket.off("connect", onConnect);
-  //       socket.off("connect_error", onConnectError);
-  //       reject(error);
-  //     };
-
-  //     if (socket.connected) {
-  //       resolve(null);
-  //     } else {
-  //       socket.on("connect", onConnect);
-  //       socket.on("connect_error", onConnectError);
-  //       socket.connect();
-  //     }
-  //   });
-  // }
-
   async function joinRoom(convoId: string) {
     console.log("Attempting to join room", convoId);
     console.log("socketPoll is ", socketPoll);
@@ -174,6 +138,16 @@ export default function ActiveConvoProvider({
     });
   }
 
+  function handleEditMessage(
+    userId: string,
+    messageId: string,
+    content: string
+  ) {
+    console.log("userId ", userId);
+    console.log("messageId ", messageId);
+    console.log("content ", content);
+  }
+
   const handleRemoveMessage = (messageIdToDelete: string) => {
     // TODO: optimistic updates ?
     // TODO add confirmation modal
@@ -276,6 +250,7 @@ export default function ActiveConvoProvider({
           setShouldAnimate,
           newMessage,
           setNewMessage,
+          handleEditMessage,
         },
         removeConvo,
         activeConvoId: [activeConvoId, handleActiveConvoId],
