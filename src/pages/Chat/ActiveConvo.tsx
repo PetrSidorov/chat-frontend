@@ -33,7 +33,8 @@ export default function ActiveConvo() {
     if (!currentlyInView) return;
 
     socket.emit("msg:get-offset", {
-      currMessagesLength: convos?.[activeConvoId]?.messages.length,
+      // currMessagesLength: convos?.[activeConvoId]?.messages.length,
+      uuid: convos?.[activeConvoId]?.messages[0].uuid,
       // timestamp:
       //   convos?.[activeConvoId]?.messages[
       //     convos?.[activeConvoId]?.messages.length - 1
@@ -63,7 +64,7 @@ export default function ActiveConvo() {
   }, [activeConvoId]);
 
   useEffect(() => {
-    endOfMessagesRef.current?.scrollIntoView();
+    // endOfMessagesRef.current?.scrollIntoView();
   }, [convos]);
 
   if (!convos[activeConvoId]) {

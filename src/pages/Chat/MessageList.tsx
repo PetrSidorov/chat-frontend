@@ -25,7 +25,6 @@ const MessageList = forwardRef<
 
     const messageList = messages.map(
       ({ content, createdAt, sender, uuid }, i: number, messages) => {
-        console.log("uuid ", uuid);
         const yours = sender.id == currentUser.id;
 
         const avatarUrl = yours
