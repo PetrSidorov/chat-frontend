@@ -119,7 +119,7 @@ function UploadAndCropAvatar() {
                 onZoomChange={setZoom}
               />
             </div>
-            <div className="controls bg-slate-700 flex justify-around p-4 rounded">
+            <div className="controls bg-slate-700 flex flex-wrap justify-around p-4 rounded">
               <input
                 type="range"
                 value={zoom}

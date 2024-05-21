@@ -114,21 +114,26 @@ body {
 
 .crop-container {
   position: absolute;
-  top: 0;
+  margin: auto;
   left: 0;
   right: 0;
-  bottom: 80px;
+  width: 50%;
+  min-width: 320px;
 }
 
 .controls {
   position: absolute;
-  bottom: 20px;
+  bottom: 36%;
   left: 50%;
   width: 50%;
+  padding: 10px;
   transform: translateX(-50%);
-  height: 40px;
   display: flex;
   align-items: center;
+
+  .zoom-slider {
+    padding: 10px;
+  }
 }
 
 .slider {
@@ -178,4 +183,9 @@ body {
 
 .crop-container .reactEasyCrop_CropArea {
   border-radius: 50%;
+}
+
+.reactEasyCrop_Container {
+  top: 0%;
+  bottom: 0%;
 }
