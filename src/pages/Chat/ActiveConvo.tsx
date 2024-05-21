@@ -18,6 +18,8 @@ export default function ActiveConvo() {
     unshiftMessagesToConvo,
     handleRemoveMessage,
     onlineStatuses,
+    newMessage,
+    setNewMessage,
   } = useContext(AllConvoContext).convoContext;
   const userOnlineStatus = useOnlineStatus();
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
@@ -49,7 +51,7 @@ export default function ActiveConvo() {
   });
 
   useEffect(() => {
-    endOfMessagesRef.current?.scrollIntoView();
+    // endOfMessagesRef.current?.scrollIntoView();
     if (!scrollContainerRef.current) return;
     if (blockOffset) return;
     const savedScrollPosition = scrollContainerRef.current.scrollTop;
@@ -64,8 +66,13 @@ export default function ActiveConvo() {
   }, [activeConvoId]);
 
   useEffect(() => {
-    // endOfMessagesRef.current?.scrollIntoView();
-  }, [convos]);
+    endOfMessagesRef.current?.scrollIntoView();
+    setNewMessage(false);
+  }, [activeConvoId, newMessage]);
+
+  useEffect(() => {
+    console.log("newMessage ", newMessage);
+  }, [newMessage]);
 
   if (!convos[activeConvoId]) {
     return (

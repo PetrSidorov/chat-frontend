@@ -10,7 +10,9 @@ export default function ActiveConvoProvider({
 }: {
   children: ReactNode;
 }) {
+  // TODO: maybe at least half of this stuff should be a reducer
   const [isConnected, setIsConnected] = useState(socket.connected);
+  const [newMessage, setNewMessage] = useState(false);
   const [shouldAnimate, setShouldAnimate] = useState(true);
   const [animationType, setAnimationType] = useState("enter");
 
@@ -103,10 +105,11 @@ export default function ActiveConvoProvider({
   }, []);
 
   useEffect(() => {
-    const handleMessageReturn = (
+    const handleNewMessage = (
       incomingMessage: TMessage & { convoId: string }
     ) => {
       setAnimationType("enter");
+      setNewMessage(true);
       if (incomingMessage && incomingMessage.convoId === activeConvoId) {
         setConvos((currentConvos) => {
           // This should never happen, but
@@ -128,11 +131,11 @@ export default function ActiveConvoProvider({
       }
     };
 
-    socket.on("msg:return", handleMessageReturn);
+    socket.on("msg:return", handleNewMessage);
     socket.on("msg:delete:return", handleMessageDelete);
 
     return () => {
-      socket.off("msg:return", handleMessageReturn);
+      socket.off("msg:return", handleNewMessage);
       socket.off("msg:delete:return", handleMessageDelete);
     };
   }, [activeConvoId]);
@@ -181,6 +184,7 @@ export default function ActiveConvoProvider({
   };
 
   const pushNewMessagesToConvo = (convoId: string, messages: TMessage[]) => {
+    // TODO: do i even use this ?
     setShouldAnimate(true);
     setAnimationType("initial");
     setConvos((currentConvos) => {
@@ -270,6 +274,8 @@ export default function ActiveConvoProvider({
           joinRoom,
           shouldAnimate,
           setShouldAnimate,
+          newMessage,
+          setNewMessage,
         },
         removeConvo,
         activeConvoId: [activeConvoId, handleActiveConvoId],
