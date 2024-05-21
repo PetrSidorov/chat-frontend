@@ -51,16 +51,13 @@ export default function ActiveConvo() {
   });
 
   useEffect(() => {
-    // endOfMessagesRef.current?.scrollIntoView();
     if (!scrollContainerRef.current) return;
     if (blockOffset) return;
-    const savedScrollPosition = scrollContainerRef.current.scrollTop;
 
     socket.on("msg:send-offset", (data) => {
       if (!data || !scrollContainerRef.current || !activeConvoId) return;
 
       unshiftMessagesToConvo({ id: data.convoId, newMessages: data.messages });
-      scrollContainerRef.current.scrollTop = savedScrollPosition;
     });
     setBlockOffset(false);
   }, [activeConvoId]);
