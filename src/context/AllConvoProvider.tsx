@@ -2,6 +2,7 @@ import useRoomUsersStatus from "@/hooks/useRoomUsersStatus";
 import { ReactNode, createContext, useEffect, useState } from "react";
 import { TConvoContext, TConvos, TMessage } from "../types";
 import { socket } from "../utils/socket";
+import useMessage from "@/hooks/useMessage";
 
 export const AllConvoContext = createContext<TConvoContext>(null);
 
@@ -21,6 +22,12 @@ export default function ActiveConvoProvider({
   const onlineStatuses = useRoomUsersStatus();
 
   const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
+  // const [editMessageMode, setEditMessageMode] = useState(false);
+  // const [messageEdited, setMessageEdited] = useState({
+  //   userId: "",
+  //   messageId: "",
+  //   content: "",
+  // });
 
   useEffect(() => {
     console.log("animationType: ", animationType);
@@ -138,15 +145,18 @@ export default function ActiveConvoProvider({
     });
   }
 
-  function handleEditMessage(
-    userId: string,
-    messageId: string,
-    content: string
-  ) {
-    console.log("userId ", userId);
-    console.log("messageId ", messageId);
-    console.log("content ", content);
-  }
+  // function handleEditMessage(
+  //   userId: string,
+  //   messageId: string,
+  //   content: string
+  // ) {
+  //   setMessageEdited({
+  //     userId,
+  //     messageId,
+  //     content,
+  //   });
+  //   setEditMessageMode(true);
+  // }
 
   const handleRemoveMessage = (messageIdToDelete: string) => {
     // TODO: optimistic updates ?
@@ -250,7 +260,9 @@ export default function ActiveConvoProvider({
           setShouldAnimate,
           newMessage,
           setNewMessage,
-          handleEditMessage,
+
+          // editMessageMode,
+          // messageEdited,
         },
         removeConvo,
         activeConvoId: [activeConvoId, handleActiveConvoId],

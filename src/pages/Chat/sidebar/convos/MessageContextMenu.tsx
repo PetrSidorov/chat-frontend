@@ -1,14 +1,17 @@
+import useMessage from "@/hooks/useMessage";
+
 export default function MessageContextMenu({
   yours,
   handleRemoveMessage,
-  handleEditMessage,
+  content,
   uuid,
 }: {
   yours: boolean;
   handleRemoveMessage: Function;
-  handleEditMessage: () => {};
+  content: string;
   uuid: string;
 }) {
+  const { setMessageEdited, setEditMessageMode } = useMessage();
   return (
     <>
       {yours ? (
@@ -20,7 +23,16 @@ export default function MessageContextMenu({
             >
               <span className="text-red-700">Delete message</span>
             </button>
-            <button className="text-start" onClick={() => handleEditMessage()}>
+            <button
+              className="text-start"
+              onClick={() => {
+                setMessageEdited({
+                  messageId: uuid,
+                  content,
+                });
+                setEditMessageMode(true);
+              }}
+            >
               <span>Edit message</span>
             </button>
           </li>

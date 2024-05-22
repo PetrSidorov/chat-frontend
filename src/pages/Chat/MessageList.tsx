@@ -23,7 +23,7 @@ const MessageList = forwardRef<
     ref
   ) => {
     const { fullWidthMessagesInActiveConvo } = useContext(ResizeContext);
-    const { handleEditMessage } = useContext(AllConvoContext).convoContext;
+
     const messageList = messages.map(
       ({ content, createdAt, sender, uuid }, i: number, messages) => {
         const yours = sender.id == currentUser.id;
@@ -53,10 +53,8 @@ const MessageList = forwardRef<
                 popup={
                   <MessageContextMenu
                     yours={yours}
+                    content={content}
                     handleRemoveMessage={() => handleRemoveMessage(uuid)}
-                    handleEditMessage={() =>
-                      handleEditMessage(sender.id, uuid, content)
-                    }
                     uuid={uuid}
                   />
                 }
