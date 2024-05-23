@@ -48,7 +48,7 @@ export default function useMessage() {
       messageId: messageEdited.messageId,
       content: messageEdited.content,
     });
-  }, []);
+  }, [messageEdited, user, activeConvoId]);
 
   return {
     createdMessage,

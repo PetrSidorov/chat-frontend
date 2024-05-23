@@ -35,10 +35,12 @@ export default function MessageManager() {
 
   return (
     <form onSubmit={handleSubmit} className="message-form p-4 bg-gray-100">
-      <div>
-        <div className="w-[2px] h-[1rem] bg-slate-500 mr-[0.4rem]" />
-        {editMessageMode && <p>{messageEdited.content}</p>}
-      </div>
+      {editMessageMode && (
+        <div>
+          <div className="w-[2px] h-[1rem] bg-slate-500 mr-[0.4rem]" />
+          <p>{messageEdited.content}</p>
+        </div>
+      )}
       <div className="flex">
         <textarea
           ref={textareaRef}
