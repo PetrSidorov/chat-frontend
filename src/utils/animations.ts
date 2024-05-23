@@ -11,6 +11,12 @@ export const animations: Tanimations = {
     exit: { opacity: 0, y: -20 },
     transition: { duration: 0.5 },
   },
+  editMessage: {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+    transition: { duration: 0.5 },
+  },
   remove: {
     initial: { x: 0, opacity: 1 },
     animate: { x: 0, opacity: 1 },

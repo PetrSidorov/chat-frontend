@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { XCircle } from "lucide-react";
 import { useState } from "react";
 import VisuallyHidden from "../VisuallyHidden";
+import CloseXCircleButton from "./CloseXCircleButton";
 
 export interface PopupProps {
   children: JSX.Element;
@@ -49,20 +50,12 @@ export const PopupTrigger: React.FC<PopupProps> = ({ children, popup }) => {
             className="flex bg-gray-500 rounded-md p-4"
           >
             {popup}
-            <motion.button
+            <CloseXCircleButton
+              hiddenText="Dismiss pop up"
               onClick={() => {
                 showPopup ? setShowPopup(false) : "";
               }}
-              whileHover={{
-                scale: 1.1,
-                rotate: [0, -5, 5, -5, 5, 0],
-                transition: { duration: 1 },
-              }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <XCircle />
-              <VisuallyHidden>Dismiss pop up</VisuallyHidden>
-            </motion.button>
+            />
           </div>
         ) : null}
       </div>

@@ -2,6 +2,11 @@ import { useContext, useEffect, useRef } from "react";
 import useMessage from "../../hooks/useMessage";
 import { AllConvoContext } from "@/context/AllConvoProvider";
 import { MessageContext } from "@/context/MessageProvider";
+import { AnimatePresence, motion } from "framer-motion";
+import { animations } from "@/utils/animations";
+// import { CircleX } from "lucide-react";
+import VisuallyHidden from "@/components/VisuallyHidden";
+import CloseXCircleButton from "@/components/ui/CloseXCircleButton";
 
 export default function MessageManager() {
   const {
@@ -11,6 +16,7 @@ export default function MessageManager() {
     edit,
     messageEdited,
     editMessageMode,
+    setEditMessageMode,
     setMessageEdited,
   } = useContext(MessageContext)!;
 
@@ -39,15 +45,30 @@ export default function MessageManager() {
       send();
     }
   };
+  const animationProps = {
+    initial: animations["editMessage"]?.initial,
+    animate: animations["editMessage"]?.animate,
+    exit: animations["editMessage"]?.exit,
+    transition: animations["editMessage"]?.transition,
+    layout: true,
+  };
 
   return (
     <form onSubmit={handleSubmit} className="message-form p-4 bg-gray-100">
-      {editMessageMode && (
-        <div className="flex">
-          <div className="w-[2px] h-[1rem] bg-slate-500 mr-[0.4rem]" />
-          <p>{messageEdited.content}</p>
-        </div>
-      )}
+      <AnimatePresence>
+        {editMessageMode && (
+          <motion.div {...animationProps} className="flex">
+            <div className="w-[2px] h-[1rem] bg-slate-500 mr-[0.4rem]" />
+            <p>{messageEdited.content}</p>
+
+            <CloseXCircleButton
+              // className=""
+              hiddenText="Cancel editing"
+              onClick={() => setEditMessageMode(false)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="flex">
         <textarea
           ref={textareaRef}
