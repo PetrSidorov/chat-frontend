@@ -1,15 +1,18 @@
 import { useContext, useEffect, useRef } from "react";
 import useMessage from "../../hooks/useMessage";
 import { AllConvoContext } from "@/context/AllConvoProvider";
+import { MessageContext } from "@/context/MessageProvider";
 
 export default function MessageManager() {
   const {
-    createdMessage,
-    setCreatedMessage,
+    createdMessageContent,
+    setCreatedMessageContent,
     send,
+    edit,
     messageEdited,
     editMessageMode,
-  } = useMessage();
+    setMessageEdited,
+  } = useContext(MessageContext)!;
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -30,13 +33,17 @@ export default function MessageManager() {
   const handleSubmit = (e) => {
     if (!textareaRef.current) return;
     e.preventDefault();
-    send();
+    if (editMessageMode) {
+      edit();
+    } else {
+      send();
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="message-form p-4 bg-gray-100">
       {editMessageMode && (
-        <div>
+        <div className="flex">
           <div className="w-[2px] h-[1rem] bg-slate-500 mr-[0.4rem]" />
           <p>{messageEdited.content}</p>
         </div>
@@ -44,9 +51,18 @@ export default function MessageManager() {
       <div className="flex">
         <textarea
           ref={textareaRef}
-          value={editMessageMode ? messageEdited.content : createdMessage}
+          value={
+            editMessageMode ? messageEdited.content : createdMessageContent
+          }
           onChange={(e) => {
-            setCreatedMessage(e.target.value);
+            if (editMessageMode) {
+              setMessageEdited((curr) => {
+                return { ...curr, content: e.target.value };
+              });
+            } else {
+              setCreatedMessageContent(e.target.value);
+            }
+
             adjustTextareaHeight();
           }}
           placeholder="Type a message..."
@@ -65,7 +81,7 @@ export default function MessageManager() {
           type="submit"
           className="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2 max-h-10"
         >
-          Send
+          {editMessageMode ? "Edit" : "Send"}
         </button>
       </div>
     </form>

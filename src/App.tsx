@@ -9,6 +9,7 @@ import SettingsTab from "./pages/Chat/sidebar/SettingsTab";
 import ConvosList from "./pages/Chat/sidebar/convos/ConvosList";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
+import MessageProvider from "./context/MessageProvider";
 
 function App() {
   // TODO: it would be cool to implment portals here for learning purposes
@@ -17,21 +18,26 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <ActiveConvoProvider>
-          <ResizeProvider>
-            <Routes>
-              <Route path="*" element={<Navigate to="/login" replace />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route element={<AuthGuard />}>
-                <Route path="*" element={<Navigate to="/messages" replace />} />
-                <Route path="/" element={<MainLayout />}>
-                  <Route path="messages" element={<ConvosList />} />
-                  <Route path="search" element={<FriendsTab />} />
-                  <Route path="settings" element={<SettingsTab />} />
+          <MessageProvider>
+            <ResizeProvider>
+              <Routes>
+                <Route path="*" element={<Navigate to="/login" replace />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route element={<AuthGuard />}>
+                  <Route
+                    path="*"
+                    element={<Navigate to="/messages" replace />}
+                  />
+                  <Route path="/" element={<MainLayout />}>
+                    <Route path="messages" element={<ConvosList />} />
+                    <Route path="search" element={<FriendsTab />} />
+                    <Route path="settings" element={<SettingsTab />} />
+                  </Route>
                 </Route>
-              </Route>
-            </Routes>
-          </ResizeProvider>
+              </Routes>
+            </ResizeProvider>
+          </MessageProvider>
         </ActiveConvoProvider>
       </AuthProvider>
     </BrowserRouter>

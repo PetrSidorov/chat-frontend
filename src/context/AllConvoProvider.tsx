@@ -30,6 +30,7 @@ export default function ActiveConvoProvider({
   // });
 
   useEffect(() => {
+    console.log("convos ", convos);
     console.log("animationType: ", animationType);
   }, [animationType]);
 
@@ -59,6 +60,31 @@ export default function ActiveConvoProvider({
       setIsConnected(true);
       console.log("socket connected!!!!");
     });
+
+    socket.on("msg:edit-return", ({ message: messageEdited, convoId }) => {
+      console.log("pizdata ", convoId);
+      setConvos((currentConvos) => {
+        // console.log("currentConvos ", currentConvos);
+        if (!currentConvos) return {};
+        const updatedConvos = { ...currentConvos };
+        if (updatedConvos[convoId]) {
+          updatedConvos[convoId] = {
+            ...updatedConvos[convoId],
+            messages: [
+              ...updatedConvos[convoId].messages.map((message) => {
+                if (message.uuid == messageEdited.uuid) {
+                  return messageEdited;
+                } else {
+                  return message;
+                }
+              }),
+            ],
+          };
+        }
+        return updatedConvos;
+      });
+    });
+
     socket.on("disconnect", () => setIsConnected(false));
     socket.on("connect_error", (error) => {
       console.log("Connection Error:", error);

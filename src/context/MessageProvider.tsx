@@ -35,7 +35,6 @@ export const MessageContext = createContext<TMessageContext | null>(null);
 export default function MessageProvider({ children }: MessageProviderProps) {
   const { user } = useContext(AuthContext);
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
-  const { pushNewMessageToConvo } = useContext(AllConvoContext).convoContext;
   const [createdMessageContent, setCreatedMessageContent] = useState("");
   const [editMessageMode, setEditMessageMode] = useState(false);
   const [messageEdited, setMessageEdited] = useState({
@@ -71,6 +70,8 @@ export default function MessageProvider({ children }: MessageProviderProps) {
       messageId: messageEdited.messageId,
       content: messageEdited.content,
     });
+
+    setEditMessageMode(false);
   }, [messageEdited, user, activeConvoId]);
 
   return (

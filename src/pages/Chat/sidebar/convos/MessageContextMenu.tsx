@@ -1,4 +1,6 @@
+import { MessageContext } from "@/context/MessageProvider";
 import useMessage from "@/hooks/useMessage";
+import { useContext } from "react";
 
 export default function MessageContextMenu({
   yours,
@@ -11,7 +13,7 @@ export default function MessageContextMenu({
   content: string;
   uuid: string;
 }) {
-  const { setMessageEdited, setEditMessageMode } = useMessage();
+  const { setMessageEdited, setEditMessageMode } = useContext(MessageContext)!;
   return (
     <>
       {yours ? (
