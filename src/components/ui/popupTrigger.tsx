@@ -1,7 +1,4 @@
-import { motion } from "framer-motion";
-import { XCircle } from "lucide-react";
 import { useState } from "react";
-import VisuallyHidden from "../VisuallyHidden";
 import CloseXCircleButton from "./CloseXCircleButton";
 
 export interface PopupProps {
@@ -37,6 +34,7 @@ export const PopupTrigger: React.FC<PopupProps> = ({ children, popup }) => {
           showPopup ? handleDismiss(e) : "";
         }}
       />
+      {/* TODO: fix the error below */}
       <div onContextMenu={handleShowPopup}>
         {children}
         {showPopup ? (

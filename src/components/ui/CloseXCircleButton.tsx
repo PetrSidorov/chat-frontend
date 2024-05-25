@@ -3,20 +3,17 @@ import { XCircle } from "lucide-react";
 import VisuallyHidden from "../VisuallyHidden";
 import { ComponentProps } from "react";
 
-type CloseXCircleButtonProps = ComponentProps<"button"> & {
-  hiddenText: string;
-  onClick: () => void;
-};
+type CloseXCircleButtonProps = ComponentProps<"button"> &
+  HTMLMotionProps<"button"> & {
+    hiddenText: string;
+    onClick: () => void;
+  };
 
 export default function CloseXCircleButton({
   hiddenText,
   onClick,
   ...rest
-}: {
-  hiddenText: string;
-  onClick: () => void;
-  rest?: any;
-}) {
+}: CloseXCircleButtonProps) {
   return (
     <motion.button
       {...rest}

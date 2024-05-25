@@ -52,17 +52,21 @@ export default function MessageManager() {
     transition: animations["editMessage"]?.transition,
     layout: true,
   };
-
+  // TODO: mulitiple lines bug in edit mode
   return (
     <form onSubmit={handleSubmit} className="message-form p-4 bg-gray-100">
       <AnimatePresence>
         {editMessageMode && (
-          <motion.div {...animationProps} className="flex">
-            <div className="w-[2px] h-[1rem] bg-slate-500 mr-[0.4rem]" />
-            <p>{messageEdited.content}</p>
+          <motion.div {...animationProps} className="flex mb-2">
+            <div className="border-l-2 border-slate-500 p-2">
+              <p>Editing</p>
+              <p>{messageEdited.content}</p>
+            </div>
 
+            {/* TODO: #ask-artem or figure out why align-self-end doesn't work on
+            the xcircle button instead of ml-auto */}
             <CloseXCircleButton
-              // className=""
+              className="ml-auto"
               hiddenText="Cancel editing"
               onClick={() => setEditMessageMode(false)}
             />
@@ -80,11 +84,11 @@ export default function MessageManager() {
               setMessageEdited((curr) => {
                 return { ...curr, content: e.target.value };
               });
+              adjustTextareaHeight();
             } else {
               setCreatedMessageContent(e.target.value);
+              adjustTextareaHeight();
             }
-
-            adjustTextareaHeight();
           }}
           placeholder="Type a message..."
           // style={{ transition: "height 0.2s ease-out" }}
