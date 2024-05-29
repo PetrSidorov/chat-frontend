@@ -60,7 +60,7 @@ export default function MessageManager() {
     transition: animations["editMessage"]?.transition,
     layout: true,
   };
-  // TODO: mulitiple lines bug in edit mode
+
   return (
     <form onSubmit={handleSubmit} className="message-form p-4 bg-gray-100">
       <AnimatePresence>
@@ -94,10 +94,8 @@ export default function MessageManager() {
               setMessageEdited((curr) => {
                 return { ...curr, content: e.target.value };
               });
-              // adjustTextareaHeight();
             } else {
               setCreatedMessageContent(e.target.value);
-              // adjustTextareaHeight();
             }
             adjustTextareaHeight();
           }}
