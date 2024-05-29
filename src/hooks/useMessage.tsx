@@ -15,10 +15,10 @@ export default function useMessage() {
   });
 
   // TODO: optimistic updates!
-  useEffect(() => {
-    console.log("messageEdited ", messageEdited);
-    console.log("editMessageMode ", editMessageMode);
-  }, [messageEdited, editMessageMode]);
+  // useEffect(() => {
+  //   console.log("messageEdited ", messageEdited);
+  //   console.log("editMessageMode ", editMessageMode);
+  // }, [messageEdited, editMessageMode]);
 
   const send = useCallback(() => {
     if (!createdMessage.trim() || !user || !activeConvoId) {
