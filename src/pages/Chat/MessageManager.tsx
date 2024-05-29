@@ -62,7 +62,7 @@ export default function MessageManager() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="message-form p-4 bg-gray-100">
+    <div className="bg-gray-100 p-4">
       <AnimatePresence>
         {editMessageMode && (
           <motion.div {...animationProps} className="flex mb-2 content-start">
@@ -83,7 +83,7 @@ export default function MessageManager() {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="flex">
+      <form onSubmit={handleSubmit} className="flex">
         <textarea
           ref={textareaRef}
           value={
@@ -117,7 +117,7 @@ export default function MessageManager() {
         >
           {editMessageMode ? "Edit" : "Send"}
         </button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }
