@@ -1,5 +1,5 @@
 import { useState } from "react";
-import CloseXCircleButton from "./CloseXCircleButton";
+import CloseXCircleButton from "./closeXCircleButton";
 
 export interface PopupProps {
   children: JSX.Element;
