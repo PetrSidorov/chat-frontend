@@ -21,7 +21,7 @@ export default function MessageManager() {
   } = useContext(MessageContext)!;
   const [originalMessage, setOriginalMessage] = useState("");
   useEffect(() => {
-    if (editMessageMode && messageEdited) {
+    if (editMessageMode && messageEdited?.content) {
       setOriginalMessage(messageEdited.content);
     }
   }, [editMessageMode]);
