@@ -45,13 +45,12 @@ export default function MessageManager() {
   const handleSubmit = (e) => {
     if (!textareaRef.current) return;
     e.preventDefault();
-    if (editMessageMode) {
-      edit();
+    editMessageMode ? edit() : send();
+    // TODO: #ask-artem
+    // do people do that in actual code bases ?
+    setTimeout(() => {
       adjustTextareaHeight();
-    } else {
-      send();
-      adjustTextareaHeight();
-    }
+    }, 0);
   };
   const animationProps = {
     initial: animations["editMessage"]?.initial,
