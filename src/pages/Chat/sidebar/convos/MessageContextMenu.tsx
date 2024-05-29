@@ -23,7 +23,9 @@ export default function MessageContextMenu({
               className="text-start"
               onClick={() => handleRemoveMessage(uuid)}
             >
-              <span className="text-red-700">Delete message</span>
+              <span id="test" className="text-red-700">
+                Delete message
+              </span>
             </button>
             <button
               className="text-start"
@@ -35,7 +37,7 @@ export default function MessageContextMenu({
                 setEditMessageMode(true);
               }}
             >
-              <span>Edit message</span>
+              <span id="test">Edit message</span>
             </button>
           </li>
         </ul>

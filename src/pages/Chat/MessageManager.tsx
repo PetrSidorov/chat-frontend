@@ -31,8 +31,6 @@ export default function MessageManager() {
   // the whole magic 250px thing should be revisited
 
   const adjustTextareaHeight = () => {
-    console.log('let"s goooO!!!');
-
     if (!textareaRef.current) {
       return;
     }
@@ -56,13 +54,16 @@ export default function MessageManager() {
     if (!textareaRef.current) return;
     e.preventDefault();
     editMessageMode ? edit() : send();
+
     // TODO: #ask-artem
     // do people do that in actual code bases ?
-    // settimeout is needed only for editing mode
+    // setTimeout is needed only for editing mode
+
     setTimeout(() => {
       adjustTextareaHeight();
     }, 0);
   };
+
   const animationProps = {
     initial: animations["editMessage"]?.initial,
     animate: animations["editMessage"]?.animate,
@@ -70,7 +71,9 @@ export default function MessageManager() {
     transition: animations["editMessage"]?.transition,
     layout: true,
   };
+
   // TODO: this is not a form semantically speaking
+
   return (
     <form onSubmit={handleSubmit} className="bg-gray-100 p-4 flex">
       <div className="w-full">

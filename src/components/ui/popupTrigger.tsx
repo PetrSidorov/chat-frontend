@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import CloseXCircleButton from "./closeXCircleButton";
 
 export interface PopupProps {
@@ -8,6 +8,8 @@ export interface PopupProps {
 export const PopupTrigger: React.FC<PopupProps> = ({ children, popup }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [coordinates, setCoordinates] = useState({ left: 0, top: 0 });
+  const catchClickRef = useRef(null);
+
   const handleShowPopup = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const left = e.clientX;
@@ -20,6 +22,11 @@ export const PopupTrigger: React.FC<PopupProps> = ({ children, popup }) => {
   const handleDismiss = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setShowPopup(false);
+  };
+
+  const catchClick = (e: any) => {
+    // TODO: #ask-artem (answer is in the telegram)
+    e.currentTarget == catchClickRef.current && setShowPopup(false);
   };
 
   return (
@@ -47,7 +54,9 @@ export const PopupTrigger: React.FC<PopupProps> = ({ children, popup }) => {
             }}
             className="flex bg-gray-500 rounded-md p-4"
           >
-            {popup}
+            <div ref={catchClickRef} onClick={catchClick}>
+              {popup}
+            </div>
             <CloseXCircleButton
               hiddenText="Dismiss pop up"
               onClick={() => {
