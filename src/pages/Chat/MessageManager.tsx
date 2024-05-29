@@ -48,6 +48,7 @@ export default function MessageManager() {
     editMessageMode ? edit() : send();
     // TODO: #ask-artem
     // do people do that in actual code bases ?
+    // settimeout is needed only for editing mode
     setTimeout(() => {
       adjustTextareaHeight();
     }, 0);
