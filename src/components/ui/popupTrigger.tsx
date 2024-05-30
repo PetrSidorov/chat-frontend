@@ -25,8 +25,9 @@ export const PopupTrigger: React.FC<PopupProps> = ({ children, popup }) => {
   };
 
   const catchClick = (e: any) => {
-    // TODO: #ask-artem (answer is in the telegram)
-    e.currentTarget == catchClickRef.current && setShowPopup(false);
+    if (e.currentTarget == catchClickRef.current) {
+      setShowPopup(false);
+    }
   };
 
   return (
