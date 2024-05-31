@@ -76,8 +76,8 @@ export default function MessageManager() {
 
   return (
     <form onSubmit={handleSubmit} className="bg-gray-100 p-4 flex">
-      <AnimatePresence>
-        <div className="w-full">
+      <div className="w-full">
+        <AnimatePresence>
           {editMessageMode && (
             <motion.div
               {...animationProps}
@@ -91,38 +91,38 @@ export default function MessageManager() {
               </div>
             </motion.div>
           )}
-
-          <div onSubmit={handleSubmit} className="flex wat">
-            <textarea
-              ref={textareaRef}
-              value={
-                editMessageMode ? messageEdited.content : createdMessageContent
+        </AnimatePresence>
+        <div onSubmit={handleSubmit} className="flex wat">
+          <textarea
+            ref={textareaRef}
+            value={
+              editMessageMode ? messageEdited.content : createdMessageContent
+            }
+            onChange={(e) => {
+              if (editMessageMode) {
+                setMessageEdited((curr) => {
+                  return { ...curr, content: e.target.value };
+                });
+              } else {
+                setCreatedMessageContent(e.target.value);
               }
-              onChange={(e) => {
-                if (editMessageMode) {
-                  setMessageEdited((curr) => {
-                    return { ...curr, content: e.target.value };
-                  });
-                } else {
-                  setCreatedMessageContent(e.target.value);
-                }
-                adjustTextareaHeight();
-              }}
-              placeholder="Type a message..."
-              // style={{ transition: "height 0.2s ease-out" }}
-              className="textarea w-full p-2 rounded border border-gray-300 overflow-x-scroll resize-none h-10 transition ease-out duration-200"
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && e.shiftKey) {
-                } else if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSubmit(e);
-                }
-              }}
-              onInput={adjustTextareaHeight}
-            />
-          </div>
+              adjustTextareaHeight();
+            }}
+            placeholder="Type a message..."
+            // style={{ transition: "height 0.2s ease-out" }}
+            className="textarea w-full p-2 rounded border border-gray-300 overflow-x-scroll resize-none h-10 transition ease-out duration-200"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && e.shiftKey) {
+              } else if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit(e);
+              }
+            }}
+            onInput={adjustTextareaHeight}
+          />
         </div>
-      </AnimatePresence>
+      </div>
+
       <div className="flex flex-col">
         {editMessageMode && (
           <CloseXCircleButton
