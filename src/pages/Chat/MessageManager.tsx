@@ -85,9 +85,7 @@ export default function MessageManager() {
             >
               <div className="border-l-2 border-slate-500 p-2">
                 <p>Editing</p>
-                <p className="whitespace-pre-wrap overflow-y-scroll">
-                  {originalMessage}
-                </p>
+                <p className="text-ellipsis">{originalMessage}</p>
               </div>
             </motion.div>
           )}
