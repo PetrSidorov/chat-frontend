@@ -14,7 +14,6 @@ export const PopupTrigger: React.FC<PopupProps> = ({ children, popup }) => {
     e.preventDefault();
     const left = e.clientX;
     const top = e.clientY;
-    console.log({ left, top });
     setCoordinates({ left, top });
     setShowPopup(true);
   };
