@@ -316,15 +316,6 @@ export default function ActiveConvoProvider({
     socket.emit("msg:delete", messageId);
     // TODO: optimistic updates ?
     // TODO add confirmation modal
-    // dispatch({
-    //   type: "handleRemoveMessage",
-    //   data: {
-    //     shouldAnimate: true,
-    //     animation: "remove",
-    //     convoId,
-    //     uuid,
-    //   },
-    // });
   };
 
   const deleteMessage = ({
