@@ -50,15 +50,19 @@ type ActionType =
       };
     }
   | {
-      type: "handleMessageDelete";
+      type: "handleRemoveMessage";
       data: {
         convoId: string;
         uuid: string;
+        shouldAnimate: boolean;
+        animation: AnimationType;
       };
     }
   | {
-      type: "handleRemoveMessage";
+      type: "pushNewMessageToConvo";
       data: {
+        convoId: string;
+        message: TMessage;
         shouldAnimate: boolean;
         animation: AnimationType;
       };
@@ -111,8 +115,8 @@ function reducer(state: StateType, action: ActionType): StateType {
     case "activeConvoSwitch": {
       return { ...state, activeConvoId: action.data.convoId };
     }
-    case "handleMessageDelete": {
-      const { convoId, uuid: messageToDelete } = action.data;
+    case "handleRemoveMessage": {
+      const { convoId, uuid: messageToDelete, shouldAnimate } = action.data;
       const updatedConvos = { ...state.convos };
       if (!updatedConvos?.[convoId]) break;
       const updatedMessages = updatedConvos[convoId].messages.filter(
@@ -122,11 +126,25 @@ function reducer(state: StateType, action: ActionType): StateType {
       return {
         ...state,
         convos: updatedConvos,
+        shouldAnimate,
       };
     }
+    case "pushNewMessageToConvo": {
+      const updatedConvos = { ...state.convos };
+      const { message, convoId } = action.data;
+      if (updatedConvos[convoId]) {
+        updatedConvos[convoId].messages = [
+          ...(updatedConvos[convoId].messages || []),
+          message,
+        ];
+      }
 
-    case "handleRemoveMessage": {
-      return { ...state };
+      return {
+        ...state,
+        shouldAnimate: true,
+        animation: "enter",
+        convos: updatedConvos,
+      };
     }
   }
 }
@@ -186,11 +204,11 @@ export default function ActiveConvoProvider({
 
   useEffect(() => {
     socket.on("msg:return", handleNewMessage);
-    socket.on("msg:delete:return", handleMessageDelete);
+    socket.on("msg:delete:return", handleRemoveMessage);
 
     return () => {
       socket.off("msg:return", handleNewMessage);
-      socket.off("msg:delete:return", handleMessageDelete);
+      socket.off("msg:delete:return", handleRemoveMessage);
     };
   }, [activeConvoId]);
 
@@ -249,24 +267,13 @@ export default function ActiveConvoProvider({
   };
 
   // ↓ reducer used
-  function handleMessageDelete({
-    uuid,
+  const handleRemoveMessage = ({
     convoId,
+    uuid,
   }: {
-    uuid: string;
     convoId: string;
-  }) {
-    dispatch({
-      type: "handleMessageDelete",
-      data: {
-        uuid,
-        convoId,
-      },
-    });
-  }
-
-  // ↓ reducer  used
-  const handleRemoveMessage = (messageIdToDelete: string) => {
+    uuid: string;
+  }) => {
     // TODO: optimistic updates ?
     // TODO add confirmation modal
     dispatch({
@@ -274,33 +281,43 @@ export default function ActiveConvoProvider({
       data: {
         shouldAnimate: true,
         animation: "remove",
+        convoId,
+        uuid,
       },
     });
-
-    socket.emit("msg:delete", messageIdToDelete);
   };
 
+  // ↓ should be deleted
   const pushNewMessagesToConvo = (convoId: string, messages: TMessage[]) => {
     // TODO: do i even use this ?
+    // setShouldAnimate(true);
+    // setAnimationType("initial");
+    // setConvos((currentConvos) => {
+    //   if (!currentConvos || !currentConvos[convoId]) return null;
+    //   const updatedConvos = { ...currentConvos };
+    //   if (updatedConvos[convoId]) {
+    //     updatedConvos[convoId].messages = [
+    //       ...(updatedConvos[convoId].messages || []),
+    //       ...messages,
+    //     ];
+    //   }
+    //   return updatedConvos;
+    // });
+  };
+  // ↓ reducer will be used
+  const pushNewMessageToConvo = (convoId: string, message: TMessage) => {
+    // pushNewMessagesToConvo(convoId, [message]);
     setShouldAnimate(true);
     setAnimationType("initial");
     setConvos((currentConvos) => {
-      if (!currentConvos) return null;
+      if (!currentConvos || !currentConvos[convoId]) return null;
       const updatedConvos = { ...currentConvos };
-      if (updatedConvos[convoId]) {
-        updatedConvos[convoId].messages = [
-          ...(updatedConvos[convoId].messages || []),
-          ...messages,
-        ];
-      } else {
-        updatedConvos[convoId] = { messages };
-      }
+      updatedConvos[convoId].messages = [
+        ...(updatedConvos[convoId].messages || []),
+        message,
+      ];
       return updatedConvos;
     });
-  };
-
-  const pushNewMessageToConvo = (convoId: string, message: TMessage) => {
-    pushNewMessagesToConvo(convoId, [message]);
   };
 
   const addNewConvo = (newConvo: any) => {
