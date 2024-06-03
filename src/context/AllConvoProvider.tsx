@@ -141,6 +141,7 @@ function reducer(state: StateType, action: ActionType): StateType {
       const updatedMessages = updatedConvos[convoId].messages.filter(
         ({ uuid }: { uuid: string }) => uuid !== messageToDelete
       );
+
       updatedConvos[convoId].messages = updatedMessages;
       return {
         ...state,
@@ -385,6 +386,23 @@ export default function ActiveConvoProvider({
     });
   }
 
+  // async function joinRoom(convoId: string) {
+  //   console.log("Attempting to join room", convoId);
+  //   console.log("socketPoll is ", socketPoll);
+  //   // if (!convoId || socketPoll?.includes(convoId)) return;
+
+  //   try {
+  //     //await waitForSocketConnection();
+
+  //     socket.emit("room:join", convoId);
+  //     setSocketPoll((currSocketPoll) => [
+  //       ...new Set([...(currSocketPoll || []), convoId]),
+  //     ]);
+  //   } catch (error) {
+  //     console.log("Failed to connect to socket:", error);
+  //   }
+  // }
+
   useEffect(() => {
     console.log("convos changed ", convos);
   }, [convos]);
@@ -397,7 +415,7 @@ export default function ActiveConvoProvider({
     <AllConvoContext.Provider
       value={{
         convoContext: {
-          convos,
+          convos: state.convos,
           unshiftMessagesToConvo,
           pushNewMessageToConvo,
           handleRemoveMessage,
@@ -406,17 +424,13 @@ export default function ActiveConvoProvider({
           addNewConvo,
           animationType,
           setAnimationType,
-          joinRoom,
           shouldAnimate,
           setShouldAnimate,
           newMessage,
           setNewMessage,
-
-          // editMessageMode,
-          // messageEdited,
         },
         removeConvo,
-        activeConvoId: [activeConvoId, handleActiveConvoId],
+        activeConvoId: [state.activeConvoId, handleActiveConvoId],
       }}
     >
       {children}
