@@ -48,20 +48,12 @@ export default function MessageManager() {
 
   useEffect(() => {
     adjustTextareaHeight();
-  }, [editMessageMode]);
+  }, [editMessageMode, createdMessageContent]);
 
   const handleSubmit = (e) => {
     if (!textareaRef.current) return;
     e.preventDefault();
     editMessageMode ? edit() : send();
-
-    // TODO: #ask-artem
-    // do people do that in actual code bases ?
-    // setTimeout is needed only for editing mode
-
-    setTimeout(() => {
-      adjustTextareaHeight();
-    }, 0);
   };
 
   const animationProps = {
