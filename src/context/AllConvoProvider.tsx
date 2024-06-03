@@ -1,10 +1,135 @@
 import useRoomUsersStatus from "@/hooks/useRoomUsersStatus";
-import { ReactNode, createContext, useEffect, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import { TConvoContext, TConvos, TMessage } from "../types";
 import { socket } from "../utils/socket";
-import useMessage from "@/hooks/useMessage";
 
 export const AllConvoContext = createContext<TConvoContext>(null);
+
+type AnimationType =
+  | "avatar"
+  | "enter"
+  | "editMessage"
+  | "remove"
+  | "convoSwitch";
+
+type StateType = {
+  convos: Tconvos | null;
+  newMessage: boolean;
+  animation: AnimationType;
+  activeConvoId: string;
+  shouldAnimate: boolean;
+};
+type ActionType =
+  | { type: "initConvos"; data: Tconvos }
+  | {
+      type: "editMessage";
+      data: {
+        messageEdited: TMessage;
+        convoId: string;
+      };
+    }
+  | {
+      type: "newMessage";
+      data: {
+        message: TMessage;
+        convoId: string;
+        animation: AnimationType;
+        newMessage: boolean;
+      };
+    }
+  | {
+      type: "activeConvoSwitch";
+      data: {
+        convoId: string;
+      };
+    }
+  | {
+      type: "handleMessageDelete";
+      data: {
+        convoId: string;
+        uuid: string;
+      };
+    }
+  | {
+      type: "handleRemoveMessage";
+      data: {
+        shouldAnimate: boolean;
+        animation: AnimationType;
+      };
+    };
+
+function reducer(state: StateType, action: ActionType): StateType {
+  switch (action.type) {
+    case "initConvos": {
+      return {
+        ...state,
+        convos: action.data,
+      };
+    }
+    case "editMessage": {
+      const { convoId, messageEdited } = action.data;
+      if (!state.convos[convoId]) break;
+      const updatedConvos = { ...state.convos };
+      return {
+        ...state,
+        convos: {
+          ...updatedConvos[convoId],
+          messages: [
+            ...updatedConvos[convoId].messages.map((message: TMessage) => {
+              if (message.uuid == messageEdited.uuid) {
+                return messageEdited;
+              } else {
+                return message;
+              }
+            }),
+          ],
+        },
+      };
+    }
+    case "newMessage": {
+      if (!state.convos) break;
+      const { message, convoId, animation, newMessage } = action.data;
+
+      const updatedConvos = { ...state.convos };
+      updatedConvos[convoId].messages = [
+        ...(updatedConvos[convoId].messages || []),
+        message,
+      ];
+      return {
+        ...state,
+        animation,
+        newMessage,
+        convos: updatedConvos,
+      };
+    }
+    case "activeConvoSwitch": {
+      return { ...state, activeConvoId: action.data.convoId };
+    }
+    case "handleMessageDelete": {
+      const { convoId, uuid: messageToDelete } = action.data;
+      const updatedConvos = { ...state.convos };
+      if (!updatedConvos?.[convoId]) break;
+      const updatedMessages = updatedConvos[convoId].messages.filter(
+        ({ uuid }: { uuid: string }) => uuid !== messageToDelete
+      );
+      updatedConvos[convoId].messages = updatedMessages;
+      return {
+        ...state,
+        convos: updatedConvos,
+      };
+    }
+
+    case "handleRemoveMessage": {
+      return { ...state };
+    }
+  }
+}
 
 export default function ActiveConvoProvider({
   children,
@@ -12,7 +137,15 @@ export default function ActiveConvoProvider({
   children: ReactNode;
 }) {
   // TODO: maybe at least half of this stuff should be a reducer
+  const [state, dispatch] = useReducer(reducer, {
+    convos: null,
+    newMessage: false,
+    animation: "enter",
+    activeConvoId: "",
+    shouldAnimate: true,
+  });
   const [isConnected, setIsConnected] = useState(socket.connected);
+
   const [newMessage, setNewMessage] = useState(false);
   const [shouldAnimate, setShouldAnimate] = useState(true);
   const [animationType, setAnimationType] = useState("enter");
@@ -20,36 +153,6 @@ export default function ActiveConvoProvider({
   const [convos, setConvos] = useState<TConvos | null>(null);
   const [activeConvoId, setActiveConvoId] = useState<string>("");
   const onlineStatuses = useRoomUsersStatus();
-
-  const [socketPoll, setSocketPoll] = useState<string[] | null>(null);
-  // const [editMessageMode, setEditMessageMode] = useState(false);
-  // const [messageEdited, setMessageEdited] = useState({
-  //   userId: "",
-  //   messageId: "",
-  //   content: "",
-  // });
-
-  useEffect(() => {
-    console.log("convos ", convos);
-    console.log("animationType: ", animationType);
-  }, [animationType]);
-
-  async function joinRoom(convoId: string) {
-    console.log("Attempting to join room", convoId);
-    console.log("socketPoll is ", socketPoll);
-    // if (!convoId || socketPoll?.includes(convoId)) return;
-
-    try {
-      //await waitForSocketConnection();
-
-      socket.emit("room:join", convoId);
-      setSocketPoll((currSocketPoll) => [
-        ...new Set([...(currSocketPoll || []), convoId]),
-      ]);
-    } catch (error) {
-      console.log("Failed to connect to socket:", error);
-    }
-  }
 
   useEffect(() => {
     if (!socket.connected) {
@@ -62,27 +165,7 @@ export default function ActiveConvoProvider({
     });
 
     socket.on("msg:edit-return", ({ message: messageEdited, convoId }) => {
-      console.log("pizdata ", convoId);
-      setConvos((currentConvos) => {
-        // console.log("currentConvos ", currentConvos);
-        if (!currentConvos) return {};
-        const updatedConvos = { ...currentConvos };
-        if (updatedConvos[convoId]) {
-          updatedConvos[convoId] = {
-            ...updatedConvos[convoId],
-            messages: [
-              ...updatedConvos[convoId].messages.map((message) => {
-                if (message.uuid == messageEdited.uuid) {
-                  return messageEdited;
-                } else {
-                  return message;
-                }
-              }),
-            ],
-          };
-        }
-        return updatedConvos;
-      });
+      handlemesageEdit({ messageEdited, convoId });
     });
 
     socket.on("disconnect", () => setIsConnected(false));
@@ -102,32 +185,6 @@ export default function ActiveConvoProvider({
   }, []);
 
   useEffect(() => {
-    const handleNewMessage = (
-      incomingMessage: TMessage & { convoId: string }
-    ) => {
-      setAnimationType("enter");
-      setNewMessage(true);
-      if (incomingMessage && incomingMessage.convoId === activeConvoId) {
-        setConvos((currentConvos) => {
-          // This should never happen, but
-          // this check is required
-          if (!currentConvos) return null;
-          const updatedConvos = { ...currentConvos };
-          const convoId = incomingMessage.convoId;
-          const message = incomingMessage;
-          if (updatedConvos[convoId]) {
-            updatedConvos[convoId].messages = [
-              ...(updatedConvos[convoId].messages || []),
-              message,
-            ];
-          } else {
-            updatedConvos[convoId] = { messages: [message] };
-          }
-          return updatedConvos;
-        });
-      }
-    };
-
     socket.on("msg:return", handleNewMessage);
     socket.on("msg:delete:return", handleMessageDelete);
 
@@ -137,59 +194,89 @@ export default function ActiveConvoProvider({
     };
   }, [activeConvoId]);
 
+  // ↓ reducer used
+  const handlemesageEdit = ({
+    messageEdited,
+    convoId,
+  }: {
+    messageEdited: TMessage;
+    convoId: string;
+  }) => {
+    dispatch({
+      type: "editMessage",
+      data: {
+        messageEdited,
+        convoId,
+      },
+    });
+  };
+
+  // ↓ reducer used
   const initConvo = (data: TConvos) => {
-    setConvos(data);
-    console.log("data in init convo ", Object.keys(data));
-    Object.keys(data).forEach(joinRoom);
+    Object.keys(data).forEach((convoId) => socket.emit("room:join", convoId));
+    dispatch({ type: "initConvos", data });
   };
 
+  // ↓ reducer used
+  const handleNewMessage = ({
+    message,
+    convoId,
+  }: {
+    message: TMessage;
+    convoId: string;
+  }) => {
+    dispatch({
+      type: "newMessage",
+      data: {
+        animation: "enter",
+        newMessage: true,
+        convoId,
+        message,
+      },
+    });
+  };
+
+  // ↓ reducer used
   const handleActiveConvoId = (id: string) => {
-    console.log("handleActiveConvoId is called");
-    if (activeConvoId === id) return;
-    setActiveConvoId(id);
+    if (state.activeConvoId === id) return;
+
+    dispatch({
+      type: "activeConvoSwitch",
+      data: {
+        convoId: id,
+      },
+    });
   };
 
+  // ↓ reducer used
   function handleMessageDelete({
-    uuid: messageToDelete,
+    uuid,
     convoId,
   }: {
     uuid: string;
     convoId: string;
   }) {
-    setConvos((currConvos) => {
-      const updatedConvos = { ...currConvos };
-      if (updatedConvos[convoId]) {
-        const updatedMessages = updatedConvos[convoId].messages.filter(
-          ({ uuid }) => uuid !== messageToDelete
-        );
-        updatedConvos[convoId].messages = updatedMessages;
-        return updatedConvos;
-      }
-      // The line below exists for
-      // typescript error fixing
-      return currConvos;
+    dispatch({
+      type: "handleMessageDelete",
+      data: {
+        uuid,
+        convoId,
+      },
     });
   }
 
-  // function handleEditMessage(
-  //   userId: string,
-  //   messageId: string,
-  //   content: string
-  // ) {
-  //   setMessageEdited({
-  //     userId,
-  //     messageId,
-  //     content,
-  //   });
-  //   setEditMessageMode(true);
-  // }
-
+  // ↓ reducer  used
   const handleRemoveMessage = (messageIdToDelete: string) => {
     // TODO: optimistic updates ?
     // TODO add confirmation modal
-    setShouldAnimate(true);
-    setAnimationType("remove");
-    // emit(messageIdToDelete);
+    dispatch({
+      type: "handleRemoveMessage",
+      data: {
+        shouldAnimate: true,
+        animation: "remove",
+      },
+    });
+
     socket.emit("msg:delete", messageIdToDelete);
   };
 
@@ -292,7 +379,6 @@ export default function ActiveConvoProvider({
         },
         removeConvo,
         activeConvoId: [activeConvoId, handleActiveConvoId],
-        socketPoll: [socketPoll, setSocketPoll],
       }}
     >
       {children}
