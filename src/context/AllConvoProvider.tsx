@@ -25,6 +25,7 @@ type StateType = {
   activeConvoId: string;
   shouldAnimate: boolean;
 };
+
 type ActionType =
   | { type: "initConvos"; data: Tconvos }
   | {
@@ -82,7 +83,7 @@ type ActionType =
   | {
       type: "unshiftMessagesToConvo";
       data: {
-        newMessages: Tmessage[];
+        newMessages: TMessage[];
         id: string;
       };
     };
@@ -203,7 +204,6 @@ export default function ActiveConvoProvider({
 }: {
   children: ReactNode;
 }) {
-  // TODO: maybe at least half of this stuff should be a reducer
   const [state, dispatch] = useReducer(reducer, {
     convos: null,
     newMessage: false,
@@ -212,13 +212,6 @@ export default function ActiveConvoProvider({
     shouldAnimate: true,
   });
   const [isConnected, setIsConnected] = useState(socket.connected);
-
-  const [newMessage, setNewMessage] = useState(false);
-  const [shouldAnimate, setShouldAnimate] = useState(true);
-  const [animationType, setAnimationType] = useState("enter");
-
-  const [convos, setConvos] = useState<TConvos | null>(null);
-  const [activeConvoId, setActiveConvoId] = useState<string>("");
   const onlineStatuses = useRoomUsersStatus();
 
   useEffect(() => {
@@ -259,7 +252,7 @@ export default function ActiveConvoProvider({
       socket.off("msg:return", handleNewMessage);
       socket.off("msg:delete:return", handleRemoveMessage);
     };
-  }, [activeConvoId]);
+  }, [state.activeConvoId]);
 
   // ↓ reducer used
   const handlemesageEdit = ({
@@ -316,25 +309,28 @@ export default function ActiveConvoProvider({
   };
 
   // ↓ reducer used
-  const handleRemoveMessage = ({
-    convoId,
-    uuid,
-  }: {
-    convoId: string;
-    uuid: string;
-  }) => {
-    // TODO: optimistic updates ?
-    // TODO add confirmation modal
-    dispatch({
-      type: "handleRemoveMessage",
-      data: {
-        shouldAnimate: true,
-        animation: "remove",
-        convoId,
-        uuid,
-      },
-    });
-  };
+  const handleRemoveMessage = (...args: any) =>
+    //   {
+    //   convoId,
+    //   uuid,
+    // }: {
+    //   convoId: string;
+    //   uuid: string;
+    // }
+    {
+      console.log(args);
+      // TODO: optimistic updates ?
+      // TODO add confirmation modal
+      // dispatch({
+      //   type: "handleRemoveMessage",
+      //   data: {
+      //     shouldAnimate: true,
+      //     animation: "remove",
+      //     convoId,
+      //     uuid,
+      //   },
+      // });
+    };
 
   // ↓ reducer  used
   const pushNewMessageToConvo = (convoId: string, message: TMessage) => {
@@ -386,26 +382,14 @@ export default function ActiveConvoProvider({
     });
   }
 
-  // async function joinRoom(convoId: string) {
-  //   console.log("Attempting to join room", convoId);
-  //   console.log("socketPoll is ", socketPoll);
-  //   // if (!convoId || socketPoll?.includes(convoId)) return;
+  function setNewMessage() {}
 
-  //   try {
-  //     //await waitForSocketConnection();
-
-  //     socket.emit("room:join", convoId);
-  //     setSocketPoll((currSocketPoll) => [
-  //       ...new Set([...(currSocketPoll || []), convoId]),
-  //     ]);
-  //   } catch (error) {
-  //     console.log("Failed to connect to socket:", error);
-  //   }
-  // }
+  function setShouldAnimate() {}
+  function setAnimationType() {}
 
   useEffect(() => {
-    console.log("convos changed ", convos);
-  }, [convos]);
+    console.log("convos changed ", state.convos);
+  }, [state]);
 
   const getParticipantOnlineStatus = (convoId: string, userId: string) => {
     return onlineStatuses[convoId]?.includes(userId) || false;
@@ -422,11 +406,11 @@ export default function ActiveConvoProvider({
           initConvo,
           onlineStatuses,
           addNewConvo,
-          animationType,
+          animationType: state.animation,
           setAnimationType,
-          shouldAnimate,
+          shouldAnimate: state.shouldAnimate,
           setShouldAnimate,
-          newMessage,
+          newMessage: state.newMessage,
           setNewMessage,
         },
         removeConvo,
