@@ -180,7 +180,6 @@ function reducer(state: StateType, action: ActionType): StateType {
       delete newConvos[convoId];
       return { ...state, convos: newConvos };
     }
-
     case "unshiftMessagesToConvo": {
       const updatedConvos = { ...state.convos };
       const { newMessages, id } = action.data;
@@ -228,8 +227,6 @@ export default function ActiveConvoProvider({
       handlemesageEdit({ messageEdited, convoId });
     });
 
-    socket.on("");
-
     socket.on("disconnect", () => setIsConnected(false));
     socket.on("connect_error", (error) => {
       console.log("Connection Error:", error);
@@ -256,7 +253,7 @@ export default function ActiveConvoProvider({
     };
   }, [state.activeConvoId]);
 
-  // ↓ reducer used
+  
   const handlemesageEdit = ({
     messageEdited,
     convoId,
@@ -273,13 +270,13 @@ export default function ActiveConvoProvider({
     });
   };
 
-  // ↓ reducer used
+  
   const initConvo = (data: TConvos) => {
     Object.keys(data).forEach((convoId) => socket.emit("room:join", convoId));
     dispatch({ type: "initConvos", data });
   };
 
-  // ↓ reducer used
+  
   const handleNewMessage = ({
     message,
     convoId,
@@ -298,7 +295,7 @@ export default function ActiveConvoProvider({
     });
   };
 
-  // ↓ reducer used
+  
   const handleActiveConvoId = (id: string) => {
     if (state.activeConvoId === id) return;
 
@@ -310,7 +307,7 @@ export default function ActiveConvoProvider({
     });
   };
 
-  // ↓ reducer used (this shouldn't be called handleRemoveMessage in the first place)
+   (this shouldn't be called handleRemoveMessage in the first place)
   //  TODO: rename this, refactir if needed
   const handleRemoveMessage = (messageId: string) => {
     socket.emit("msg:delete", messageId);
@@ -349,7 +346,7 @@ export default function ActiveConvoProvider({
     });
   };
 
-  // ↓ reducer used
+  
   const addNewConvo = (newConvo: any) => {
     dispatch({
       type: "addNewConvo",
@@ -359,7 +356,7 @@ export default function ActiveConvoProvider({
     });
   };
 
-  // ↓ reducer used
+  
   const removeConvo = (id: string) => {
     dispatch({
       type: "removeConvo",
@@ -369,7 +366,7 @@ export default function ActiveConvoProvider({
     });
   };
 
-  // ↓ reducer used
+  
   function unshiftMessagesToConvo({
     id,
     newMessages,
