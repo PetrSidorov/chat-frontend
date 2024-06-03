@@ -253,7 +253,6 @@ export default function ActiveConvoProvider({
     };
   }, [state.activeConvoId]);
 
-  
   const handlemesageEdit = ({
     messageEdited,
     convoId,
@@ -270,13 +269,11 @@ export default function ActiveConvoProvider({
     });
   };
 
-  
   const initConvo = (data: TConvos) => {
     Object.keys(data).forEach((convoId) => socket.emit("room:join", convoId));
     dispatch({ type: "initConvos", data });
   };
 
-  
   const handleNewMessage = ({
     message,
     convoId,
@@ -295,7 +292,6 @@ export default function ActiveConvoProvider({
     });
   };
 
-  
   const handleActiveConvoId = (id: string) => {
     if (state.activeConvoId === id) return;
 
@@ -307,8 +303,8 @@ export default function ActiveConvoProvider({
     });
   };
 
-   (this shouldn't be called handleRemoveMessage in the first place)
-  //  TODO: rename this, refactir if needed
+  //  TODO: (this shouldn't be called handleRemoveMessage in the first place)
+  //  TODO: rename this, refactor if needed
   const handleRemoveMessage = (messageId: string) => {
     socket.emit("msg:delete", messageId);
     // TODO: optimistic updates ?
@@ -346,7 +342,6 @@ export default function ActiveConvoProvider({
     });
   };
 
-  
   const addNewConvo = (newConvo: any) => {
     dispatch({
       type: "addNewConvo",
@@ -356,7 +351,6 @@ export default function ActiveConvoProvider({
     });
   };
 
-  
   const removeConvo = (id: string) => {
     dispatch({
       type: "removeConvo",
@@ -366,7 +360,6 @@ export default function ActiveConvoProvider({
     });
   };
 
-  
   function unshiftMessagesToConvo({
     id,
     newMessages,
