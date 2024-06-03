@@ -51,7 +51,7 @@ type ActionType =
       };
     }
   | {
-      type: "handleRemoveMessage";
+      type: "deleteMessage";
       data: {
         convoId: string;
         uuid: string;
@@ -135,7 +135,7 @@ function reducer(state: StateType, action: ActionType): StateType {
     case "activeConvoSwitch": {
       return { ...state, activeConvoId: action.data.convoId };
     }
-    case "handleRemoveMessage": {
+    case "deleteMessage": {
       const { convoId, uuid: messageToDelete, shouldAnimate } = action.data;
       const updatedConvos = { ...state.convos };
       if (!updatedConvos?.[convoId]) break;
@@ -228,6 +228,8 @@ export default function ActiveConvoProvider({
       handlemesageEdit({ messageEdited, convoId });
     });
 
+    socket.on("");
+
     socket.on("disconnect", () => setIsConnected(false));
     socket.on("connect_error", (error) => {
       console.log("Connection Error:", error);
@@ -246,11 +248,11 @@ export default function ActiveConvoProvider({
 
   useEffect(() => {
     socket.on("msg:return", handleNewMessage);
-    socket.on("msg:delete:return", handleRemoveMessage);
+    socket.on("msg:delete:return", deleteMessage);
 
     return () => {
       socket.off("msg:return", handleNewMessage);
-      socket.off("msg:delete:return", handleRemoveMessage);
+      socket.off("msg:delete:return", deleteMessage);
     };
   }, [state.activeConvoId]);
 
@@ -308,29 +310,40 @@ export default function ActiveConvoProvider({
     });
   };
 
-  // ↓ reducer used
-  const handleRemoveMessage = (...args: any) =>
-    //   {
-    //   convoId,
-    //   uuid,
-    // }: {
-    //   convoId: string;
-    //   uuid: string;
-    // }
-    {
-      console.log(args);
-      // TODO: optimistic updates ?
-      // TODO add confirmation modal
-      // dispatch({
-      //   type: "handleRemoveMessage",
-      //   data: {
-      //     shouldAnimate: true,
-      //     animation: "remove",
-      //     convoId,
-      //     uuid,
-      //   },
-      // });
-    };
+  // ↓ reducer used (this shouldn't be called handleRemoveMessage in the first place)
+  //  TODO: rename this, refactir if needed
+  const handleRemoveMessage = (messageId: string) => {
+    socket.emit("msg:delete", messageId);
+    // TODO: optimistic updates ?
+    // TODO add confirmation modal
+    // dispatch({
+    //   type: "handleRemoveMessage",
+    //   data: {
+    //     shouldAnimate: true,
+    //     animation: "remove",
+    //     convoId,
+    //     uuid,
+    //   },
+    // });
+  };
+
+  const deleteMessage = ({
+    convoId,
+    uuid,
+  }: {
+    convoId: string;
+    uuid: string;
+  }) => {
+    dispatch({
+      type: "deleteMessage",
+      data: {
+        shouldAnimate: true,
+        animation: "remove",
+        convoId,
+        uuid,
+      },
+    });
+  };
 
   // ↓ reducer  used
   const pushNewMessageToConvo = (convoId: string, message: TMessage) => {
