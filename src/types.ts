@@ -57,15 +57,11 @@ export type TMessageForSending = TMessage & {
 //   };
 // };
 
-export type TConvos = {
-  [convoId: string]: {
-    messages: TMessage[];
-    // participants: TUser[];
-  };
-};
+export type TConvos = Record<string, TConvo>;
 
-export type ConvoProps = {
-  data: TConvos;
+export type Tconvo = {
+  messages: TMessage[];
+  // participants: TUser[];
 };
 
 export type TOnlineStatuses = {

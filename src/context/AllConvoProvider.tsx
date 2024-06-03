@@ -6,7 +6,7 @@ import {
   useReducer,
   useState,
 } from "react";
-import { TConvoContext, TConvos, TMessage } from "../types";
+import { TConvoContext, TConvos, TConvo, TMessage, Tconvo } from "../types";
 import { socket } from "../utils/socket";
 
 export const AllConvoContext = createContext<TConvoContext>(null);
@@ -65,6 +65,25 @@ type ActionType =
         message: TMessage;
         shouldAnimate: boolean;
         animation: AnimationType;
+      };
+    }
+  | {
+      type: "addNewConvo";
+      data: {
+        newConvo: Tconvo;
+      };
+    }
+  | {
+      type: "removeConvo";
+      data: {
+        convoId: string;
+      };
+    }
+  | {
+      type: "unshiftMessagesToConvo";
+      data: {
+        newMessages: Tmessage[];
+        id: string;
       };
     };
 
@@ -145,6 +164,35 @@ function reducer(state: StateType, action: ActionType): StateType {
         animation: "enter",
         convos: updatedConvos,
       };
+    }
+    case "addNewConvo": {
+      const { newConvo } = action.data;
+      return {
+        ...state,
+        convos: { ...state.convos, newConvo },
+      };
+    }
+    case "removeConvo": {
+      const newConvos = { ...state.convos };
+      const { convoId } = action.data;
+      delete newConvos[convoId];
+      return { ...state, convos: newConvos };
+    }
+
+    case "unshiftMessagesToConvo": {
+      const updatedConvos = { ...state.convos };
+      const { newMessages, id } = action.data;
+      if (updatedConvos[id]) {
+        updatedConvos[id] = {
+          ...updatedConvos[id],
+          messages: [...newMessages, ...updatedConvos[id].messages],
+        };
+      } else {
+        updatedConvos[id] = {
+          messages: [...newMessages],
+        };
+      }
+      return { ...state, convos: updatedConvos };
     }
   }
 }
@@ -287,55 +335,40 @@ export default function ActiveConvoProvider({
     });
   };
 
-  // ↓ should be deleted
-  const pushNewMessagesToConvo = (convoId: string, messages: TMessage[]) => {
-    // TODO: do i even use this ?
-    // setShouldAnimate(true);
-    // setAnimationType("initial");
-    // setConvos((currentConvos) => {
-    //   if (!currentConvos || !currentConvos[convoId]) return null;
-    //   const updatedConvos = { ...currentConvos };
-    //   if (updatedConvos[convoId]) {
-    //     updatedConvos[convoId].messages = [
-    //       ...(updatedConvos[convoId].messages || []),
-    //       ...messages,
-    //     ];
-    //   }
-    //   return updatedConvos;
-    // });
-  };
-  // ↓ reducer will be used
+  // ↓ reducer  used
   const pushNewMessageToConvo = (convoId: string, message: TMessage) => {
-    // pushNewMessagesToConvo(convoId, [message]);
-    setShouldAnimate(true);
-    setAnimationType("initial");
-    setConvos((currentConvos) => {
-      if (!currentConvos || !currentConvos[convoId]) return null;
-      const updatedConvos = { ...currentConvos };
-      updatedConvos[convoId].messages = [
-        ...(updatedConvos[convoId].messages || []),
+    dispatch({
+      type: "pushNewMessageToConvo",
+      data: {
+        convoId,
         message,
-      ];
-      return updatedConvos;
+        shouldAnimate: true,
+        animation: "enter",
+      },
     });
   };
 
+  // ↓ reducer used
   const addNewConvo = (newConvo: any) => {
-    setConvos((currConvos) => {
-      if (!currConvos) return null;
-      return { ...currConvos, ...newConvo };
+    dispatch({
+      type: "addNewConvo",
+      data: {
+        newConvo,
+      },
     });
   };
 
+  // ↓ reducer used
   const removeConvo = (id: string) => {
-    setConvos((currConvos) => {
-      if (!currConvos) return null;
-      const newConvos = { ...currConvos };
-      delete newConvos[id];
-      return newConvos;
+    dispatch({
+      type: "removeConvo",
+      data: {
+        convoId: id,
+      },
     });
   };
 
+  // ↓ reducer used
   function unshiftMessagesToConvo({
     id,
     newMessages,
@@ -343,23 +376,12 @@ export default function ActiveConvoProvider({
     id: string;
     newMessages: TMessage[];
   }) {
-    // console.log("id, newMessages ", id, newMessages);
-    setConvos((currentConvos) => {
-      // console.log("currentConvos ", currentConvos);
-      if (!currentConvos) return {};
-      const updatedConvos = { ...currentConvos };
-      if (updatedConvos[id]) {
-        updatedConvos[id] = {
-          ...updatedConvos[id],
-          messages: [...newMessages, ...updatedConvos[id].messages],
-        };
-      } else {
-        updatedConvos[id] = {
-          messages: [...newMessages],
-        };
-      }
-
-      return updatedConvos;
+    dispatch({
+      type: "unshiftMessagesToConvo",
+      data: {
+        newMessages,
+        id,
+      },
     });
   }
 
@@ -378,7 +400,6 @@ export default function ActiveConvoProvider({
           convos,
           unshiftMessagesToConvo,
           pushNewMessageToConvo,
-          pushNewMessagesToConvo,
           handleRemoveMessage,
           initConvo,
           onlineStatuses,
