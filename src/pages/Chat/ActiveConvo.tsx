@@ -62,6 +62,11 @@ export default function ActiveConvo() {
 
   useEffect(() => {
     // TODO: #ask-artem not really ask just interisting case
+    // queueMicrotask is needed here to preserve the order of things
+    // in the way they need to happen
+    // In AllConvoProvider, the handler adds a new message, so we need to wait for it to
+    // execute before scrolling
+
     socket.on("msg:return", () =>
       queueMicrotask(() => () => endOfMessagesRef.current?.scrollIntoView())
     );
