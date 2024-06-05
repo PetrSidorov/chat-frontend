@@ -127,6 +127,7 @@ function convoReducer(state: StateType, action: ActionType): StateType {
       return { ...state, activeConvoId: action.data.convoId };
     }
     case "deleteMessage": {
+      console.log("ola");
       const {
         convoId,
         uuid: messageToDelete,
@@ -325,7 +326,8 @@ export default function ActiveConvoProvider({
   }) => {
     // TODO: #ask-artem should i even do that?
     // this check really seems like something 'just in case'
-    if (!state.convos || state.convos[convoId]) return;
+    if (!state.convos?.[convoId]) return;
+    console.log();
     dispatch({
       type: "deleteMessage",
       data: {

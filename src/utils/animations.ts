@@ -1,9 +1,5 @@
 export const animations: Tanimations = {
-  disableAnimation: {
-    initial: undefined,
-    animate: undefined,
-    transition: undefined,
-  },
+  disableAnimation: null,
   enter: {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -38,14 +34,14 @@ export const animations: Tanimations = {
 
 type Tanimations = {
   [key: string]: {
-    initial: { opacity: number; y?: number; x?: number } | undefined;
-    animate: { opacity: number; y?: number; x?: number } | undefined;
-    exit?: {
+    initial: { opacity: number; y?: number; x?: number };
+    animate: { opacity: number; y?: number; x?: number };
+    exit: {
       opacity: number;
       y?: number;
       x?: number;
       transition?: { duration: number; ease?: string };
     };
-    transition?: { duration: number; ease?: string } | undefined;
-  };
+    transition?: { duration: number; ease?: string };
+  } | null;
 };
