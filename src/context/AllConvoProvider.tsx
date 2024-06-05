@@ -286,7 +286,7 @@ export default function ActiveConvoProvider({
     convoId: string;
   }) => {
     // TODO: #ask-artem, one more 'just in case', do i need this?
-    if (!state.convos || !state.convos[convoId]) return;
+    if (!state.convos?.[convoId]) return;
     dispatch({
       type: "newMessage",
       data: {
