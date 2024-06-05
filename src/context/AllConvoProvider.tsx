@@ -111,9 +111,7 @@ function convoReducer(state: StateType, action: ActionType): StateType {
       };
     }
     case "newMessage": {
-      if (!state.convos) return state;
       const { message, convoId, animation } = action.data;
-
       const updatedConvos = { ...state.convos };
       updatedConvos[convoId].messages = [
         ...(updatedConvos[convoId].messages || []),
@@ -136,7 +134,6 @@ function convoReducer(state: StateType, action: ActionType): StateType {
         animation,
       } = action.data;
       const updatedConvos = { ...state.convos };
-      if (!updatedConvos?.[convoId]) break;
       const updatedMessages = updatedConvos[convoId].messages.filter(
         ({ uuid }: { uuid: string }) => uuid !== messageToDelete
       );
@@ -287,6 +284,8 @@ export default function ActiveConvoProvider({
     message: TMessage;
     convoId: string;
   }) => {
+    // TODO: #ask-artem, one more 'just in case', do i need this?
+    if (!state.convos || !state.convos[convoId]) return;
     dispatch({
       type: "newMessage",
       data: {
@@ -324,6 +323,9 @@ export default function ActiveConvoProvider({
     convoId: string;
     uuid: string;
   }) => {
+    // TODO: #ask-artem should i even do that?
+    // this check really seems like something 'just in case'
+    if (!state.convos || state.convos[convoId]) return;
     dispatch({
       type: "deleteMessage",
       data: {
