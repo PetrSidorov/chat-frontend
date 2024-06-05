@@ -18,8 +18,6 @@ export default function ActiveConvo() {
     unshiftMessagesToConvo,
     handleRemoveMessage,
     onlineStatuses,
-    newMessage,
-    setNewMessage,
   } = useContext(AllConvoContext).convoContext;
   const userOnlineStatus = useOnlineStatus();
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
@@ -64,12 +62,7 @@ export default function ActiveConvo() {
 
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView();
-    setNewMessage(false);
-  }, [activeConvoId, newMessage]);
-
-  useEffect(() => {
-    console.log("newMessage ", newMessage);
-  }, [newMessage]);
+  }, [activeConvoId]);
 
   if (!convos[activeConvoId]) {
     return (

@@ -1,9 +1,8 @@
 export const animations: Tanimations = {
-  avatar: {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 },
-    transition: { duration: 0.2 },
+  disableAnimation: {
+    initial: undefined,
+    animate: undefined,
+    transition: undefined,
   },
   enter: {
     initial: { opacity: 0, y: 20 },
@@ -39,14 +38,14 @@ export const animations: Tanimations = {
 
 type Tanimations = {
   [key: string]: {
-    initial: { opacity: number; y?: number; x?: number };
-    animate: { opacity: number; y?: number; x?: number };
-    exit: {
+    initial: { opacity: number; y?: number; x?: number } | undefined;
+    animate: { opacity: number; y?: number; x?: number } | undefined;
+    exit?: {
       opacity: number;
       y?: number;
       x?: number;
       transition?: { duration: number; ease?: string };
     };
-    transition: { duration: number; ease?: string };
+    transition?: { duration: number; ease?: string } | undefined;
   };
 };

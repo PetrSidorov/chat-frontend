@@ -10,7 +10,6 @@ export default function MonthAndYear({
   createdAt: string;
   animationType?: string;
 }) {
-  const { shouldAnimate } = useContext(AllConvoContext).convoContext;
   const createdAtDate = new Date(createdAt);
   const isSameYear = createdAtDate.getFullYear() === new Date().getFullYear();
   const dateString = createdAtDate.toLocaleString("en-US", {
@@ -18,20 +17,19 @@ export default function MonthAndYear({
     day: "numeric",
     ...(isSameYear ? {} : { year: "numeric" }),
   });
-  const animationProps = shouldAnimate
-    ? {
-        initial: animations[animationType]?.initial,
-        animate: animations[animationType]?.animate,
-        exit: animations[animationType]?.exit,
-        transition: animations[animationType]?.transition,
-        layout: true,
-      }
-    : {};
+  const animationProps = {
+    initial: animations[animationType]?.initial,
+    animate: animations[animationType]?.animate,
+    exit: animations[animationType]?.exit,
+    transition: animations[animationType]?.transition,
+    layout: true,
+  };
+
   // TODO:CSS move this margin up
-  const Wrapper = shouldAnimate ? motion.div : "div";
+
   return (
-    <Wrapper className="w-fit mx-auto mt-10" {...animationProps}>
+    <motion.div className="w-fit mx-auto mt-10" {...animationProps}>
       <p>{dateString}</p>
-    </Wrapper>
+    </motion.div>
   );
 }

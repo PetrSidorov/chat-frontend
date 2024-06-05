@@ -6,28 +6,26 @@ import {
   useReducer,
   useState,
 } from "react";
-import { TConvoContext, TConvos, TConvo, TMessage, Tconvo } from "../types";
+import { TConvoContext, TConvo, TMessage } from "../types";
 import { socket } from "../utils/socket";
 
 export const AllConvoContext = createContext<TConvoContext>(null);
 
 type AnimationType =
-  | "avatar"
   | "enter"
   | "editMessage"
   | "remove"
-  | "convoSwitch";
+  | "convoSwitch"
+  | "disableAnimation";
 
 type StateType = {
-  convos: Tconvos | null;
-  newMessage: boolean;
+  convos: Record<string, TConvo> | null;
   animation: AnimationType;
   activeConvoId: string;
-  shouldAnimate: boolean;
 };
 
 type ActionType =
-  | { type: "initConvos"; data: Tconvos }
+  | { type: "initConvos"; data: Record<string, TConvo> }
   | {
       type: "editMessage";
       data: {
@@ -41,13 +39,13 @@ type ActionType =
         message: TMessage;
         convoId: string;
         animation: AnimationType;
-        newMessage: boolean;
       };
     }
   | {
       type: "activeConvoSwitch";
       data: {
         convoId: string;
+        animation: AnimationType;
       };
     }
   | {
@@ -55,7 +53,6 @@ type ActionType =
       data: {
         convoId: string;
         uuid: string;
-        shouldAnimate: boolean;
         animation: AnimationType;
       };
     }
@@ -64,14 +61,13 @@ type ActionType =
       data: {
         convoId: string;
         message: TMessage;
-        shouldAnimate: boolean;
         animation: AnimationType;
       };
     }
   | {
       type: "addNewConvo";
       data: {
-        newConvo: Tconvo;
+        newConvo: Record<string, TConvo>;
       };
     }
   | {
@@ -88,7 +84,7 @@ type ActionType =
       };
     };
 
-function reducer(state: StateType, action: ActionType): StateType {
+function convoReducer(state: StateType, action: ActionType): StateType {
   switch (action.type) {
     case "initConvos": {
       return {
@@ -98,27 +94,25 @@ function reducer(state: StateType, action: ActionType): StateType {
     }
     case "editMessage": {
       const { convoId, messageEdited } = action.data;
-      if (!state.convos[convoId]) break;
       const updatedConvos = { ...state.convos };
+      const updatedMessages = updatedConvos[convoId].messages.map(
+        (message: TMessage) => {
+          if (message.uuid == messageEdited.uuid) {
+            return messageEdited;
+          } else {
+            return message;
+          }
+        }
+      );
+      updatedConvos[convoId].messages = updatedMessages;
       return {
         ...state,
-        convos: {
-          ...updatedConvos[convoId],
-          messages: [
-            ...updatedConvos[convoId].messages.map((message: TMessage) => {
-              if (message.uuid == messageEdited.uuid) {
-                return messageEdited;
-              } else {
-                return message;
-              }
-            }),
-          ],
-        },
+        convos: updatedConvos,
       };
     }
     case "newMessage": {
-      if (!state.convos) break;
-      const { message, convoId, animation, newMessage } = action.data;
+      if (!state.convos) return state;
+      const { message, convoId, animation } = action.data;
 
       const updatedConvos = { ...state.convos };
       updatedConvos[convoId].messages = [
@@ -128,7 +122,6 @@ function reducer(state: StateType, action: ActionType): StateType {
       return {
         ...state,
         animation,
-        newMessage,
         convos: updatedConvos,
       };
     }
@@ -136,7 +129,12 @@ function reducer(state: StateType, action: ActionType): StateType {
       return { ...state, activeConvoId: action.data.convoId };
     }
     case "deleteMessage": {
-      const { convoId, uuid: messageToDelete, shouldAnimate } = action.data;
+      const {
+        convoId,
+        uuid: messageToDelete,
+
+        animation,
+      } = action.data;
       const updatedConvos = { ...state.convos };
       if (!updatedConvos?.[convoId]) break;
       const updatedMessages = updatedConvos[convoId].messages.filter(
@@ -147,7 +145,7 @@ function reducer(state: StateType, action: ActionType): StateType {
       return {
         ...state,
         convos: updatedConvos,
-        shouldAnimate,
+        animation,
       };
     }
     case "pushNewMessageToConvo": {
@@ -162,7 +160,6 @@ function reducer(state: StateType, action: ActionType): StateType {
 
       return {
         ...state,
-        shouldAnimate: true,
         animation: "enter",
         convos: updatedConvos,
       };
@@ -171,7 +168,7 @@ function reducer(state: StateType, action: ActionType): StateType {
       const { newConvo } = action.data;
       return {
         ...state,
-        convos: { ...state.convos, newConvo },
+        convos: { ...state.convos, ...newConvo },
       };
     }
     case "removeConvo": {
@@ -195,6 +192,11 @@ function reducer(state: StateType, action: ActionType): StateType {
       }
       return { ...state, convos: updatedConvos };
     }
+    default: {
+      throw new Error(
+        `Unexpected action ${JSON.stringify(action)} used in convo reducer`
+      );
+    }
   }
 }
 
@@ -203,15 +205,18 @@ export default function ActiveConvoProvider({
 }: {
   children: ReactNode;
 }) {
-  const [state, dispatch] = useReducer(reducer, {
+  const [state, dispatch] = useReducer(convoReducer, {
     convos: null,
-    newMessage: false,
     animation: "enter",
     activeConvoId: "",
-    shouldAnimate: true,
   });
+
   const [isConnected, setIsConnected] = useState(socket.connected);
   const onlineStatuses = useRoomUsersStatus();
+
+  useEffect(() => {
+    console.log("state.animation ", state.animation);
+  }, [state.animation]);
 
   useEffect(() => {
     if (!socket.connected) {
@@ -260,6 +265,7 @@ export default function ActiveConvoProvider({
     messageEdited: TMessage;
     convoId: string;
   }) => {
+    // TODO: fix editing functionality
     dispatch({
       type: "editMessage",
       data: {
@@ -269,7 +275,7 @@ export default function ActiveConvoProvider({
     });
   };
 
-  const initConvo = (data: TConvos) => {
+  const initConvo = (data: Record<string, TConvo>) => {
     Object.keys(data).forEach((convoId) => socket.emit("room:join", convoId));
     dispatch({ type: "initConvos", data });
   };
@@ -285,7 +291,6 @@ export default function ActiveConvoProvider({
       type: "newMessage",
       data: {
         animation: "enter",
-        newMessage: true,
         convoId,
         message,
       },
@@ -299,6 +304,7 @@ export default function ActiveConvoProvider({
       type: "activeConvoSwitch",
       data: {
         convoId: id,
+        animation: "disableAnimation",
       },
     });
   };
@@ -321,7 +327,6 @@ export default function ActiveConvoProvider({
     dispatch({
       type: "deleteMessage",
       data: {
-        shouldAnimate: true,
         animation: "remove",
         convoId,
         uuid,
@@ -329,20 +334,20 @@ export default function ActiveConvoProvider({
     });
   };
 
-  // ↓ reducer  used
   const pushNewMessageToConvo = (convoId: string, message: TMessage) => {
     dispatch({
       type: "pushNewMessageToConvo",
       data: {
         convoId,
         message,
-        shouldAnimate: true,
+
         animation: "enter",
       },
     });
   };
 
   const addNewConvo = (newConvo: any) => {
+    console.log("newConvo data ", newConvo);
     dispatch({
       type: "addNewConvo",
       data: {
@@ -360,13 +365,13 @@ export default function ActiveConvoProvider({
     });
   };
 
-  function unshiftMessagesToConvo({
+  const unshiftMessagesToConvo = ({
     id,
     newMessages,
   }: {
     id: string;
     newMessages: TMessage[];
-  }) {
+  }) => {
     dispatch({
       type: "unshiftMessagesToConvo",
       data: {
@@ -374,15 +379,12 @@ export default function ActiveConvoProvider({
         id,
       },
     });
-  }
+  };
 
-  function setNewMessage() {}
-
-  function setShouldAnimate() {}
   function setAnimationType() {}
 
   useEffect(() => {
-    console.log("convos changed ", state.convos);
+    console.log("convos changed ", state);
   }, [state]);
 
   const getParticipantOnlineStatus = (convoId: string, userId: string) => {
@@ -402,10 +404,6 @@ export default function ActiveConvoProvider({
           addNewConvo,
           animationType: state.animation,
           setAnimationType,
-          shouldAnimate: state.shouldAnimate,
-          setShouldAnimate,
-          newMessage: state.newMessage,
-          setNewMessage,
         },
         removeConvo,
         activeConvoId: [state.activeConvoId, handleActiveConvoId],

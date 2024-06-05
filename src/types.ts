@@ -44,22 +44,7 @@ export type TMessageForSending = TMessage & {
   convoId: string;
 };
 
-// export type Tactors = {
-//   initiator: {
-//     id: string;
-//     username: string;
-//     avatarUrl: string | null;
-//   };
-//   joiner: {
-//     id: string;
-//     username: string;
-//     avatarUrl: string | null;
-//   };
-// };
-
-export type TConvos = Record<string, TConvo>;
-
-export type Tconvo = {
+export type TConvo = {
   messages: TMessage[];
   // participants: TUser[];
 };
@@ -73,20 +58,15 @@ export type TConvoContext = {
     convos: TConvos | null;
     unshiftMessagesToConvo: Function;
     pushNewMessageToConvo: Function;
-    pushNewMessagesToConvo: (convoId: string, messages: TMessage[]) => void;
+    // pushNewMessagesToConvo: (convoId: string, messages: TMessage[]) => void;
     handleRemoveMessage: Function;
     initConvo: Function;
     addNewConvo: Function;
     setAnimationType: Function;
-    joinRoom: Function;
-    shouldAnimate: Function;
-    setShouldAnimate: Function;
-    getParticipantOnlineStatus: () => void;
+    // joinRoom: Function;
+    // getParticipantOnlineStatus: () => void;
     onlineStatuses: { [key: string]: string[] };
     animationType: string;
-    newMessage: boolean;
-    setNewMessage: Dispatch<SetStateAction<boolean>>;
-    handleEditMessage: (senderId: string, uuid: string, content: string) => {};
     // editMessageMode: boolean;
     // messageEdited: {
     //   userId: string;
@@ -95,7 +75,7 @@ export type TConvoContext = {
     // };
   };
   activeConvoId: [string, Function];
-  socketPoll: [string[] | null, Dispatch<SetStateAction<string[] | null>>];
+  // socketPoll: [string[] | null, Dispatch<SetStateAction<string[] | null>>];
   removeConvo: (convoId: string) => void;
 } | null;
 

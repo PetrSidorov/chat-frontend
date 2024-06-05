@@ -22,13 +22,11 @@ export default function Message({
   username: string;
   avatarUrl: string | null;
   showOnlyAvatars?: boolean;
-  // animationType?: string;
   style?: TCSSclampLines;
   prevMessageSender?: string;
-
   popup: JSX.Element;
 }) {
-  const { handleRemoveMessage, animationType, shouldAnimate } =
+  const { handleRemoveMessage, animationType } =
     useContext(AllConvoContext).convoContext;
   const date = createdAt
     ? new Date(createdAt).toLocaleTimeString("en-US", {
@@ -41,20 +39,19 @@ export default function Message({
   // TODO: ${alignment} ${classes} - gives undefined undefined - fix
   // TODO:   text-overflow: ellipsis (maybe);
 
-  const animationProps = shouldAnimate
-    ? {
-        initial: animations[animationType]?.initial,
-        animate: animations[animationType]?.animate,
-        exit: animations[animationType]?.exit,
-        transition: animations[animationType]?.transition,
-        layout: true,
-      }
-    : {};
+  const animationProps = {
+    initial: animations[animationType]?.initial,
+    animate: animations[animationType]?.animate,
+    exit: animations[animationType]?.exit,
+    transition: animations[animationType]?.transition,
+    layout: true,
+  };
+
   const showAvatarAndUsername = prevMessageSender != username;
-  const Wrapper = shouldAnimate ? motion.li : "li";
+
   return (
     <PopupTrigger popup={popup}>
-      <Wrapper
+      <motion.li
         // TODO:CSS move this margin up
         className="flex m-2 p-4 bg-gray-200 items-start justify-center"
         // layout
@@ -65,7 +62,6 @@ export default function Message({
             showOnlyAvatars={showOnlyAvatars}
             username={username}
             avatarUrl={avatarUrl}
-            shouldAnimate={shouldAnimate}
             animationType={animationType}
           />
         )}
@@ -86,7 +82,7 @@ export default function Message({
             <p style={style}>{content}</p>
           </div>
         )}
-      </Wrapper>
+      </motion.li>
     </PopupTrigger>
   );
 }
