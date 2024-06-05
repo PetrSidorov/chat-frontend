@@ -61,6 +61,10 @@ export default function ActiveConvo() {
   }, [activeConvoId]);
 
   useEffect(() => {
+    // TODO: #ask-artem not really ask just interisting case
+    socket.on("msg:return", () =>
+      queueMicrotask(() => () => endOfMessagesRef.current?.scrollIntoView())
+    );
     endOfMessagesRef.current?.scrollIntoView();
   }, [activeConvoId]);
 

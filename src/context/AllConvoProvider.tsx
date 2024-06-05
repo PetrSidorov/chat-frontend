@@ -124,10 +124,10 @@ function convoReducer(state: StateType, action: ActionType): StateType {
       };
     }
     case "activeConvoSwitch": {
-      return { ...state, activeConvoId: action.data.convoId };
+      const { convoId: activeConvoId, animation } = action.data;
+      return { ...state, activeConvoId, animation };
     }
     case "deleteMessage": {
-      console.log("ola");
       const {
         convoId,
         uuid: messageToDelete,
@@ -227,7 +227,7 @@ export default function ActiveConvoProvider({
     });
 
     socket.on("msg:edit-return", ({ message: messageEdited, convoId }) => {
-      handlemesageEdit({ messageEdited, convoId });
+      handleMesageEdit({ messageEdited, convoId });
     });
 
     socket.on("disconnect", () => setIsConnected(false));
@@ -256,7 +256,7 @@ export default function ActiveConvoProvider({
     };
   }, [state.activeConvoId]);
 
-  const handlemesageEdit = ({
+  const handleMesageEdit = ({
     messageEdited,
     convoId,
   }: {
@@ -299,7 +299,6 @@ export default function ActiveConvoProvider({
 
   const handleActiveConvoId = (id: string) => {
     if (state.activeConvoId === id) return;
-
     dispatch({
       type: "activeConvoSwitch",
       data: {
@@ -327,7 +326,6 @@ export default function ActiveConvoProvider({
     // TODO: #ask-artem should i even do that?
     // this check really seems like something 'just in case'
     if (!state.convos?.[convoId]) return;
-    console.log();
     dispatch({
       type: "deleteMessage",
       data: {
@@ -388,7 +386,7 @@ export default function ActiveConvoProvider({
   function setAnimationType() {}
 
   useEffect(() => {
-    console.log("convos changed ", state);
+    console.log("convos changed in provider", state);
   }, [state]);
 
   const getParticipantOnlineStatus = (convoId: string, userId: string) => {
