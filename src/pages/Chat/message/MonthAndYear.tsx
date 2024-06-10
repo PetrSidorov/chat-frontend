@@ -2,14 +2,11 @@ import { motion } from "framer-motion";
 import { animations } from "../../../utils/animations";
 import { useContext } from "react";
 import { AllConvoContext } from "@/context/AllConvoProvider";
-
-export default function MonthAndYear({
-  createdAt,
-  animationType = "enter",
-}: {
-  createdAt: string;
-  animationType?: string;
-}) {
+// TODO: move animation type up,
+// there's no need to get it in message and in this component
+export default function MonthAndYear({ createdAt }: { createdAt: string }) {
+  const { handleRemoveMessage, animationType } =
+    useContext(AllConvoContext).convoContext;
   const createdAtDate = new Date(createdAt);
   const isSameYear = createdAtDate.getFullYear() === new Date().getFullYear();
   const dateString = createdAtDate.toLocaleString("en-US", {
@@ -22,7 +19,6 @@ export default function MonthAndYear({
     animate: animations[animationType]?.animate,
     exit: animations[animationType]?.exit,
     transition: animations[animationType]?.transition,
-    layout: true,
   };
 
   // TODO:CSS move this margin up

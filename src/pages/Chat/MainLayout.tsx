@@ -19,10 +19,6 @@ export default function ChatMain() {
 
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
 
-  useEffect(() => {
-    console.log("activeConvoId ", activeConvoId);
-  }, [activeConvoId]);
-
   return (
     <>
       {!user ? (

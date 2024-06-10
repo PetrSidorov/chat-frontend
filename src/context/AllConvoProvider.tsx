@@ -38,14 +38,12 @@ type ActionType =
       data: {
         message: TMessage;
         convoId: string;
-        animation: AnimationType;
       };
     }
   | {
       type: "activeConvoSwitch";
       data: {
         convoId: string;
-        animation: AnimationType;
       };
     }
   | {
@@ -53,7 +51,6 @@ type ActionType =
       data: {
         convoId: string;
         uuid: string;
-        animation: AnimationType;
       };
     }
   | {
@@ -61,7 +58,6 @@ type ActionType =
       data: {
         convoId: string;
         message: TMessage;
-        animation: AnimationType;
       };
     }
   | {
@@ -81,6 +77,12 @@ type ActionType =
       data: {
         newMessages: TMessage[];
         id: string;
+      };
+    }
+  | {
+      type: "setAnimation";
+      data: {
+        animation: AnimationType;
       };
     };
 
@@ -108,32 +110,29 @@ function convoReducer(state: StateType, action: ActionType): StateType {
       return {
         ...state,
         convos: updatedConvos,
+        animation: "disableAnimation",
       };
     }
     case "newMessage": {
-      const { message, convoId, animation } = action.data;
+      const { message, convoId } = action.data;
       const updatedConvos = { ...state.convos };
       updatedConvos[convoId].messages = [
         ...(updatedConvos[convoId].messages || []),
         message,
       ];
+
       return {
         ...state,
-        animation,
         convos: updatedConvos,
+        animation: "enter",
       };
     }
     case "activeConvoSwitch": {
-      const { convoId: activeConvoId, animation } = action.data;
-      return { ...state, activeConvoId, animation };
+      const { convoId: activeConvoId } = action.data;
+      return { ...state, activeConvoId, animation: "disableAnimation" };
     }
     case "deleteMessage": {
-      const {
-        convoId,
-        uuid: messageToDelete,
-
-        animation,
-      } = action.data;
+      const { convoId, uuid: messageToDelete } = action.data;
       const updatedConvos = { ...state.convos };
       const updatedMessages = updatedConvos[convoId].messages.filter(
         ({ uuid }: { uuid: string }) => uuid !== messageToDelete
@@ -143,7 +142,7 @@ function convoReducer(state: StateType, action: ActionType): StateType {
       return {
         ...state,
         convos: updatedConvos,
-        animation,
+        animation: "remove",
       };
     }
     case "pushNewMessageToConvo": {
@@ -190,6 +189,9 @@ function convoReducer(state: StateType, action: ActionType): StateType {
       }
       return { ...state, convos: updatedConvos };
     }
+    case "setAnimation": {
+      return { ...state, animation: action.data.animation };
+    }
     default: {
       throw new Error(
         `Unexpected action ${JSON.stringify(action)} used in convo reducer`
@@ -205,7 +207,7 @@ export default function ActiveConvoProvider({
 }) {
   const [state, dispatch] = useReducer(convoReducer, {
     convos: null,
-    animation: "enter",
+    animation: "disableAnimation",
     activeConvoId: "",
   });
 
@@ -286,26 +288,42 @@ export default function ActiveConvoProvider({
     convoId: string;
   }) => {
     // TODO: #ask-artem, one more 'just in case', do i need this?
+    console.log("provider convo runs");
     if (!state.convos?.[convoId]) return;
-    dispatch({
-      type: "newMessage",
-      data: {
-        animation: "enter",
-        convoId,
-        message,
-      },
-    });
+    // dispatch({
+    //   type: "setAnimation",
+    //   data: {
+    //     animation: "enter",
+    //   },
+    // });
+    Promise.resolve().then(() =>
+      dispatch({
+        type: "newMessage",
+        data: {
+          convoId,
+          message,
+        },
+      })
+    );
   };
 
   const handleActiveConvoId = (id: string) => {
     if (state.activeConvoId === id) return;
-    dispatch({
-      type: "activeConvoSwitch",
-      data: {
-        convoId: id,
-        animation: "disableAnimation",
-      },
-    });
+    // dispatch({
+    //   type: "setAnimation",
+    //   data: {
+    //     animation: "disableAnimation",
+    //   },
+    // });
+
+    Promise.resolve().then(() =>
+      dispatch({
+        type: "activeConvoSwitch",
+        data: {
+          convoId: id,
+        },
+      })
+    );
   };
 
   //  TODO: (this shouldn't be called handleRemoveMessage in the first place)
@@ -326,26 +344,39 @@ export default function ActiveConvoProvider({
     // TODO: #ask-artem should i even do that?
     // this check really seems like something 'just in case'
     if (!state.convos?.[convoId]) return;
-    dispatch({
-      type: "deleteMessage",
-      data: {
-        animation: "remove",
-        convoId,
-        uuid,
-      },
-    });
+    // dispatch({
+    //   type: "setAnimation",
+    //   data: {
+    //     animation: "remove",
+    //   },
+    // });
+    Promise.resolve().then(() =>
+      dispatch({
+        type: "deleteMessage",
+        data: {
+          convoId,
+          uuid,
+        },
+      })
+    );
   };
 
   const pushNewMessageToConvo = (convoId: string, message: TMessage) => {
-    dispatch({
-      type: "pushNewMessageToConvo",
-      data: {
-        convoId,
-        message,
-
-        animation: "enter",
-      },
-    });
+    // dispatch({
+    //   type: "setAnimation",
+    //   data: {
+    //     animation: "enter",
+    //   },
+    // });
+    Promise.resolve().then(() =>
+      dispatch({
+        type: "pushNewMessageToConvo",
+        data: {
+          convoId,
+          message,
+        },
+      })
+    );
   };
 
   const addNewConvo = (newConvo: any) => {

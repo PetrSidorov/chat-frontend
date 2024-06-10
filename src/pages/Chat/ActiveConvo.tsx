@@ -24,10 +24,11 @@ export default function ActiveConvo() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { mobileView } = useContext(ResizeContext);
   const [blockOffset, setBlockOffset] = useState(false);
-
   const participantOnlineStatus = onlineStatuses[activeConvoId]?.includes(
     convos[activeConvoId]?.participants[0].id
   );
+  const lastMessageIndex = convos[activeConvoId].messages.length - 1;
+  const lastMessage = convos[activeConvoId].messages[lastMessageIndex];
 
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
@@ -44,7 +45,7 @@ export default function ActiveConvo() {
     setBlockOffset(true);
   }
 
-  const [observeRef, inView] = useInView({
+  const [observeRef] = useInView({
     onChange: emitGettingOffset,
   });
 
@@ -61,17 +62,8 @@ export default function ActiveConvo() {
   }, [activeConvoId]);
 
   useEffect(() => {
-    // TODO: #ask-artem not really ask just interisting case
-    // queueMicrotask is needed here to preserve the order of things
-    // in the way they need to happen
-    // In AllConvoProvider, the handler adds a new message, so we need to wait for it to
-    // execute before scrolling
-
-    socket.on("msg:return", () =>
-      queueMicrotask(() => () => endOfMessagesRef.current?.scrollIntoView())
-    );
     endOfMessagesRef.current?.scrollIntoView();
-  }, [activeConvoId]);
+  }, [activeConvoId, lastMessage.uuid]);
 
   if (!convos[activeConvoId]) {
     return (
