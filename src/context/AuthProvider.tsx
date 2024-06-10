@@ -30,7 +30,7 @@ export const AuthContext = createContext<TAuthContext>(initialData);
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<TUser | null>(null);
   const [status, setStatus] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // server nor functioning
@@ -38,19 +38,16 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     // permission denied
 
     const getUser = async () => {
-      setLoading(true);
       if (user) return;
+      setLoading(true);
       try {
-        // TODO: api/me naming
-        const response = await axios.get(
-          "http://localhost:3007/api/user-data",
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await axios.get("http://localhost:3007/api/me", {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log("response data ", response.data);
         setUser(response.data);
         setStatus(response.status);
         // TODO:TYPESCRIPT ask Artem
@@ -65,9 +62,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           // ignore error
         }
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     getUser();
@@ -75,7 +72,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(() => {
     return { user, setUser, setStatus, status, loading };
-  }, [user, status, loading]);
+  }, [user, setUser, setStatus, status, loading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

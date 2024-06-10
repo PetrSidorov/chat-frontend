@@ -17,7 +17,7 @@ export default function FriendsTab() {
   const [loading, setLoading] = useState(false);
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
   const [, handleActiveConvoId] = useContext(AllConvoContext).activeConvoId;
-  const { convos, unshiftMessagesToConvo, addNewConvo, joinRoom } =
+  const { convos, unshiftMessagesToConvo, addNewConvo } =
     useContext(AllConvoContext).convoContext;
   // const emitNewConvo = useNewConvo();
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function FriendsTab() {
 
     const newConvoId = Object.keys(data.convo)[0];
     addNewConvo(data.convo);
-    joinRoom(newConvoId);
+    socket.emit("room:join", newConvoId);
     handleActiveConvoId(newConvoId);
     setFoundUsers((currUsers) => {
       const updatedUsers = currUsers.map((user) => {

@@ -18,18 +18,17 @@ export default function ActiveConvo() {
     unshiftMessagesToConvo,
     handleRemoveMessage,
     onlineStatuses,
-    newMessage,
-    setNewMessage,
   } = useContext(AllConvoContext).convoContext;
   const userOnlineStatus = useOnlineStatus();
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { mobileView } = useContext(ResizeContext);
   const [blockOffset, setBlockOffset] = useState(false);
-
   const participantOnlineStatus = onlineStatuses[activeConvoId]?.includes(
     convos[activeConvoId]?.participants[0].id
   );
+  const lastMessageIndex = convos[activeConvoId].messages.length - 1;
+  const lastMessage = convos[activeConvoId].messages[lastMessageIndex];
 
   function emitGettingOffset(currentlyInView: boolean) {
     if (!currentlyInView) return;
@@ -46,7 +45,7 @@ export default function ActiveConvo() {
     setBlockOffset(true);
   }
 
-  const [observeRef, inView] = useInView({
+  const [observeRef] = useInView({
     onChange: emitGettingOffset,
   });
 
@@ -64,12 +63,7 @@ export default function ActiveConvo() {
 
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView();
-    setNewMessage(false);
-  }, [activeConvoId, newMessage]);
-
-  useEffect(() => {
-    console.log("newMessage ", newMessage);
-  }, [newMessage]);
+  }, [activeConvoId, lastMessage.uuid]);
 
   if (!convos[activeConvoId]) {
     return (

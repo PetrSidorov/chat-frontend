@@ -14,7 +14,6 @@ export default function ConvosList() {
     unshiftMessagesToConvo,
     initConvo,
     setAnimationType,
-    setShouldAnimate,
     onlineStatuses,
   } = useContext(AllConvoContext)?.convoContext;
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
@@ -74,7 +73,6 @@ export default function ConvosList() {
           key={id}
           onClick={() => {
             setActiveConvoId(id);
-            setShouldAnimate(false);
             setAnimationType("");
           }}
         >
