@@ -15,12 +15,15 @@ export default function AuthGuard() {
   }
 
   if (!user || status == 401) {
+    console.log("!user || status == 401)");
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if ((user && pathname == "/login") || pathname == "/register") {
+    console.log('(user && pathname == "/login") || pathname == "/register"');
     return <Navigate to="/messages" state={{ from: location }} replace />;
   }
 
+  console.log(Outlet);
   return <Outlet />;
 }

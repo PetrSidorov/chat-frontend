@@ -42,15 +42,12 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       if (user) return;
       try {
         // TODO: api/me naming
-        const response = await axios.get(
-          "http://localhost:3007/api/user-data",
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await axios.get("http://localhost:3007/api/me", {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         setUser(response.data);
         setStatus(response.status);
         // TODO:TYPESCRIPT ask Artem
