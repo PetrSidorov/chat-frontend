@@ -13,22 +13,23 @@ const style: TCSSclampLines = {
 };
 
 export default function ConvoPreview({
-  messages,
-  online,
+  message,
+  // online,
   participants,
   id,
 }: {
-  messages: TMessage[];
-  online: boolean;
+  message: TMessage;
+  // online: boolean;
   id: string;
   participants: TUser[];
 }) {
   // console.log("messages ", messages);
   // console.log("online ", online);
   // console.log("participants ", participants);
-  const notEmptyConvo = messages && messages.length > 0;
+  // const notEmptyConvo = messages && messages.length > 0;
   const { showOnlyAvatars } = useContext(ResizeContext);
-
+  console.log("participants ", participants);
+  // const group =
   const userNameToShow =
     Object.keys(participants)?.length > 1
       ? Object.values(participants)
@@ -43,10 +44,10 @@ export default function ConvoPreview({
 
   let trimmedContent = "";
   let createdAt = "";
-  let content = "";
+  // let content = "";
 
-  if (notEmptyConvo) {
-    ({ content, createdAt } = messages[messages.length - 1]);
+  if (message) {
+    const { content, createdAt } = message;
 
     if (content.length > 30) {
       trimmedContent = content.slice(0, 100) + "...";
@@ -58,18 +59,18 @@ export default function ConvoPreview({
   return (
     <div>
       <div className="relative">
-        <IsOnline className="absolute top-2 right-4" online={online} />
+        <IsOnline className="absolute top-2 right-4" online={true} />
       </div>
-
+      {/* TODO: what's hapenning with keys down there? */}
       <Message
-        key={notEmptyConvo ? createdAt : ""}
+        key={message ? createdAt : ""}
         content={
-          notEmptyConvo
+          message
             ? trimmedContent
             : "This convo is empty, start messaging now =)"
         }
         popup={<ConvoContextMenu id={id} />}
-        createdAt={notEmptyConvo ? createdAt : ""}
+        createdAt={message ? createdAt : ""}
         username={userNameToShow}
         avatarUrl={avatarUrl}
         showOnlyAvatars={showOnlyAvatars}

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { AllConvoContext } from "../../context/AllConvoProvider";
 import { socket } from "../../utils/socket";
@@ -8,11 +8,13 @@ import useOnlineStatus from "../../hooks/useNetworkStatus";
 import IsOnline from "./sidebar/convos/IsOnline";
 import { ChevronLeft } from "lucide-react";
 import { ResizeContext } from "../../context/ResizeProvider";
+import useGetUser from "@/hooks/react-query/useGetUser";
 // TODO:active convo - error when convos are deleted (sometimes)
 export default function ActiveConvo() {
   const [activeConvoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
-  const { user } = useContext(AuthContext);
+  // const { user } = useContext(AuthContext);
+  const { user } = useGetUser();
   const {
     convos,
     unshiftMessagesToConvo,

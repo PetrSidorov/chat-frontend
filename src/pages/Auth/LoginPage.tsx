@@ -40,6 +40,7 @@ export default function LoginPage() {
       password: "",
     },
   });
+  //
   const { setUser, user, setStatus } = useContext(AuthContext);
 
   // useEffect(() => {
