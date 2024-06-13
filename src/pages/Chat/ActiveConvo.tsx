@@ -8,7 +8,7 @@ import useOnlineStatus from "../../hooks/useNetworkStatus";
 import { socket } from "../../utils/socket";
 import MessageList from "./MessageList";
 import IsOnline from "./sidebar/convos/IsOnline";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { generateInfiniteMessagesConfig } from "@/hooks/react-query/config";
 import FullScreenLoading from "@/components/FullScreenLoading";
 import getMessages from "@/hooks/react-query/getMessages";
@@ -20,6 +20,7 @@ import React from "react";
 import { flattenMessages } from "@/utils/flattenMessages";
 // TODO:active convo - error when convos are deleted (sometimes)
 export default function ActiveConvo() {
+  const queryClient = useQueryClient();
   const [convoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
 
@@ -37,6 +38,7 @@ export default function ActiveConvo() {
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { mobileView } = useContext(ResizeContext);
+
   // const [blockOffset, setBlockOffset] = useState(false);
   // const participantOnlineStatus = onlineStatuses[activeConvoId]?.includes(
   //   convos[activeConvoId]?.participants[0].id
@@ -63,6 +65,8 @@ export default function ActiveConvo() {
     isLoading,
     isError,
     hasNextPage,
+    hasPreviousPage,
+    isFetchingPreviousPage,
     isFetchingNextPage,
     status,
     fetchNextPage,
@@ -73,7 +77,9 @@ export default function ActiveConvo() {
     queryFn: ({ pageParam = 1 }) => getMessages(pageParam, id),
     initialPageParam: 1,
     enabled: !!id,
+
     getNextPageParam: ({ currentPage, totalPages }) => {
+      console.log("currentPage totalPages ", currentPage, totalPages);
       const nextPage = currentPage + 1;
       return nextPage <= totalPages ? nextPage : undefined;
     },
@@ -81,16 +87,26 @@ export default function ActiveConvo() {
       const previousPage = currentPage - 1;
       return previousPage > 0 ? previousPage : undefined;
     },
+    // select: (data) => {
+    //   // Reverse the order of pages to show them correctly
+    //   return {
+    //     pages: data.pages.reverse(),
+    //     pageParams: data.pageParams.reverse(),
+    //   };
+    // },
   });
-
+  const messages = flattenMessages(data?.pages);
   const { ref } = useInView({
     threshold: 0,
     root: rootRef.current,
     // rootMargin: "40px",
     onChange: (inView) => {
       if (inView && hasNextPage && !isFetchingNextPage) {
-        fetchPreviousPage();
+        fetchNextPage();
       }
+      // if (inView && hasPreviousPage && !isFetchingPreviousPage) {
+      //   fetchPreviousPage();
+      // }
     },
   });
 
@@ -122,7 +138,7 @@ export default function ActiveConvo() {
 
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView();
-  }, [data?.pages]);
+  }, [isSuccess]);
 
   if (isLoading) {
     return (
@@ -137,7 +153,7 @@ export default function ActiveConvo() {
   if (isFetching) {
     return <div>Fetching data in progress 😔</div>;
   }
-  const messages = flattenMessages(data?.pages);
+
   return (
     <div
       ref={scrollContainerRef}
