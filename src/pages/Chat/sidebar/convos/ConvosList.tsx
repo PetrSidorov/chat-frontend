@@ -7,10 +7,12 @@ import { AuthContext } from "../../../../context/AuthProvider";
 import ConvoPreview from "./ConvoPreview";
 import { socket } from "@/utils/socket";
 import FullScreenLoading from "@/components/FullScreenLoading";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import getConvos from "@/utils/getConvos";
+import getConvo from "@/hooks/react-query/getConvo";
 
 export default function ConvosList() {
+  const queryClient = useQueryClient();
   // const { convos, initConvo, setAnimationType, onlineStatuses } =
   //   useContext(AllConvoContext)?.convoContext;
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
@@ -112,9 +114,10 @@ export default function ConvosList() {
   //   });
 
   // if (!loaded) return <FullScreenLoading />;
-
+  // npm i @tanstack/react-query-devtools@4
+  // TODO: different states should be managed better that this
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <FullScreenLoading />;
   }
 
   if (isError) {
@@ -125,36 +128,63 @@ export default function ConvosList() {
     return <div>Fetching data in progress 😔</div>;
   }
 
-  // TOSO: typescript fix
-  console.log();
+  // TODO: typescript fix
+
   return (
     <>
-      {convos.map((convo: any) => {
-        return (
-          <ConvoPreview
-            participants={convo.participants}
-            message={convo.messages[0]}
-            // online={participantOnlineStatus}
-            id={convo.id}
-          />
-        );
-      })}
+      {convos ? (
+        <ul className="font-semibold">
+          {convos.map((convo: any) => {
+            return (
+              <div
+                className="h-auto max-h-[132px] overflow-hidden w-full "
+                key={convo.id}
+                onClick={() => {
+                  setActiveConvoId(convo.id);
+                  // setAnimationType("");
+                }}
+              >
+                <ConvoPreview
+                  participants={convo.participants}
+                  message={convo.messages[0]}
+                  id={convo.id}
+                  onMouseEnter={() => {
+                    queryClient.prefetchQuery({
+                      queryKey: ["messages"],
+                      queryFn: () => getConvo(1),
+                      staleTime: 5000,
+                    });
+                  }}
+                  // online={participantOnlineStatus}
+                  // key={convo.id}
+                />
+              </div>
+            );
+          })}
+        </ul>
+      ) : (
+        <div className="text-center">
+          <h3 className="mt-2 text-2xl font-semibold text-white-900">
+            You have no messages yet
+          </h3>
+        </div>
+      )}
     </>
   );
-
-  // return (
-  //   <>
-  //     {listOfConvoPreviews && listOfConvoPreviews.length > 0 ? (
-  //       <>
-  //         <ul className="font-semibold">{listOfConvoPreviews}</ul>
-  //       </>
-  //     ) : (
-  //       <div className="text-center">
-  //         <h3 className="mt-2 text-2xl font-semibold text-white-900">
-  //           You have no messages yet
-  //         </h3>
-  //       </div>
-  //     )}
-  //   </>
-  // );
 }
+
+// return (
+//   <>
+//     {listOfConvoPreviews && listOfConvoPreviews.length > 0 ? (
+//       <>
+//         <ul className="font-semibold">{listOfConvoPreviews}</ul>
+//       </>
+//     ) : (
+//       <div className="text-center">
+//         <h3 className="mt-2 text-2xl font-semibold text-white-900">
+//           You have no messages yet
+//         </h3>
+//       </div>
+//     )}
+//   </>
+// );

@@ -288,8 +288,8 @@ export default function ActiveConvoProvider({
     convoId: string;
   }) => {
     // TODO: #ask-artem, one more 'just in case', do i need this?
-    console.log("provider convo runs");
     if (!state.convos?.[convoId]) return;
+
     // dispatch({
     //   type: "setAnimation",
     //   data: {

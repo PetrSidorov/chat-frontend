@@ -15,6 +15,7 @@ const style: TCSSclampLines = {
 export default function ConvoPreview({
   message,
   // online,
+  onMouseEnter,
   participants,
   id,
 }: {
@@ -22,6 +23,7 @@ export default function ConvoPreview({
   // online: boolean;
   id: string;
   participants: TUser[];
+  onMouseEnter: () => void;
 }) {
   // console.log("messages ", messages);
   // console.log("online ", online);
@@ -57,13 +59,14 @@ export default function ConvoPreview({
   }
 
   return (
-    <div>
+    <li>
       <div className="relative">
         <IsOnline className="absolute top-2 right-4" online={true} />
       </div>
       {/* TODO: what's hapenning with keys down there? */}
       <Message
-        key={message ? createdAt : ""}
+        onMouseEnter={onMouseEnter}
+        // key={id}
         content={
           message
             ? trimmedContent
@@ -76,6 +79,6 @@ export default function ConvoPreview({
         showOnlyAvatars={showOnlyAvatars}
         style={style}
       />
-    </div>
+    </li>
   );
 }

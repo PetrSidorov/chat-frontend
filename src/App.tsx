@@ -1,5 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 import AuthGuard from "./components/AuthGuard";
 import ActiveConvoProvider from "./context/AllConvoProvider";
 import AuthProvider from "./context/AuthProvider";
@@ -18,6 +20,7 @@ function App() {
   // if it makes sense of course
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools />
       <BrowserRouter>
         <AuthProvider>
           <ActiveConvoProvider>

@@ -3,7 +3,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import FullScreenLoading from "./FullScreenLoading";
 
 export default function AuthGuard() {
-  const { user, isError, isFetching } = useGetUser();
+  const { user, isError, isFetching, error } = useGetUser();
   const location = useLocation();
   const { pathname } = location;
 
@@ -19,6 +19,5 @@ export default function AuthGuard() {
     return <Navigate to="/messages" state={{ from: location }} replace />;
   }
 
-  console.log(Outlet);
   return <Outlet />;
 }

@@ -8,6 +8,7 @@ interface ConvoContextMenuProps {
 
 export default function ConvoContextMenu({ id }: ConvoContextMenuProps) {
   const { removeConvo: removeConvoLocally } = useContext(AllConvoContext);
+  console.log("removeConvo ", removeConvo);
   const [activeConvoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
 

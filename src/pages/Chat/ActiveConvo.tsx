@@ -14,6 +14,9 @@ export default function ActiveConvo() {
   const [activeConvoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
   // const { user } = useContext(AuthContext);
+  //   convo.id  6b391c4a-44db-428e-aeb2-61f2e5e01113
+  // ConvosList.tsx:136 convo.id  7f77c47c-92af-4702-9c6e-d66f14e70860
+
   const { user } = useGetUser();
   const {
     convos,

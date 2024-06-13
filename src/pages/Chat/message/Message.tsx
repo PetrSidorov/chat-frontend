@@ -16,6 +16,7 @@ export default function Message({
   popup,
   style,
   prevMessageSender = "",
+  onMouseEnter,
 }: {
   content: string;
   createdAt: string;
@@ -25,6 +26,7 @@ export default function Message({
   style?: TCSSclampLines;
   prevMessageSender?: string;
   popup: JSX.Element;
+  onMouseEnter: () => void;
 }) {
   const { handleRemoveMessage, animationType } =
     useContext(AllConvoContext).convoContext;
@@ -56,6 +58,7 @@ export default function Message({
         className="flex m-2 p-4 bg-gray-200 items-start justify-center"
         // layout
         {...animationProps}
+        onMouseEnter={onMouseEnter}
       >
         {showAvatarAndUsername && (
           <Avatar
