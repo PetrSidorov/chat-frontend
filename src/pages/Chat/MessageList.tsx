@@ -1,3 +1,4 @@
+// TODO: remove me
 import { AnimatePresence } from "framer-motion";
 import React, { forwardRef, useContext } from "react";
 import { ResizeContext } from "../../context/ResizeProvider";
@@ -15,11 +16,17 @@ const MessageList = forwardRef<
     currentUser: { username: string; avatarUrl: string | null; id: string };
     handleRemoveMessage: Function;
     activeConvoId: string;
-    participants: any;
+    // participants: any;
   }
 >(
   (
-    { messages, currentUser, handleRemoveMessage, activeConvoId, participants },
+    {
+      messages,
+      currentUser,
+      handleRemoveMessage,
+      activeConvoId,
+      // participants
+    },
     ref
   ) => {
     const { fullWidthMessagesInActiveConvo } = useContext(ResizeContext);
@@ -28,9 +35,10 @@ const MessageList = forwardRef<
       ({ content, createdAt, sender, uuid }, i: number, messages) => {
         const yours = sender.id == currentUser.id;
 
-        const avatarUrl = yours
-          ? currentUser.avatarUrl
-          : participants[0]?.avatarUrl || null;
+        // const avatarUrl = yours
+        //   ? currentUser.avatarUrl
+        //   : participants[0]?.avatarUrl || null;
+        const avatarUrl = currentUser.avatarUrl;
 
         const alignment = yours ? "self-start" : "self-end";
 

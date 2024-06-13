@@ -1,81 +1,143 @@
+import useGetUser from "@/hooks/react-query/useGetUser";
+import { ChevronLeft } from "lucide-react";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { AllConvoContext } from "../../context/AllConvoProvider";
+import { ResizeContext } from "../../context/ResizeProvider";
+import useOnlineStatus from "../../hooks/useNetworkStatus";
 import { socket } from "../../utils/socket";
 import MessageList from "./MessageList";
-import { AuthContext } from "../../context/AuthProvider";
-import useOnlineStatus from "../../hooks/useNetworkStatus";
 import IsOnline from "./sidebar/convos/IsOnline";
-import { ChevronLeft } from "lucide-react";
-import { ResizeContext } from "../../context/ResizeProvider";
-import useGetUser from "@/hooks/react-query/useGetUser";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { generateInfiniteMessagesConfig } from "@/hooks/react-query/config";
+import FullScreenLoading from "@/components/FullScreenLoading";
+import getMessages from "@/hooks/react-query/getMessages";
+import Message from "./message/Message";
+import MessageContextMenu from "./sidebar/convos/MessageContextMenu";
+import MonthAndYear from "./message/MonthAndYear";
+import isSameDayAsPreviousMessage from "@/utils/isSameDayAsPreviousMessage";
+import React from "react";
+import { flattenMessages } from "@/utils/flattenMessages";
 // TODO:active convo - error when convos are deleted (sometimes)
 export default function ActiveConvo() {
-  const [activeConvoId, handleActiveConvoId] =
+  const [convoId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
-  // const { user } = useContext(AuthContext);
-  //   convo.id  6b391c4a-44db-428e-aeb2-61f2e5e01113
-  // ConvosList.tsx:136 convo.id  7f77c47c-92af-4702-9c6e-d66f14e70860
 
   const { user } = useGetUser();
-  const {
-    convos,
-    unshiftMessagesToConvo,
-    handleRemoveMessage,
-    onlineStatuses,
-  } = useContext(AllConvoContext).convoContext;
-  const userOnlineStatus = useOnlineStatus();
+  const { fullWidthMessagesInActiveConvo } = useContext(ResizeContext);
+  const rootRef = React.useRef(null);
+
+  // const {
+  //   convos,
+  //   unshiftMessagesToConvo,
+  //   handleRemoveMessage,
+  //   onlineStatuses,
+  // } = useContext(AllConvoContext).convoContext;
+  // const userOnlineStatus = useOnlineStatus();
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { mobileView } = useContext(ResizeContext);
-  const [blockOffset, setBlockOffset] = useState(false);
-  const participantOnlineStatus = onlineStatuses[activeConvoId]?.includes(
-    convos[activeConvoId]?.participants[0].id
-  );
-  const lastMessageIndex = convos[activeConvoId].messages.length - 1;
-  const lastMessage = convos[activeConvoId].messages[lastMessageIndex];
+  // const [blockOffset, setBlockOffset] = useState(false);
+  // const participantOnlineStatus = onlineStatuses[activeConvoId]?.includes(
+  //   convos[activeConvoId]?.participants[0].id
+  // );
+  // const lastMessageIndex = convos[activeConvoId].messages.length - 1;
+  // const lastMessage = convos[activeConvoId].messages[lastMessageIndex];
 
-  function emitGettingOffset(currentlyInView: boolean) {
-    if (!currentlyInView) return;
+  // TODO: this should be memoized on another level
 
-    socket.emit("msg:get-offset", {
-      // currMessagesLength: convos?.[activeConvoId]?.messages.length,
-      uuid: convos?.[activeConvoId]?.messages[0].uuid,
-      // timestamp:
-      //   convos?.[activeConvoId]?.messages[
-      //     convos?.[activeConvoId]?.messages.length - 1
-      //   ],
-      convoId: activeConvoId,
-    });
-    setBlockOffset(true);
-  }
+  const id = useMemo(() => convoId, [convoId]);
 
-  const [observeRef] = useInView({
-    onChange: emitGettingOffset,
+  // const { ref } = useInView({
+  //   threshold: 0,
+  //   root: rootRef.current,
+  //   rootMargin: "40px",
+  //   onChange: (inView) => {
+  //     fetchNextPage();
+  //   },
+  // });
+
+  const {
+    data,
+    isFetching,
+    isLoading,
+    isError,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    fetchNextPage,
+    fetchPreviousPage,
+    isSuccess,
+  } = useInfiniteQuery({
+    queryKey: ["messages", { id }],
+    queryFn: ({ pageParam = 1 }) => getMessages(pageParam, id),
+    initialPageParam: 1,
+    enabled: !!id,
+    getNextPageParam: ({ currentPage, totalPages }) => {
+      const nextPage = currentPage + 1;
+      return nextPage <= totalPages ? nextPage : undefined;
+    },
+    getPreviousPageParam: ({ currentPage }) => {
+      const previousPage = currentPage - 1;
+      return previousPage > 0 ? previousPage : undefined;
+    },
   });
 
-  useEffect(() => {
-    if (!scrollContainerRef.current) return;
-    if (blockOffset) return;
+  const { ref } = useInView({
+    threshold: 0,
+    root: rootRef.current,
+    // rootMargin: "40px",
+    onChange: (inView) => {
+      if (inView && hasNextPage && !isFetchingNextPage) {
+        fetchPreviousPage();
+      }
+    },
+  });
 
-    socket.on("msg:send-offset", (data) => {
-      if (!data || !scrollContainerRef.current || !activeConvoId) return;
+  // function emitGettingOffset(currentlyInView: boolean) {
+  //   if (!currentlyInView) return;
 
-      unshiftMessagesToConvo({ id: data.convoId, newMessages: data.messages });
-    });
-    setBlockOffset(false);
-  }, [activeConvoId]);
+  //   socket.emit("msg:get-offset", {
+  //     uuid: convos?.[activeConvoId]?.messages[0].uuid,
+  //     convoId: activeConvoId,
+  //   });
+  //   setBlockOffset(true);
+  // }
+
+  // const [observeRef] = useInView({
+  //   onChange: emitGettingOffset,
+  // });
+
+  // useEffect(() => {
+  //   if (!scrollContainerRef.current) return;
+  //   if (blockOffset) return;
+
+  //   socket.on("msg:send-offset", (data) => {
+  //     if (!data || !scrollContainerRef.current || !activeConvoId) return;
+
+  //     unshiftMessagesToConvo({ id: data.convoId, newMessages: data.messages });
+  //   });
+  //   setBlockOffset(false);
+  // }, [activeConvoId]);
 
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView();
-  }, [activeConvoId, lastMessage.uuid]);
+  }, [data?.pages]);
 
-  if (!convos[activeConvoId]) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-full">Loading...</div>
     );
   }
 
+  if (isError) {
+    return <div>Error fetching data 😔</div>;
+  }
+
+  if (isFetching) {
+    return <div>Fetching data in progress 😔</div>;
+  }
+  const messages = flattenMessages(data?.pages);
   return (
     <div
       ref={scrollContainerRef}
@@ -93,35 +155,72 @@ export default function ActiveConvo() {
 
         <div className="flex items-center justify-between flex-grow">
           <p className="text-white">
-            <span>{convos?.[activeConvoId].participants[0].username}</span> is{" "}
-            <span
+            {/* <span>{convos?.[activeConvoId].participants[0].username}</span> is{" "} */}
+            {/* <span
               className={`${
                 participantOnlineStatus ? "text-green-500" : "text-red-500"
               }`}
             >
               {participantOnlineStatus ? "online" : "offline"}
-            </span>
+            </span> */}
           </p>
-          <IsOnline online={participantOnlineStatus} />
+          {/* <IsOnline online={participantOnlineStatus} /> */}
         </div>
       </div>
-      {!userOnlineStatus && (
+      {/* {!userOnlineStatus && (
         <p className="text-center my-2">Waiting for network...</p>
-      )}
+      )} */}
 
       {user && Object.keys(user).length > 0 ? (
-        <MessageList
-          ref={observeRef}
-          messages={convos?.[activeConvoId]?.messages || []}
-          currentUser={{
-            username: user.username,
-            avatarUrl: user.avatarUrl,
-            id: user.id,
-          }}
-          activeConvoId={activeConvoId}
-          participants={convos?.[activeConvoId]?.participants}
-          handleRemoveMessage={handleRemoveMessage}
-        />
+        messages.map(
+          ({ content, createdAt, sender, uuid }, i: number, messages) => {
+            const yours = sender.id == user.id;
+
+            // const avatarUrl = yours
+            //   ? user.avatarUrl
+            //   : participants[0]?.avatarUrl || null;
+            const avatarUrl = user.avatarUrl;
+
+            const alignment = yours ? "self-start" : "self-end";
+
+            function handleRemoveMessage(uuid: any) {
+              throw new Error("Function not implemented.");
+            }
+
+            return (
+              <React.Fragment key={uuid}>
+                {i === 3 ? <div ref={ref} /> : null}
+                {/* {hasNextPage && i === 3 && <li ref={ref} />} */}
+                {!isSameDayAsPreviousMessage(
+                  createdAt,
+                  messages[i - 1]?.createdAt || ""
+                ) && <MonthAndYear createdAt={createdAt} />}
+                <div
+                  id={uuid}
+                  className={`${alignment} ${
+                    fullWidthMessagesInActiveConvo ? "w-full" : "w-[80%]"
+                  }`}
+                >
+                  <Message
+                    content={content}
+                    createdAt={createdAt}
+                    popup={
+                      <MessageContextMenu
+                        yours={yours}
+                        content={content}
+                        handleRemoveMessage={() => handleRemoveMessage(uuid)}
+                        uuid={uuid}
+                      />
+                    }
+                    username={sender.username}
+                    avatarUrl={avatarUrl}
+                    prevMessageSender={messages[i - 1]?.sender?.username || ""}
+                  />
+                </div>
+              </React.Fragment>
+            );
+          }
+        )
       ) : (
         <p className="text-center my-2">
           Start messaging by selecting a conversation

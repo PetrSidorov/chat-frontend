@@ -9,7 +9,12 @@ import { socket } from "@/utils/socket";
 import FullScreenLoading from "@/components/FullScreenLoading";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import getConvos from "@/utils/getConvos";
-import getConvo from "@/hooks/react-query/getConvo";
+import getMessages from "@/hooks/react-query/getMessages";
+import {
+  generateInfiniteMessagesConfig,
+  infiniteConvosConfig,
+} from "@/hooks/react-query/config";
+import { TConvo } from "@/types";
 
 export default function ConvosList() {
   const queryClient = useQueryClient();
@@ -30,21 +35,10 @@ export default function ConvosList() {
     isFetchingNextPage,
     status,
     fetchNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["convo"],
-    queryFn: ({ pageParam }) => getConvos(pageParam),
-    initialPageParam: 1,
-    getNextPageParam: ({ currentPage, totalPages }) => {
-      const nextPage = currentPage + 1;
-      if (nextPage >= totalPages) {
-        return undefined;
-      }
-      return nextPage;
-    },
-  });
+  } = useInfiniteQuery(infiniteConvosConfig);
 
-  // if (data) {
-  const convos = data?.pages[0].data.convos;
+  const convos = data?.pages[0].convos;
+
   //   console.log(convos);
   // }
 
@@ -134,7 +128,7 @@ export default function ConvosList() {
     <>
       {convos ? (
         <ul className="font-semibold">
-          {convos.map((convo: any) => {
+          {convos.map((convo: TConvo) => {
             return (
               <div
                 className="h-auto max-h-[132px] overflow-hidden w-full "
@@ -149,11 +143,9 @@ export default function ConvosList() {
                   message={convo.messages[0]}
                   id={convo.id}
                   onMouseEnter={() => {
-                    queryClient.prefetchQuery({
-                      queryKey: ["messages"],
-                      queryFn: () => getConvo(1),
-                      staleTime: 5000,
-                    });
+                    queryClient.prefetchQuery(
+                      generateInfiniteMessagesConfig(convo.id)
+                    );
                   }}
                   // online={participantOnlineStatus}
                   // key={convo.id}

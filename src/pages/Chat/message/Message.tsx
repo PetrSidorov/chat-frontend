@@ -53,11 +53,13 @@ export default function Message({
 
   return (
     <PopupTrigger popup={popup}>
-      <motion.li
+      {/* TODO: the div below was a motion.li, but due to structural changes it can't be no more */}
+      {/* i think it shouldn't have been a motio.li from the start, because dealing with animations will be easier now */}
+      <div
         // TODO:CSS move this margin up
         className="flex m-2 p-4 bg-gray-200 items-start justify-center"
         // layout
-        {...animationProps}
+        // {...animationProps}
         onMouseEnter={onMouseEnter}
       >
         {showAvatarAndUsername && (
@@ -85,7 +87,7 @@ export default function Message({
             <p style={style}>{content}</p>
           </div>
         )}
-      </motion.li>
+      </div>
     </PopupTrigger>
   );
 }

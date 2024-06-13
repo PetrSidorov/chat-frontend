@@ -30,7 +30,7 @@ export default function ConvoPreview({
   // console.log("participants ", participants);
   // const notEmptyConvo = messages && messages.length > 0;
   const { showOnlyAvatars } = useContext(ResizeContext);
-  console.log("participants ", participants);
+  // console.log("participants ", participants);
   // const group =
   const userNameToShow =
     Object.keys(participants)?.length > 1

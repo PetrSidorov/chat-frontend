@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import { SetStateAction, Dispatch } from "react";
 
 export type TLoginDataBaseResponse = {
@@ -45,9 +46,20 @@ export type TMessageForSending = TMessage & {
 };
 
 export type TConvo = {
+  id: string;
   messages: TMessage[];
-  // participants: TUser[];
+  participants: TUser[];
 };
+
+export type PaginatedResponse<T> = {
+  data: T;
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+};
+
+export type GetConvosResponse = AxiosResponse<PaginatedResponse<TConvo[]>>;
+export type GetMessagesResponse = PaginatedResponse<TMessage[]>;
 
 export type TOnlineStatuses = {
   [convoId: string]: string[];
