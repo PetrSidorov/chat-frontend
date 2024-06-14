@@ -15,6 +15,7 @@ function useGetUser(initialData?: TUser) {
           "Content-Type": "application/json",
         },
       }),
+    retry: false,
     initialData,
   });
 

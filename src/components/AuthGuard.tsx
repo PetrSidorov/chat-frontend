@@ -7,12 +7,13 @@ export default function AuthGuard() {
   const location = useLocation();
   const { pathname } = location;
 
-  if (isFetching) {
-    return <FullScreenLoading />;
-  }
-
   if (!user || isError) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (isFetching) {
+    console.log("isFetching ");
+    return <FullScreenLoading />;
   }
 
   if ((user && pathname == "/login") || pathname == "/register") {
