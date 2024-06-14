@@ -77,7 +77,7 @@ export default function ActiveConvo() {
     queryFn: ({ pageParam = 1 }) => getMessages(pageParam, id),
     initialPageParam: 1,
     enabled: !!id,
-
+    initialData: queryClient.getQueryData(["messages", { id }]),
     getNextPageParam: ({ currentPage, totalPages }) => {
       console.log("currentPage totalPages ", currentPage, totalPages);
       const nextPage = currentPage + 1;
@@ -150,9 +150,9 @@ export default function ActiveConvo() {
     return <div>Error fetching data 😔</div>;
   }
 
-  if (isFetching) {
-    return <div>Fetching data in progress 😔</div>;
-  }
+  // if (isFetching) {
+  //   return <div>Fetching data in progress 😔</div>;
+  // }
 
   return (
     <div

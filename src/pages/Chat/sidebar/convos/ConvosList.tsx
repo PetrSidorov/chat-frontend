@@ -143,9 +143,11 @@ export default function ConvosList() {
                   message={convo.messages[0]}
                   id={convo.id}
                   onMouseEnter={() => {
-                    queryClient.prefetchQuery(
-                      generateInfiniteMessagesConfig(convo.id)
-                    );
+                    queryClient.prefetchInfiniteQuery({
+                      queryKey: ["messages", { id: convo.id }],
+                      queryFn: () => getMessages(1, convo.id),
+                      initialPageParam: 1,
+                    });
                   }}
                   // online={participantOnlineStatus}
                   // key={convo.id}
