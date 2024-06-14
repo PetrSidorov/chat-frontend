@@ -25,6 +25,7 @@ export default function ConvosList() {
   const { user } = useContext(AuthContext);
   // const onlineStatuses = useRoomUsersStatus();
   const [loaded, setLoaded] = useState(false);
+  const [prefetchedConvosMap, setPrefetchedConvosMap] = useState(null);
   // --------
   const {
     data,
@@ -143,6 +144,11 @@ export default function ConvosList() {
                   message={convo.messages[0]}
                   id={convo.id}
                   onMouseEnter={() => {
+                    const data = queryClient.getQueryData([
+                      "messages",
+                      { id: convo.id },
+                    ]);
+                    if (data) return;
                     queryClient.prefetchInfiniteQuery({
                       queryKey: ["messages", { id: convo.id }],
                       queryFn: () => getMessages(1, convo.id),

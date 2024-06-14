@@ -72,7 +72,7 @@ export type TConvoContext = {
     pushNewMessageToConvo: Function;
     // pushNewMessagesToConvo: (convoId: string, messages: TMessage[]) => void;
     handleRemoveMessage: Function;
-    initConvo: Function;
+    // initConvo: Function;
     addNewConvo: Function;
     setAnimationType: Function;
     // joinRoom: Function;

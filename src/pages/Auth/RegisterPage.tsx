@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { AuthContext } from "@/context/AuthProvider";
+import useRegisterUser from "@/hooks/react-query/useRegisterUser";
 // import { TAuthContext } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -78,14 +79,15 @@ const checkIfEmailIsUnique = async (email: string) => {
   }
 };
 
-type LoginFormValues = z.infer<typeof formSchema>;
+type RegisterFormValues = z.infer<typeof formSchema>;
 
 export default function RegisterPage() {
+  const registerUser = useRegisterUser();
   const [showPassword, setShowPassword] = useState(false);
   const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const form = useForm<LoginFormValues>({
+  const form = useForm<RegisterFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
@@ -134,43 +136,46 @@ export default function RegisterPage() {
     handleUniqueEmail();
   }, [watchedEmail]);
   //TODO: after successful registration - redirect to messages
-  async function onSubmit(values: LoginFormValues) {
-    try {
-      const response = await axios.post(
-        "http://localhost:3007/register",
-        values,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const data = response.data;
-      if (data && data?.token) {
-        setUser(data.user);
-        navigate("/messages");
-      }
-    } catch (error: any) {
-      // TODO:TYPESCRIPT + something more meaningful
-      if (error.response) {
-        form.setError("username", {
-          type: "server",
-          message: error.response.data.message,
-        });
-      } else if (error.request) {
-        form.setError("username", {
-          type: "server",
-          message: "Please try again later",
-        });
-      } else {
-        form.setError("username", {
-          type: "server",
-          message: "Please try again",
-        });
-      }
-    }
+  async function onSubmit(values: RegisterFormValues) {
+    registerUser.mutate(values, {
+      onSuccess: () => console.log("sucseess"),
+      // event.target.reset(),
+    });
+    // try {
+    //   const response = await axios.post(
+    //     "http://localhost:3007/register",
+    //     values,
+    //     {
+    //       withCredentials: true,
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //     }
+    //   );
+    //   const data = response.data;
+    //   if (data && data?.token) {
+    //     setUser(data.user);
+    //     navigate("/messages");
+    //   }
+    // } catch (error: any) {
+    //   // TODO:TYPESCRIPT + something more meaningful
+    //   if (error.response) {
+    //     form.setError("username", {
+    //       type: "server",
+    //       message: error.response.data.message,
+    //     });
+    //   } else if (error.request) {
+    //     form.setError("username", {
+    //       type: "server",
+    //       message: "Please try again later",
+    //     });
+    //   } else {
+    //     form.setError("username", {
+    //       type: "server",
+    //       message: "Please try again",
+    //     });
+    //   }
+    // }
   }
 
   return (

@@ -25,7 +25,7 @@ type StateType = {
 };
 
 type ActionType =
-  | { type: "initConvos"; data: Record<string, TConvo> }
+  // | { type: "initConvos"; data: Record<string, TConvo> }
   | {
       type: "editMessage";
       data: {
@@ -88,12 +88,12 @@ type ActionType =
 
 function convoReducer(state: StateType, action: ActionType): StateType {
   switch (action.type) {
-    case "initConvos": {
-      return {
-        ...state,
-        convos: action.data,
-      };
-    }
+    // case "initConvos": {
+    //   return {
+    //     ...state,
+    //     convos: action.data,
+    //   };
+    // }
     case "editMessage": {
       const { convoId, messageEdited } = action.data;
       const updatedConvos = { ...state.convos };
@@ -275,10 +275,10 @@ export default function ActiveConvoProvider({
     });
   };
 
-  const initConvo = (data: Record<string, TConvo>) => {
-    Object.keys(data).forEach((convoId) => socket.emit("room:join", convoId));
-    dispatch({ type: "initConvos", data });
-  };
+  // const initConvo = (data: Record<string, TConvo>) => {
+  //   Object.keys(data).forEach((convoId) => socket.emit("room:join", convoId));
+  //   dispatch({ type: "initConvos", data });
+  // };
 
   const handleNewMessage = ({
     message,
@@ -432,7 +432,7 @@ export default function ActiveConvoProvider({
           unshiftMessagesToConvo,
           pushNewMessageToConvo,
           handleRemoveMessage,
-          initConvo,
+          // initConvo,
           onlineStatuses,
           addNewConvo,
           animationType: state.animation,
