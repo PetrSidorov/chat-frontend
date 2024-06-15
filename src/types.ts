@@ -23,6 +23,21 @@ export type TUser = {
 //   error: any;
 //   setUser: Dispatch<SetStateAction<TUser | null>>;
 // };
+// {
+//   "messages": [
+//       {
+//           "uuid": "90cd86ed-aa9f-485d-961d-43e0152eddf3",
+//           "content": "12",
+//           "sender": {
+//               "username": "Peter",
+//               "id": "04c6f17d-9380-4e87-b317-1582631b3084"
+//           }
+//       },
+//   ],
+//   "currentPage": 1,
+//   "totalPages": 6,
+//   "totalItems": 61
+// }
 
 export type TMessage = {
   uuid: string;
@@ -64,6 +79,26 @@ export type GetMessagesResponse = PaginatedResponse<TMessage[]>;
 export type TOnlineStatuses = {
   [convoId: string]: string[];
 };
+
+export interface AxiosResponse<T = any> {
+  config: {
+    transitional?: any;
+    adapter?: any[];
+    transformRequest?: any[];
+    transformResponse?: any[];
+    timeout?: number;
+    [key: string]: any;
+  };
+  data: T;
+  headers: {
+    "content-length"?: string;
+    "content-type"?: string;
+    [key: string]: any;
+  };
+  request: XMLHttpRequest;
+  status: number;
+  statusText: string;
+}
 
 export type TConvoContext = {
   convoContext: {

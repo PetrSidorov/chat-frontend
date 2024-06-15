@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "@/context/AuthProvider";
 import { Eye, EyeOff } from "lucide-react";
 import { socket } from "@/utils/socket";
+import useLoginUser from "@/hooks/react-query/useLoginUser";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -42,6 +43,7 @@ export default function LoginPage() {
   });
   //
   const { setUser, user, setStatus } = useContext(AuthContext);
+  const loginUser = useLoginUser();
 
   // useEffect(() => {
   //   if (user) {
@@ -49,64 +51,67 @@ export default function LoginPage() {
   //   }
   // }, [user]);
 
-  function waitForSocketConnection() {
-    return new Promise((resolve, reject) => {
-      const onConnect = () => {
-        socket.off("connect", onConnect);
-        socket.off("connect_error", onConnectError);
-        resolve(null);
-      };
-      const onConnectError = (error: any) => {
-        socket.off("connect", onConnect);
-        socket.off("connect_error", onConnectError);
-        reject(error);
-      };
+  // function waitForSocketConnection() {
+  //   return new Promise((resolve, reject) => {
+  //     const onConnect = () => {
+  //       socket.off("connect", onConnect);
+  //       socket.off("connect_error", onConnectError);
+  //       resolve(null);
+  //     };
+  //     const onConnectError = (error: any) => {
+  //       socket.off("connect", onConnect);
+  //       socket.off("connect_error", onConnectError);
+  //       reject(error);
+  //     };
 
-      if (socket.connected) {
-        resolve(null);
-      } else {
-        socket.on("connect", onConnect);
-        socket.on("connect_error", onConnectError);
-        socket.connect();
-      }
-    });
-  }
+  //     if (socket.connected) {
+  //       resolve(null);
+  //     } else {
+  //       socket.on("connect", onConnect);
+  //       socket.on("connect_error", onConnectError);
+  //       socket.connect();
+  //     }
+  //   });
+  // }
 
   async function onSubmit(values: LoginFormValues) {
-    try {
-      const response = await axios.post("http://localhost:3007/login", values, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = response.data;
-      if (data && data?.token) {
-        setUser(data.user);
-        setStatus(200);
-        navigate("/messages");
-        waitForSocketConnection();
-        console.log("setUser() && navigate()");
-      }
-    } catch (error: any) {
-      if (error.response) {
-        form.setError("username", {
-          type: "server",
-          message: error.response.data.message,
-        });
-      } else if (error.request) {
-        form.setError("username", {
-          type: "server",
-          message: "Please try again later",
-        });
-      } else {
-        form.setError("username", {
-          type: "server",
-          message: "Please try again",
-        });
-      }
-    }
+    loginUser.mutate(values, {
+      onSuccess: () => navigate("/messages"),
+      // event.target.reset(),
+    });
+    // try {
+    //   const response = await axios.post("http://localhost:3007/login", values, {
+    //     withCredentials: true,
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //   });
+    //   const data = response.data;
+    //   if (data && data?.token) {
+    //     setUser(data.user);
+    //     setStatus(200);
+    //     navigate("/messages");
+    //     // waitForSocketConnection();
+    //     console.log("setUser() && navigate()");
+    //   }
+    // } catch (error: any) {
+    //   if (error.response) {
+    //     form.setError("username", {
+    //       type: "server",
+    //       message: error.response.data.message,
+    //     });
+    //   } else if (error.request) {
+    //     form.setError("username", {
+    //       type: "server",
+    //       message: "Please try again later",
+    //     });
+    //   } else {
+    //     form.setError("username", {
+    //       type: "server",
+    //       message: "Please try again",
+    //     });
+    //   }
+    // }
   }
 
   return (

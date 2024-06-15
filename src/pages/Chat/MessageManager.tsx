@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import useMessage from "../../hooks/useMessage";
 import { AllConvoContext } from "@/context/AllConvoProvider";
 import { MessageContext } from "@/context/MessageProvider";
@@ -7,12 +7,19 @@ import { animations } from "@/utils/animations";
 // import { CircleX } from "lucide-react";
 import VisuallyHidden from "@/components/VisuallyHidden";
 import CloseXCircleButton from "@/components/ui/closeXCircleButton";
+import useSendMessage from "@/hooks/react-query/useSendMessage";
+import useGetUser from "@/hooks/react-query/useGetUser";
 
 export default function MessageManager() {
+  const [convoContextId, handleActiveConvoId] =
+    useContext(AllConvoContext).activeConvoId;
+  const convoId = useMemo(() => convoContextId, [convoContextId]);
+  const { user, isError, isFetching, error } = useGetUser();
+
   const {
-    createdMessageContent,
-    setCreatedMessageContent,
-    send,
+    // createdMessageContent,
+    // setCreatedMessageContent,
+    // send,
     edit,
     messageEdited,
     editMessageMode,
@@ -20,12 +27,25 @@ export default function MessageManager() {
     setMessageEdited,
   } = useContext(MessageContext)!;
   const [originalMessage, setOriginalMessage] = useState("");
+  const [createdMessageContent, setCreatedMessageContent] = useState("");
   useEffect(() => {
     if (editMessageMode && messageEdited?.content) {
       setOriginalMessage(messageEdited.content);
     }
   }, [editMessageMode]);
 
+  const { mutate, isPending } = user
+    ? useSendMessage(convoId, {
+        uuid: crypto.randomUUID(),
+        content: createdMessageContent,
+        sender: {
+          username: user?.username,
+          id: user?.id,
+        },
+      })
+    : // TODO: #ask-artem is this even a ghood option,
+      // i guess i can throw errors here
+      { mutate: () => {}, isPending: false };
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   // TODO: #important the editing mode is still not fully working on mobile
   // the whole magic 250px thing should be revisited
@@ -53,7 +73,7 @@ export default function MessageManager() {
   const handleSubmit = (e) => {
     if (!textareaRef.current) return;
     e.preventDefault();
-    editMessageMode ? edit() : send();
+    editMessageMode ? edit() : mutate();
   };
 
   const animationProps = {

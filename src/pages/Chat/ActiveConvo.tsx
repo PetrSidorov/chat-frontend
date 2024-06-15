@@ -21,7 +21,7 @@ import { flattenMessages } from "@/utils/flattenMessages";
 // TODO:active convo - error when convos are deleted (sometimes)
 export default function ActiveConvo() {
   const queryClient = useQueryClient();
-  const [convoId, handleActiveConvoId] =
+  const [convoContextId, handleActiveConvoId] =
     useContext(AllConvoContext).activeConvoId;
 
   const { user } = useGetUser();
@@ -48,7 +48,7 @@ export default function ActiveConvo() {
 
   // TODO: this should be memoized on another level
 
-  const id = useMemo(() => convoId, [convoId]);
+  const convoId = useMemo(() => convoContextId, [convoContextId]);
 
   // const { ref } = useInView({
   //   threshold: 0,
@@ -73,13 +73,13 @@ export default function ActiveConvo() {
     fetchPreviousPage,
     isSuccess,
   } = useInfiniteQuery({
-    queryKey: ["messages", { id }],
-    queryFn: ({ pageParam = 1 }) => getMessages(pageParam, id),
+    queryKey: ["messages", { convoId }],
+    queryFn: ({ pageParam = 1 }) => getMessages(pageParam, convoContextId),
     initialPageParam: 1,
-    enabled: !!id,
-    initialData: queryClient.getQueryData(["messages", { id }]),
+    enabled: !!convoContextId,
+    initialData: queryClient.getQueryData(["messages", { convoId }]),
     getNextPageParam: ({ currentPage, totalPages }) => {
-      console.log("currentPage totalPages ", currentPage, totalPages);
+      // console.log("currentPage totalPages ", currentPage, totalPages);
       const nextPage = currentPage + 1;
       return nextPage <= totalPages ? nextPage : undefined;
     },
@@ -96,6 +96,8 @@ export default function ActiveConvo() {
     // },
   });
   const messages = flattenMessages(data?.pages);
+  const lastMessaageId = data?.pages[0]?.messages[0]?.uuid;
+
   const { ref } = useInView({
     threshold: 0,
     root: rootRef.current,
@@ -104,9 +106,6 @@ export default function ActiveConvo() {
       if (inView && hasNextPage && !isFetchingNextPage) {
         fetchNextPage();
       }
-      // if (inView && hasPreviousPage && !isFetchingPreviousPage) {
-      //   fetchPreviousPage();
-      // }
     },
   });
 
@@ -138,7 +137,7 @@ export default function ActiveConvo() {
 
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView();
-  }, [isSuccess]);
+  }, [isSuccess, lastMessaageId]);
 
   if (isLoading) {
     return (
@@ -186,61 +185,53 @@ export default function ActiveConvo() {
       {/* {!userOnlineStatus && (
         <p className="text-center my-2">Waiting for network...</p>
       )} */}
+      {messages.map(
+        ({ content, createdAt, sender, uuid }, i: number, messages) => {
+          const yours = sender.id == user.id;
 
-      {user && Object.keys(user).length > 0 ? (
-        messages.map(
-          ({ content, createdAt, sender, uuid }, i: number, messages) => {
-            const yours = sender.id == user.id;
+          // const avatarUrl = yours
+          //   ? user.avatarUrl
+          //   : participants[0]?.avatarUrl || null;
+          const avatarUrl = user.avatarUrl;
 
-            // const avatarUrl = yours
-            //   ? user.avatarUrl
-            //   : participants[0]?.avatarUrl || null;
-            const avatarUrl = user.avatarUrl;
+          const alignment = yours ? "self-start" : "self-end";
 
-            const alignment = yours ? "self-start" : "self-end";
-
-            function handleRemoveMessage(uuid: any) {
-              throw new Error("Function not implemented.");
-            }
-
-            return (
-              <React.Fragment key={uuid}>
-                {i === 3 ? <div ref={ref} /> : null}
-                {/* {hasNextPage && i === 3 && <li ref={ref} />} */}
-                {!isSameDayAsPreviousMessage(
-                  createdAt,
-                  messages[i - 1]?.createdAt || ""
-                ) && <MonthAndYear createdAt={createdAt} />}
-                <div
-                  id={uuid}
-                  className={`${alignment} ${
-                    fullWidthMessagesInActiveConvo ? "w-full" : "w-[80%]"
-                  }`}
-                >
-                  <Message
-                    content={content}
-                    createdAt={createdAt}
-                    popup={
-                      <MessageContextMenu
-                        yours={yours}
-                        content={content}
-                        handleRemoveMessage={() => handleRemoveMessage(uuid)}
-                        uuid={uuid}
-                      />
-                    }
-                    username={sender.username}
-                    avatarUrl={avatarUrl}
-                    prevMessageSender={messages[i - 1]?.sender?.username || ""}
-                  />
-                </div>
-              </React.Fragment>
-            );
+          function handleRemoveMessage(uuid: any) {
+            throw new Error("Function not implemented.");
           }
-        )
-      ) : (
-        <p className="text-center my-2">
-          Start messaging by selecting a conversation
-        </p>
+
+          return (
+            <React.Fragment key={uuid}>
+              {hasNextPage && i === 3 && <div ref={ref} />}
+              {!isSameDayAsPreviousMessage(
+                createdAt,
+                messages[i - 1]?.createdAt || ""
+              ) && <MonthAndYear createdAt={createdAt} />}
+              <div
+                id={uuid}
+                className={`${alignment} ${
+                  fullWidthMessagesInActiveConvo ? "w-full" : "w-[80%]"
+                }`}
+              >
+                <Message
+                  content={content}
+                  createdAt={createdAt}
+                  popup={
+                    <MessageContextMenu
+                      yours={yours}
+                      content={content}
+                      handleRemoveMessage={() => handleRemoveMessage(uuid)}
+                      uuid={uuid}
+                    />
+                  }
+                  username={sender.username}
+                  avatarUrl={avatarUrl}
+                  prevMessageSender={messages[i - 1]?.sender?.username || ""}
+                />
+              </div>
+            </React.Fragment>
+          );
+        }
       )}
       <div ref={endOfMessagesRef} />
     </div>

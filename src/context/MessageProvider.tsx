@@ -22,9 +22,9 @@ type MessageEditedType = {
 };
 
 type TMessageContext = {
-  createdMessageContent: string;
-  setCreatedMessageContent: Dispatch<SetStateAction<string>>;
-  send: () => void;
+  // createdMessageContent: string;
+  // setCreatedMessageContent: Dispatch<SetStateAction<string>>;
+  // send: () => void;
   edit: () => void;
   messageEdited: MessageEditedType;
   editMessageMode: boolean;
@@ -37,27 +37,27 @@ export default function MessageProvider({ children }: MessageProviderProps) {
   // const { user } = useContext(AuthContext);
   const { user } = useGetUser();
   const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
-  const [createdMessageContent, setCreatedMessageContent] = useState("");
+  // const [createdMessageContent, setCreatedMessageContent] = useState("");
   const [editMessageMode, setEditMessageMode] = useState(false);
   const [messageEdited, setMessageEdited] = useState({
     messageId: "",
     content: "",
   });
 
-  const send = useCallback(() => {
-    if (!createdMessageContent.trim() || !user || !activeConvoId) {
-      return;
-    }
+  // const send = useCallback(() => {
+  //   if (!createdMessageContent.trim() || !user || !activeConvoId) {
+  //     return;
+  //   }
 
-    socket.emit("msg:create", {
-      content: createdMessageContent,
-      convoId: activeConvoId,
-      createdAt: new Date().toISOString(),
-      senderId: user.id,
-    });
+  //   socket.emit("msg:create", {
+  //     content: createdMessageContent,
+  //     convoId: activeConvoId,
+  //     createdAt: new Date().toISOString(),
+  //     senderId: user.id,
+  //   });
 
-    setCreatedMessageContent("");
-  }, [createdMessageContent, user, activeConvoId]);
+  //   setCreatedMessageContent("");
+  // }, [createdMessageContent, user, activeConvoId]);
 
   const edit = useCallback(() => {
     if (
@@ -79,9 +79,9 @@ export default function MessageProvider({ children }: MessageProviderProps) {
   return (
     <MessageContext.Provider
       value={{
-        createdMessageContent,
-        setCreatedMessageContent,
-        send,
+        // /createdMessageContent,
+        // setCreatedMessageContent,
+        // send,
         edit,
         messageEdited,
         editMessageMode,

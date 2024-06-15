@@ -1,14 +1,16 @@
-import { TUser } from "@/types";
-import { useQuery } from "@tanstack/react-query";
+import { AxiosResponse, TUser } from "@/types";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useMemo } from "react";
 
 // TODO: add here all needed properties, discuss with Artem
 // #ask-artem
 function useGetUser(initialData?: TUser) {
+  // const queryClient = useQueryClient();
+  // const cachedUser = queryClient.getQueryData(["user"]);
   const query = useQuery({
     queryKey: ["user"],
-    queryFn: (): Promise<TUser> =>
+    queryFn: (): Promise<AxiosResponse<TUser>> =>
       axios.get("http://localhost:3007/api/me", {
         withCredentials: true,
         headers: {
@@ -16,15 +18,24 @@ function useGetUser(initialData?: TUser) {
         },
       }),
     retry: false,
-    initialData,
+
+    // initialData: { data: { data: cachedUser } },
   });
 
   return useMemo(() => {
+    if (query.isLoading || query.isError) {
+      return {
+        ...query,
+        user: null,
+      };
+    }
+
+    const userData = query.data?.data;
     return {
       ...query,
-      user: query.data,
+      user: userData,
     };
-  }, [query.data]);
+  }, [query.data, query.isLoading, query.isError]);
 }
 
 export default useGetUser;

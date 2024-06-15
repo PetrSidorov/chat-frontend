@@ -22,10 +22,10 @@ export default function ConvosList() {
   //   useContext(AllConvoContext)?.convoContext;
   const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
 
-  const { user } = useContext(AuthContext);
+  // const { user } = useContext(AuthContext);
   // const onlineStatuses = useRoomUsersStatus();
-  const [loaded, setLoaded] = useState(false);
-  const [prefetchedConvosMap, setPrefetchedConvosMap] = useState(null);
+  // const [loaded, setLoaded] = useState(false);
+  // const [prefetchedConvosMap, setPrefetchedConvosMap] = useState(null);
   // --------
   const {
     data,
