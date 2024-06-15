@@ -7,7 +7,7 @@ import { animations } from "@/utils/animations";
 // import { CircleX } from "lucide-react";
 import VisuallyHidden from "@/components/VisuallyHidden";
 import CloseXCircleButton from "@/components/ui/closeXCircleButton";
-import useSendMessage from "@/hooks/react-query/useSendMessage";
+import { useSendMessage } from "@/hooks/react-query/useHandleMessage";
 import useGetUser from "@/hooks/react-query/useGetUser";
 
 export default function MessageManager() {
@@ -34,7 +34,7 @@ export default function MessageManager() {
     }
   }, [editMessageMode]);
 
-  const { mutate, isPending } = user
+  const { mutate: send, isPending } = user
     ? useSendMessage(convoId, {
         uuid: crypto.randomUUID(),
         content: createdMessageContent,
@@ -73,7 +73,7 @@ export default function MessageManager() {
   const handleSubmit = (e) => {
     if (!textareaRef.current) return;
     e.preventDefault();
-    editMessageMode ? edit() : mutate();
+    editMessageMode ? edit() : send();
   };
 
   const animationProps = {
@@ -122,6 +122,7 @@ export default function MessageManager() {
             // style={{ transition: "height 0.2s ease-out" }}
             className="textarea w-full p-2 rounded border border-gray-300 overflow-x-scroll resize-none h-10 transition ease-out duration-200"
             onKeyDown={(e) => {
+              if (isPending) return;
               if (e.key === "Enter" && e.shiftKey) {
               } else if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -143,6 +144,7 @@ export default function MessageManager() {
 
         <button
           type="submit"
+          disabled={isPending}
           className="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2 max-h-10 mt-auto"
         >
           {editMessageMode ? "Edit" : "Send"}

@@ -1,28 +1,37 @@
+import { AllConvoContext } from "@/context/AllConvoProvider";
 import { MessageContext } from "@/context/MessageProvider";
+import useGetUser from "@/hooks/react-query/useGetUser";
+import { useDeleteMessage } from "@/hooks/react-query/useHandleMessage";
 import useMessage from "@/hooks/useMessage";
 import { useContext } from "react";
 
 export default function MessageContextMenu({
   yours,
-  handleRemoveMessage,
+  // handleRemoveMessage,
   content,
   uuid,
 }: {
   yours: boolean;
-  handleRemoveMessage: Function;
+  // handleRemoveMessage: Function;
   content: string;
   uuid: string;
 }) {
+  const { user, isError, isFetching, error } = useGetUser();
+  const [convoId, handleActiveConvoId] =
+    useContext(AllConvoContext).activeConvoId;
+  const { mutate: deleteMessage, isPending } = user
+    ? useDeleteMessage(convoId)
+    : // TODO: #ask-artem is this even a ghood option,
+      // i guess i can throw errors here
+      { mutate: () => {}, isPending: false };
+
   const { setMessageEdited, setEditMessageMode } = useContext(MessageContext)!;
   return (
     <>
       {yours ? (
         <ul>
           <li className="flex flex-col mr-2">
-            <button
-              className="text-start"
-              onClick={() => handleRemoveMessage(uuid)}
-            >
+            <button className="text-start" onClick={() => deleteMessage(uuid)}>
               <span id="test" className="text-red-700">
                 Delete message
               </span>

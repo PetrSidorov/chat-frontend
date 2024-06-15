@@ -10,7 +10,7 @@ import axios from "axios";
 const createConvo = async (userId: string, joinerId: string) => {
   const response = await axios.post(
     "http://localhost:3007/api/convo",
-    { content: userId, convoId: joinerId },
+    { userId, joinerId },
     {
       withCredentials: true,
       headers: {
@@ -22,9 +22,9 @@ const createConvo = async (userId: string, joinerId: string) => {
   return response.data;
 };
 // type TMessageToSend = Omit<TMessage, "createdAt">;
-const useCreateConvo = (userId: string, joinerId: string) => {
+const useCreateConvo = (userId: string) => {
   const queryClient = useQueryClient();
-  //   placeholder
+  //  TODO: remove placeholder data and replace it with actual data
   const newConvo = {
     id: "6b391c4a-44db-428e-aeb2-61f2e5e01113",
     createdAt: "2024-06-03T18:29:29.317Z",
@@ -57,7 +57,7 @@ const useCreateConvo = (userId: string, joinerId: string) => {
     ],
   };
   return useMutation({
-    mutationFn: () => createConvo(userId, joinerId),
+    mutationFn: (joinerId: string) => createConvo(userId, joinerId),
     onMutate: async () => {
       await queryClient.cancelQueries({
         queryKey: ["convo"],
@@ -68,7 +68,7 @@ const useCreateConvo = (userId: string, joinerId: string) => {
         ["convo"],
         (oldData: InfiniteData<{ convos: TConvo[] }>) => {
           const newData = oldData ? [...oldData.pages] : [];
-          newData[0].convos.unshift(newConvo);
+          newData[0].convos.push(newConvo);
           return {
             ...oldData,
             pages: newData,

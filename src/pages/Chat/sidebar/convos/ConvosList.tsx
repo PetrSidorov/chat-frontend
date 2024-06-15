@@ -17,6 +17,8 @@ import {
 import { TConvo } from "@/types";
 
 export default function ConvosList() {
+  // TODO: convos shouldn't be mounted here,
+  // because it's a sidebar component which isn't mounted in all cases
   const queryClient = useQueryClient();
   // const { convos, initConvo, setAnimationType, onlineStatuses } =
   //   useContext(AllConvoContext)?.convoContext;

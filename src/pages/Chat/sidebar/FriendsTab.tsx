@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { Loader, Mail, UserCheck, UserPlus } from "lucide-react"; // Replace these with appropriate icons
 import { useContext, useEffect, useState } from "react";
 import { AllConvoContext } from "../../../context/AllConvoProvider";
+import useCreateConvo from "@/hooks/react-query/useCreateConvo";
+import useGetUser from "@/hooks/react-query/useGetUser";
 
 type Tuser = {
   username: string;
@@ -19,47 +21,55 @@ export default function FriendsTab() {
   const [, handleActiveConvoId] = useContext(AllConvoContext).activeConvoId;
   const { convos, unshiftMessagesToConvo, addNewConvo } =
     useContext(AllConvoContext).convoContext;
+  const { user, isError, isFetching, error } = useGetUser();
+
   // const emitNewConvo = useNewConvo();
-  useEffect(() => {
-    socket.on("convo:created", createNewConvo);
+  // useEffect(() => {
+  //   socket.on("convo:created", createNewConvo);
 
-    return () => {
-      socket.off("convo:created", createNewConvo);
-    };
-  }, []);
+  //   return () => {
+  //     socket.off("convo:created", createNewConvo);
+  //   };
+  // }, []);
 
-  function createNewConvo(data: any) {
-    if (!data || Object.keys(data.convo).length == 0) return;
+  // function createNewConvo(data: any) {
+  //   if (!data || Object.keys(data.convo).length == 0) return;
 
-    const newConvoId = Object.keys(data.convo)[0];
-    addNewConvo(data.convo);
-    socket.emit("room:join", newConvoId);
-    handleActiveConvoId(newConvoId);
-    setFoundUsers((currUsers) => {
-      const updatedUsers = currUsers.map((user) => {
-        if (
-          data.participants.some(
-            (participant: string) => participant === user.id
-          )
-        ) {
-          return {
-            ...user,
-            convos: [
-              ...user.convos,
-              {
-                participants: data.convo[newConvoId].participants,
-                id: newConvoId,
-              },
-            ],
-          };
-        } else {
-          return user;
-        }
-      });
-      console.log("updatedUsers ", updatedUsers);
-      return updatedUsers;
-    });
-  }
+  //   const newConvoId = Object.keys(data.convo)[0];
+  //   addNewConvo(data.convo);
+  //   socket.emit("room:join", newConvoId);
+  //   handleActiveConvoId(newConvoId);
+  //   setFoundUsers((currUsers) => {
+  //     const updatedUsers = currUsers.map((user) => {
+  //       if (
+  //         data.participants.some(
+  //           (participant: string) => participant === user.id
+  //         )
+  //       ) {
+  //         return {
+  //           ...user,
+  //           convos: [
+  //             ...user.convos,
+  //             {
+  //               participants: data.convo[newConvoId].participants,
+  //               id: newConvoId,
+  //             },
+  //           ],
+  //         };
+  //       } else {
+  //         return user;
+  //       }
+  //     });
+  //     console.log("updatedUsers ", updatedUsers);
+  //     return updatedUsers;
+  //   });
+  // }
+
+  const { mutate, isPending } = user
+    ? useCreateConvo(user.id)
+    : // TODO: #ask-artem is this even a ghood option,
+      // i guess i can throw errors here
+      { mutate: () => {}, isPending: false };
 
   function emitSearch(searchInput: string) {
     // console.log("socket state is ", socket);
@@ -129,14 +139,15 @@ export default function FriendsTab() {
               <button
                 className="w-full"
                 onClick={() => {
+                  mutate(user.id);
                   // console.log("click on user ", user);
-                  if (user.convos[0]) {
-                    console.log("if (user.convos[0]) ", user.convos[0]);
-                    setActiveConvoId(user.convos[0].id);
-                  } else {
-                    console.log("socket emit");
-                    socket.emit("convo:create", [user.id]);
-                  }
+                  // if (user.convos[0]) {
+                  //   console.log("if (user.convos[0]) ", user.convos[0]);
+                  //   setActiveConvoId(user.convos[0].id);
+                  // } else {
+                  //   console.log("socket emit");
+                  //   socket.emit("convo:create", [user.id]);
+                  // }
                 }}
               >
                 <div className="flex w-[60%]">
