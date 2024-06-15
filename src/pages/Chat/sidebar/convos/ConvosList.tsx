@@ -40,7 +40,7 @@ export default function ConvosList() {
 
   const convos = data?.pages[0].convos;
 
-  //   console.log(convos);
+  console.log(convos);
   // }
 
   // useEffect(() => {
@@ -109,7 +109,7 @@ export default function ConvosList() {
   //   });
 
   // if (!loaded) return <FullScreenLoading />;
-  // npm i @tanstack/react-query-devtools@4
+
   // TODO: different states should be managed better that this
   if (isLoading) {
     return <FullScreenLoading />;

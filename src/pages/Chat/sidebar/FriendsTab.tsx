@@ -21,10 +21,10 @@ export default function FriendsTab() {
     useContext(AllConvoContext).convoContext;
   // const emitNewConvo = useNewConvo();
   useEffect(() => {
-    socket.on("convo:return", createNewConvo);
+    socket.on("convo:created", createNewConvo);
 
     return () => {
-      socket.off("convo:return", createNewConvo);
+      socket.off("convo:created", createNewConvo);
     };
   }, []);
 

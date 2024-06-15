@@ -1,4 +1,5 @@
 import { TMessage } from "@/types";
+import { socket } from "@/utils/socket";
 import {
   InfiniteData,
   useMutation,
@@ -37,7 +38,6 @@ const useSendMessage = (convoId: string, newMessage: TMessageToSend) => {
         (
           oldData: InfiniteData<{ messages: (TMessageToSend | TMessage)[] }>
         ) => {
-          console.log("good old dta ", oldData);
           const newData = oldData ? [...oldData.pages] : [];
           newData[0].messages.unshift(newMessage);
           return {

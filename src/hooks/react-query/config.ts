@@ -6,6 +6,7 @@ import { GetMessagesResponse } from "@/types";
 const infiniteConvosConfig = {
   queryKey: ["convo"],
   queryFn: ({ pageParam = 1 }) => getConvos(pageParam),
+  placeholderData: (oldData) => oldData,
   initialPageParam: 1,
   getNextPageParam: (lastPage) => {
     const nextPage = lastPage.currentPage + 1;

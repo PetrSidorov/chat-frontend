@@ -13,7 +13,15 @@ import ConvosList from "./pages/Chat/sidebar/convos/ConvosList";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 import MessageProvider from "./context/MessageProvider";
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  // TODO: I use websockets for the most part,
+  // but not sure if it's a good idea, research needed
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+    },
+  },
+});
 
 function App() {
   // TODO: it would be cool to implment portals here for learning purposes

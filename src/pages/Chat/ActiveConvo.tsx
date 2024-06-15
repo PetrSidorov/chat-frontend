@@ -87,13 +87,6 @@ export default function ActiveConvo() {
       const previousPage = currentPage - 1;
       return previousPage > 0 ? previousPage : undefined;
     },
-    // select: (data) => {
-    //   // Reverse the order of pages to show them correctly
-    //   return {
-    //     pages: data.pages.reverse(),
-    //     pageParams: data.pageParams.reverse(),
-    //   };
-    // },
   });
   const messages = flattenMessages(data?.pages);
   const lastMessaageId = data?.pages[0]?.messages[0]?.uuid;
