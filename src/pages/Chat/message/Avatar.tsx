@@ -9,12 +9,12 @@ export default function Avatar({
   avatarUrl,
   username,
   showOnlyAvatars,
-  animationType,
-}: {
+}: // animationType,
+{
   avatarUrl?: string | null;
   username?: string;
   showOnlyAvatars?: boolean;
-  animationType: string;
+  // animationType: string;
 }) {
   // const size = showOnlyAvatars ? 92 : 92;
   // TODO: optimize this, there's no need to recalculate it every time

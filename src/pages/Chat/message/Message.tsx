@@ -28,8 +28,8 @@ export default function Message({
   popup: JSX.Element;
   onMouseEnter: () => void;
 }) {
-  const { handleRemoveMessage, animationType } =
-    useContext(AllConvoContext).convoContext;
+  // const { handleRemoveMessage, animationType } =
+  //   useContext(AllConvoContext).convoContext;
   const date = createdAt
     ? new Date(createdAt).toLocaleTimeString("en-US", {
         hour: "2-digit",
@@ -42,10 +42,10 @@ export default function Message({
   // TODO:   text-overflow: ellipsis (maybe);
 
   const animationProps = {
-    initial: animations[animationType]?.initial,
-    animate: animations[animationType]?.animate,
-    exit: animations[animationType]?.exit,
-    transition: animations[animationType]?.transition,
+    initial: animations["disableAnimation"]?.initial,
+    animate: animations["disableAnimation"]?.animate,
+    exit: animations["disableAnimation"]?.exit,
+    transition: animations["disableAnimation"]?.transition,
     layout: true,
   };
 
@@ -67,7 +67,7 @@ export default function Message({
             showOnlyAvatars={showOnlyAvatars}
             username={username}
             avatarUrl={avatarUrl}
-            animationType={animationType}
+            // animationType={animationType}
           />
         )}
         {!showOnlyAvatars && (

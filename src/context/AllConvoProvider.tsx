@@ -88,12 +88,6 @@ type ActionType =
 
 function convoReducer(state: StateType, action: ActionType): StateType {
   switch (action.type) {
-    // case "initConvos": {
-    //   return {
-    //     ...state,
-    //     convos: action.data,
-    //   };
-    // }
     case "editMessage": {
       const { convoId, messageEdited } = action.data;
       const updatedConvos = { ...state.convos };
@@ -427,18 +421,18 @@ export default function ActiveConvoProvider({
   return (
     <AllConvoContext.Provider
       value={{
-        convoContext: {
-          convos: state.convos,
-          unshiftMessagesToConvo,
-          pushNewMessageToConvo,
-          handleRemoveMessage,
-          // initConvo,
-          onlineStatuses,
-          addNewConvo,
-          animationType: state.animation,
-          setAnimationType,
-        },
-        removeConvo,
+        // convoContext: {
+        // convos: state.convos,
+        // unshiftMessagesToConvo,
+        // pushNewMessageToConvo,
+        // handleRemoveMessage,
+        // initConvo,
+        // onlineStatuses,
+        // addNewConvo,
+        // animationType: state.animation,
+        // setAnimationType,
+        // },
+        //removeConvo,
         activeConvoId: [state.activeConvoId, handleActiveConvoId],
       }}
     >

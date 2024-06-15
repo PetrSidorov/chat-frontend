@@ -102,18 +102,18 @@ export interface AxiosResponse<T = any> {
 
 export type TConvoContext = {
   convoContext: {
-    convos: TConvos | null;
-    unshiftMessagesToConvo: Function;
-    pushNewMessageToConvo: Function;
+    // convos: TConvos | null;
+    // unshiftMessagesToConvo: Function;
+    // pushNewMessageToConvo: Function;
     // pushNewMessagesToConvo: (convoId: string, messages: TMessage[]) => void;
-    handleRemoveMessage: Function;
+    // handleRemoveMessage: Function;
     // initConvo: Function;
-    addNewConvo: Function;
-    setAnimationType: Function;
+    // addNewConvo: Function;
+    // setAnimationType: Function;
     // joinRoom: Function;
     // getParticipantOnlineStatus: () => void;
-    onlineStatuses: { [key: string]: string[] };
-    animationType: string;
+    // onlineStatuses: { [key: string]: string[] };
+    // animationType: string;
     // editMessageMode: boolean;
     // messageEdited: {
     //   userId: string;

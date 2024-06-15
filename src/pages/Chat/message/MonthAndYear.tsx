@@ -5,8 +5,8 @@ import { AllConvoContext } from "@/context/AllConvoProvider";
 // TODO: move animation type up,
 // there's no need to get it in message and in this component
 export default function MonthAndYear({ createdAt }: { createdAt: string }) {
-  const { handleRemoveMessage, animationType } =
-    useContext(AllConvoContext).convoContext;
+  // const { handleRemoveMessage, animationType } =
+  //   useContext(AllConvoContext).convoContext;
   const createdAtDate = new Date(createdAt);
   const isSameYear = createdAtDate.getFullYear() === new Date().getFullYear();
   const dateString = createdAtDate.toLocaleString("en-US", {
@@ -15,10 +15,10 @@ export default function MonthAndYear({ createdAt }: { createdAt: string }) {
     ...(isSameYear ? {} : { year: "numeric" }),
   });
   const animationProps = {
-    initial: animations[animationType]?.initial,
-    animate: animations[animationType]?.animate,
-    exit: animations[animationType]?.exit,
-    transition: animations[animationType]?.transition,
+    initial: animations["disableAnimation"]?.initial,
+    animate: animations["disableAnimation"]?.animate,
+    exit: animations["disableAnimation"]?.exit,
+    transition: animations["disableAnimation"]?.transition,
   };
 
   // TODO:CSS move this margin up
