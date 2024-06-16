@@ -143,8 +143,7 @@ const useEditMessage = (convoId: string, id: string, content: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    // mutationFn: () => editMessage(id, content),
-    mutationFn: () => putRequest(`message/${id}`, { id, content }),
+    mutationFn: () => putRequest(`/message/${id}`, { id, content }),
     onMutate: async () => {
       await queryClient.cancelQueries({
         queryKey: ["messages", { convoId }],
@@ -170,7 +169,6 @@ const useEditMessage = (convoId: string, id: string, content: string) => {
       };
     },
     onError: (error, variables, rollback) => {
-      console.log("error", error);
       rollback?.();
     },
     onSettled: () => {
@@ -182,57 +180,3 @@ const useEditMessage = (convoId: string, id: string, content: string) => {
 };
 
 export { useSendMessage, useDeleteMessage, useEditMessage };
-
-// import { useMutation, useQueryClient } from "@tanstack/react-query";
-// import {
-//   sendRequest,
-//   deleteRequest,
-//   putRequest,
-// } from "@/api/axiosRequestHandler";
-// import { TMessage } from "@/types";
-
-// const useSendMessage = (convoId: string, newMessageContent: string) => {
-//   const queryClient = useQueryClient();
-
-//   return useMutation({
-//     mutationFn: () =>
-//       sendRequest<void>("post", `/api/message`, {
-//         content: newMessageContent,
-//         convoId,
-//       }),
-//     onSettled: () => {
-//       queryClient.invalidateQueries({
-//         queryKey: ["messages", { convoId }],
-//       });
-//     },
-//   });
-// };
-
-// const useDeleteMessage = (convoId: string) => {
-//   const queryClient = useQueryClient();
-
-//   return useMutation({
-//     mutationFn: (id: string) => deleteRequest<void>(`/api/message/${id}`),
-//     onSettled: () => {
-//       queryClient.invalidateQueries({
-//         queryKey: ["messages", { convoId }],
-//       });
-//     },
-//   });
-// };
-
-// const useEditMessage = (convoId: string, id: string, content: string) => {
-//   const queryClient = useQueryClient();
-
-//   return useMutation({
-//     mutationFn: (id: string, content: string) =>
-//       putRequest<void>(`/api/message/${id}`, { convoId, content }),
-//     onSettled: () => {
-//       queryClient.invalidateQueries({
-//         queryKey: ["messages", { convoId }],
-//       });
-//     },
-//   });
-// };
-
-// export { useSendMessage, useDeleteMessage, useEditMessage };
