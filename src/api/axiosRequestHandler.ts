@@ -13,10 +13,11 @@ const axiosInstance = (config?: TConfig) => {
       "Content-Type": "application/json",
     },
   });
-  instance.interceptors.request.use((config) => {
-    console.log("Full URL:", `${config.baseURL}${config.url}`);
-    return config;
-  });
+
+  // instance.interceptors.request.use((config) => {
+  //   console.log("Full URL:", `${config.baseURL}${config.url}`);
+  //   return config;
+  // });
 
   return instance;
 };

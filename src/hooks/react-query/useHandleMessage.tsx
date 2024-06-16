@@ -4,56 +4,11 @@ import {
   putRequest,
 } from "@/api/axiosRequestHandler";
 import { TMessage } from "@/types";
-import { socket } from "@/utils/socket";
 import {
   InfiniteData,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import axios from "axios";
-
-const sendMessage = async (content: string, convoId: string) => {
-  const response = await axios.post(
-    "http://localhost:3007/api/message",
-    { content, convoId },
-    {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-
-  return response.data;
-};
-
-const deleteMessage = async (id: string) => {
-  const response = await axios.delete(
-    `http://localhost:3007/api/message/${id}`,
-    {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return response.data;
-};
-
-const editMessage = async (id: string, content: string) => {
-  console.log("uooo");
-  const response = await axios.put(
-    `http://localhost:3007/api/message/${id}`,
-    { id, content },
-    {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return response.data;
-};
 
 type TMessageToSend = Omit<TMessage, "createdAt">;
 const useSendMessage = (convoId: string, newMessage: TMessageToSend) => {
@@ -179,4 +134,4 @@ const useEditMessage = (convoId: string, id: string, content: string) => {
   });
 };
 
-export { useSendMessage, useDeleteMessage, useEditMessage };
+export { useDeleteMessage, useEditMessage, useSendMessage };

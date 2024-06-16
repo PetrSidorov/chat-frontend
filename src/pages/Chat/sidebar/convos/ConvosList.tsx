@@ -46,7 +46,6 @@ export default function ConvosList() {
 
   const convos = data?.pages[0].convos;
 
-  console.log(convos);
   // }
 
   // useEffect(() => {

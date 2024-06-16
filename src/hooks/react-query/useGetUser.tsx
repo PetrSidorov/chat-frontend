@@ -22,20 +22,19 @@ const useGetUser = () => {
     // initialData: { data: { data: cachedUser } },
   });
 
-  return useMemo(() => {
-    if (query.isLoading || query.isError) {
-      return {
-        ...query,
-        user: null,
-      };
-    }
+  if (query.isLoading) {
+    return { user: null };
+  }
 
-    const userData = query.data?.data;
-    return {
-      ...query,
-      user: userData,
-    };
-  }, [query.data, query.isLoading, query.isError]);
+  if (query.isError) {
+    throw new Error("error fetching user");
+  }
+
+  const userData = query.data?.data;
+  return {
+    ...query,
+    user: userData,
+  };
 };
 
 export default useGetUser;

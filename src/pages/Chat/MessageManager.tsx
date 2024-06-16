@@ -13,13 +13,23 @@ import {
 } from "@/hooks/react-query/useHandleMessage";
 import useGetUser from "@/hooks/react-query/useGetUser";
 import useActiveConvoIdStore from "@/store";
+import { useNavigate } from "react-router-dom";
 
 export default function MessageManager() {
   // const [convoContextId, handleActiveConvoId] =
   //   useContext(AllConvoContext).activeConvoId;
   const activeConvoId = useActiveConvoIdStore((state) => state.activeConvoId);
 
-  const { user, isError, isFetching, error } = useGetUser();
+  const { user, isError, isFetching, isSuccess } = useGetUser();
+
+  // TODO: this seemed like a good idea,
+  // but it doesn't fix typescript error with user being undefined
+
+  // useEffect(() => {
+  //   if (!isFetching && !user) {
+  //     navigate("/login");
+  //   }
+  // }, [user, isFetching, navigate]);
 
   const {
     // createdMessageContent,
@@ -33,11 +43,6 @@ export default function MessageManager() {
   } = useContext(MessageContext)!;
   const [originalMessage, setOriginalMessage] = useState("");
   const [createdMessageContent, setCreatedMessageContent] = useState("");
-  useEffect(() => {
-    if (editMessageMode && messageEdited?.content) {
-      setOriginalMessage(messageEdited.content);
-    }
-  }, [editMessageMode]);
 
   const { mutate: send, isPending: isSendMessagePending } = user
     ? useSendMessage(activeConvoId, {
@@ -52,15 +57,23 @@ export default function MessageManager() {
       // i guess i can throw errors here
       { mutate: () => {}, isPending: false };
 
-  const { mutate: edit, isPending: isEditMessagePending } = user
-    ? useEditMessage(
-        activeConvoId,
-        messageEdited.messageId,
-        messageEdited.content
-      )
-    : // TODO: #ask-artem is this even a ghood option,
-      // i guess i can throw errors here
-      { mutate: () => {}, isPending: false };
+  // const { mutate: edit, isPending: isEditMessagePending } = user
+  //   ? useEditMessage(
+  //       activeConvoId,
+  //       messageEdited.messageId,
+  //       messageEdited.content
+  //     )
+  //   : // TODO: #ask-artem is this even a ghood option,
+  //     // i guess i can throw errors here
+  //     { mutate: () => {}, isPending: false };
+  // test
+  const { mutate: edit, isPending: isEditMessagePending } = useEditMessage(
+    activeConvoId,
+    messageEdited.messageId,
+    messageEdited.content
+  );
+
+  // test
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   // TODO: #important the editing mode is still not fully working on mobile
   // the whole magic 250px thing should be revisited
