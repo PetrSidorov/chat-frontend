@@ -1,5 +1,4 @@
-import { TConvo, TMessage } from "@/types";
-import { socket } from "@/utils/socket";
+import { TConvo } from "@/types";
 import {
   InfiniteData,
   useMutation,
@@ -60,7 +59,7 @@ const useCreateConvo = (userId: string) => {
     mutationFn: (joinerId: string) => createConvo(userId, joinerId),
     onMutate: async () => {
       await queryClient.cancelQueries({
-        queryKey: ["convo"],
+        queryKey: ["convos"],
       });
 
       const snapshot = queryClient.getQueryData(["convo"]);
@@ -86,7 +85,7 @@ const useCreateConvo = (userId: string) => {
     },
     onSettled: () => {
       return queryClient.invalidateQueries({
-        queryKey: ["convo"],
+        queryKey: ["convos"],
       });
     },
   });

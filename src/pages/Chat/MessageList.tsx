@@ -7,7 +7,7 @@ import isSameDayAsPreviousMessage from "../../utils/isSameDayAsPreviousMessage";
 import Message from "./message/Message";
 import MonthAndYear from "./message/MonthAndYear";
 import MessageContextMenu from "./sidebar/convos/MessageContextMenu";
-import { AllConvoContext } from "@/context/AllConvoProvider";
+// import { AllConvoContext } from "@/context/AllConvoProvider";
 
 const MessageList = forwardRef<
   HTMLDivElement,

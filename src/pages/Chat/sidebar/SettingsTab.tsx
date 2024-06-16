@@ -1,13 +1,15 @@
 import axios from "axios";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../../context/AuthProvider";
+import { AuthContext } from "../../../context/DeprecatedAuthProvider";
 import { socket } from "../../../utils/socket";
 import Avatar from "../message/Avatar";
-import UploadAvatar from "./UploadAvatar";
+import UploadAvatar from "./AvatarHandler";
+import useGetUser from "@/hooks/react-query/useGetUser";
 
 export default function SettingsTab() {
-  const { user } = useContext(AuthContext);
+  // const { user } = useContext(AuthContext);
+  const { user } = useGetUser();
   const navigate = useNavigate();
 
   async function logout() {

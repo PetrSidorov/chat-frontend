@@ -42,7 +42,7 @@ export default function LoginPage() {
     },
   });
   //
-  const { setUser, user, setStatus } = useContext(AuthContext);
+  // const { setUser, user, setStatus } = useContext(AuthContext);
   const loginUser = useLoginUser();
 
   // useEffect(() => {

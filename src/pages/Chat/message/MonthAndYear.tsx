@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { animations } from "../../../utils/animations";
 import { useContext } from "react";
-import { AllConvoContext } from "@/context/AllConvoProvider";
+// import { AllConvoContext } from "@/context/AllConvoProvider";
 // TODO: move animation type up,
 // there's no need to get it in message and in this component
 export default function MonthAndYear({ createdAt }: { createdAt: string }) {

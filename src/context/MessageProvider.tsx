@@ -4,14 +4,12 @@ import {
   ReactNode,
   SetStateAction,
   useCallback,
-  useContext,
   useState,
 } from "react";
-import { AllConvoContext } from "./AllConvoProvider";
-import { socket } from "@/utils/socket";
-import { AuthContext } from "./AuthProvider";
+
 import useGetUser from "@/hooks/react-query/useGetUser";
 import useActiveConvoIdStore from "@/store";
+import { socket } from "@/utils/socket";
 
 type MessageProviderProps = {
   children: ReactNode;

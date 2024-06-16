@@ -1,11 +1,11 @@
 import { AxiosResponse, TUser } from "@/types";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useMemo } from "react";
 
 // TODO: add here all needed properties, discuss with Artem
 // #ask-artem
-function useGetUser(initialData?: TUser) {
+const useGetUser = () => {
   // const queryClient = useQueryClient();
   // const cachedUser = queryClient.getQueryData(["user"]);
   const query = useQuery({
@@ -36,6 +36,6 @@ function useGetUser(initialData?: TUser) {
       user: userData,
     };
   }, [query.data, query.isLoading, query.isError]);
-}
+};
 
 export default useGetUser;

@@ -1,8 +1,9 @@
 import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../../../utils/getCroppedImg";
-import { AuthContext } from "../../../context/AuthProvider";
+import { AuthContext } from "../../../context/DeprecatedAuthProvider";
 import FocusLock from "react-focus-lock";
+import useUploadAvatar from "@/hooks/react-query/useUploadAvatar";
 
 type Area = {
   x: number;
@@ -12,7 +13,8 @@ type Area = {
 };
 
 function UploadAndCropAvatar() {
-  const { user, setUser } = useContext(AuthContext);
+  const { mutate: uploadAvatar, isPending } = useUploadAvatar();
+  // const { user, setUser } = useContext(AuthContext);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -63,29 +65,30 @@ function UploadAndCropAvatar() {
     try {
       if (!imageSrc) return;
       const croppedImageBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
-      const formData = new FormData();
-      formData.append("avatar", croppedImageBlob, `${crypto.randomUUID()}.jpg`);
+      uploadAvatar(croppedImageBlob);
+      // const formData = new FormData();
+      // formData.append("avatar", croppedImageBlob, `${crypto.randomUUID()}.jpg`);
 
-      const response = await fetch("http://localhost:3007/api/user-avatar/", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
+      // const response = await fetch("http://localhost:3007/api/user-avatar/", {
+      //   method: "POST",
+      //   body: formData,
+      //   credentials: "include",
+      // });
 
-      if (response.ok) {
-        const data = await response.json();
-        setUser((userInfo) => {
-          console.log(userInfo);
-          if (userInfo) {
-            return { ...userInfo, avatarUrl: data.url };
-          }
-          return userInfo;
-        });
-        setUploadStatus("Upload successful!");
-        resetToInitials();
-      } else {
-        throw new Error("Upload failed with status: " + response.status);
-      }
+      // if (response.ok) {
+      //   const data = await response.json();
+      //   setUser((userInfo) => {
+      //     console.log(userInfo);
+      //     if (userInfo) {
+      //       return { ...userInfo, avatarUrl: data.url };
+      //     }
+      //     return userInfo;
+      //   });
+      //   setUploadStatus("Upload successful!");
+      //   resetToInitials();
+      // } else {
+      //   throw new Error("Upload failed with status: " + response.status);
+      // }
     } catch (error) {
       // TODO:TYPESCRIPT + something more meaningful
       console.error("Error:", error);

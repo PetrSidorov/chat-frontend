@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import useRoomUsersStatus from "@/hooks/useRoomUsersStatus";
 import axios from "axios";
 import { AllConvoContext } from "../../../../context/AllConvoProvider";
-import { AuthContext } from "../../../../context/AuthProvider";
+import { AuthContext } from "../../../../context/DeprecatedAuthProvider";
 import ConvoPreview from "./ConvoPreview";
 import { socket } from "@/utils/socket";
 import FullScreenLoading from "@/components/FullScreenLoading";
@@ -156,7 +156,7 @@ export default function ConvosList() {
                     ]);
                     if (data) return;
                     queryClient.prefetchInfiniteQuery({
-                      queryKey: ["messages", { id: convo.id }],
+                      queryKey: ["messages", { convoId: convo.id }],
                       queryFn: () => getMessages(1, convo.id),
                       initialPageParam: 1,
                     });

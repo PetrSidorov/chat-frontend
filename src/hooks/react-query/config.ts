@@ -4,7 +4,7 @@ import { UseInfiniteQueryOptions } from "@tanstack/react-query";
 import { GetMessagesResponse } from "@/types";
 
 const infiniteConvosConfig = {
-  queryKey: ["convo"],
+  queryKey: ["convos"],
   queryFn: ({ pageParam = 1 }) => getConvos(pageParam),
   placeholderData: (oldData) => oldData,
   initialPageParam: 1,

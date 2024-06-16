@@ -7,14 +7,16 @@ import clsx from "clsx";
 import { useContext, useEffect, useRef } from "react";
 import { Outlet } from "react-router-dom";
 import FullScreenLoading from "../../components/FullScreenLoading";
-import { AuthContext } from "../../context/AuthProvider";
+import { AuthContext } from "../../context/DeprecatedAuthProvider";
 import { ResizeContext } from "../../context/ResizeProvider";
 import Sidebar from "./sidebar/Sidebar";
 import NoActiveConvo from "./NoActiveConvo";
 import useActiveConvoIdStore from "@/store";
+import useGetUser from "@/hooks/react-query/useGetUser";
 
 export default function ChatMain() {
-  const { user } = useContext(AuthContext);
+  // const { user } = useContext(AuthContext);
+  const { user } = useGetUser();
 
   const { sizes, handleDrag, mobileView } = useContext(ResizeContext);
 

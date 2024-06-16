@@ -1,13 +1,16 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import useMessage from "../../hooks/useMessage";
-import { AllConvoContext } from "@/context/AllConvoProvider";
+// import { AllConvoContext } from "@/context/AllConvoProvider";
 import { MessageContext } from "@/context/MessageProvider";
 import { AnimatePresence, motion } from "framer-motion";
 import { animations } from "@/utils/animations";
 // import { CircleX } from "lucide-react";
 import VisuallyHidden from "@/components/VisuallyHidden";
 import CloseXCircleButton from "@/components/ui/closeXCircleButton";
-import { useSendMessage } from "@/hooks/react-query/useHandleMessage";
+import {
+  useEditMessage,
+  useSendMessage,
+} from "@/hooks/react-query/useHandleMessage";
 import useGetUser from "@/hooks/react-query/useGetUser";
 import useActiveConvoIdStore from "@/store";
 
@@ -22,7 +25,7 @@ export default function MessageManager() {
     // createdMessageContent,
     // setCreatedMessageContent,
     // send,
-    edit,
+    // edit,
     messageEdited,
     editMessageMode,
     setEditMessageMode,
@@ -36,7 +39,7 @@ export default function MessageManager() {
     }
   }, [editMessageMode]);
 
-  const { mutate: send, isPending } = user
+  const { mutate: send, isPending: isSendMessagePending } = user
     ? useSendMessage(activeConvoId, {
         uuid: crypto.randomUUID(),
         content: createdMessageContent,
@@ -45,6 +48,16 @@ export default function MessageManager() {
           id: user?.id,
         },
       })
+    : // TODO: #ask-artem is this even a ghood option,
+      // i guess i can throw errors here
+      { mutate: () => {}, isPending: false };
+
+  const { mutate: edit, isPending: isEditMessagePending } = user
+    ? useEditMessage(
+        activeConvoId,
+        messageEdited.messageId,
+        messageEdited.content
+      )
     : // TODO: #ask-artem is this even a ghood option,
       // i guess i can throw errors here
       { mutate: () => {}, isPending: false };
@@ -124,7 +137,7 @@ export default function MessageManager() {
             // style={{ transition: "height 0.2s ease-out" }}
             className="textarea w-full p-2 rounded border border-gray-300 overflow-x-scroll resize-none h-10 transition ease-out duration-200"
             onKeyDown={(e) => {
-              if (isPending) return;
+              if (isEditMessagePending) return;
               if (e.key === "Enter" && e.shiftKey) {
               } else if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -146,7 +159,7 @@ export default function MessageManager() {
 
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isSendMessagePending}
           className="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2 max-h-10 mt-auto"
         >
           {editMessageMode ? "Edit" : "Send"}

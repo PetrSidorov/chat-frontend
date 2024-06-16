@@ -7,10 +7,10 @@ export default function AuthGuard() {
   const location = useLocation();
   const { pathname } = location;
 
-  console.log("isFetching: ", isFetching);
-  console.log("isError: ", isError);
-  console.log("user: ", user);
-  console.log("error: ", error);
+  // console.log("isFetching: ", isFetching);
+  // console.log("isError: ", isError);
+  // console.log("user: ", user);
+  // console.log("error: ", error);
 
   if (isError) {
     return <Navigate to="/login" state={{ from: location }} replace />;

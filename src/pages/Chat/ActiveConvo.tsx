@@ -24,7 +24,7 @@ export default function ActiveConvo() {
   const queryClient = useQueryClient();
   // const [convoContextId, handleActiveConvoId] =
   //   useContext(AllConvoContext).activeConvoId;
-  const activeConvoId = useActiveConvoIdStore((state) => state.activeConvoId);
+  const convoId = useActiveConvoIdStore((state) => state.activeConvoId);
   const handleActiveConvoId = useActiveConvoIdStore(
     (state) => state.updateActiveConvoId
   );
@@ -78,14 +78,11 @@ export default function ActiveConvo() {
     fetchPreviousPage,
     isSuccess,
   } = useInfiniteQuery({
-    queryKey: ["messages", { convoId: activeConvoId }],
-    queryFn: ({ pageParam = 1 }) => getMessages(pageParam, activeConvoId),
+    queryKey: ["messages", { convoId }],
+    queryFn: ({ pageParam = 1 }) => getMessages(pageParam, convoId),
     initialPageParam: 1,
-    enabled: !!activeConvoId,
-    initialData: queryClient.getQueryData([
-      "messages",
-      { convoId: activeConvoId },
-    ]),
+    enabled: !!convoId,
+    initialData: queryClient.getQueryData(["messages", { convoId: convoId }]),
     getNextPageParam: ({ currentPage, totalPages }) => {
       // console.log("currentPage totalPages ", currentPage, totalPages);
       const nextPage = currentPage + 1;

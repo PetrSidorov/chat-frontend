@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AllConvoContext } from "../context/AllConvoProvider";
-import { AuthContext } from "../context/AuthProvider";
+import { AuthContext } from "../context/DeprecatedAuthProvider";
 import { socket } from "../utils/socket";
 import useGetUser from "./react-query/useGetUser";
 import useActiveConvoIdStore from "@/store";
