@@ -9,11 +9,13 @@ import VisuallyHidden from "@/components/VisuallyHidden";
 import CloseXCircleButton from "@/components/ui/closeXCircleButton";
 import { useSendMessage } from "@/hooks/react-query/useHandleMessage";
 import useGetUser from "@/hooks/react-query/useGetUser";
+import useActiveConvoIdStore from "@/store";
 
 export default function MessageManager() {
-  const [convoContextId, handleActiveConvoId] =
-    useContext(AllConvoContext).activeConvoId;
-  const convoId = useMemo(() => convoContextId, [convoContextId]);
+  // const [convoContextId, handleActiveConvoId] =
+  //   useContext(AllConvoContext).activeConvoId;
+  const activeConvoId = useActiveConvoIdStore((state) => state.activeConvoId);
+
   const { user, isError, isFetching, error } = useGetUser();
 
   const {
@@ -35,7 +37,7 @@ export default function MessageManager() {
   }, [editMessageMode]);
 
   const { mutate: send, isPending } = user
-    ? useSendMessage(convoId, {
+    ? useSendMessage(activeConvoId, {
         uuid: crypto.randomUUID(),
         content: createdMessageContent,
         sender: {

@@ -15,6 +15,7 @@ import {
   infiniteConvosConfig,
 } from "@/hooks/react-query/config";
 import { TConvo } from "@/types";
+import useActiveConvoIdStore from "@/store";
 
 export default function ConvosList() {
   // TODO: convos shouldn't be mounted here,
@@ -22,7 +23,10 @@ export default function ConvosList() {
   const queryClient = useQueryClient();
   // const { convos, initConvo, setAnimationType, onlineStatuses } =
   //   useContext(AllConvoContext)?.convoContext;
-  const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
+  // const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
+  const setActiveConvoId = useActiveConvoIdStore(
+    (state) => state.updateActiveConvoId
+  );
 
   // const { user } = useContext(AuthContext);
   // const onlineStatuses = useRoomUsersStatus();

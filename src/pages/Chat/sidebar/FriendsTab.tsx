@@ -17,10 +17,10 @@ export default function FriendsTab() {
   const [searchInput, setSearchInput] = useState("");
   const [foundUsers, setFoundUsers] = useState<Tuser[]>([]);
   const [loading, setLoading] = useState(false);
-  const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
-  const [, handleActiveConvoId] = useContext(AllConvoContext).activeConvoId;
-  const { convos, unshiftMessagesToConvo, addNewConvo } =
-    useContext(AllConvoContext).convoContext;
+  // const [, setActiveConvoId] = useContext(AllConvoContext).activeConvoId;
+  // const [, handleActiveConvoId] = useContext(AllConvoContext).activeConvoId;
+  // const { convos, unshiftMessagesToConvo, addNewConvo } =
+  //   useContext(AllConvoContext).convoContext;
   const { user, isError, isFetching, error } = useGetUser();
 
   // const emitNewConvo = useNewConvo();

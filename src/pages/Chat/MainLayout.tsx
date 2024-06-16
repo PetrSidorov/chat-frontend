@@ -11,13 +11,15 @@ import { AuthContext } from "../../context/AuthProvider";
 import { ResizeContext } from "../../context/ResizeProvider";
 import Sidebar from "./sidebar/Sidebar";
 import NoActiveConvo from "./NoActiveConvo";
+import useActiveConvoIdStore from "@/store";
 
 export default function ChatMain() {
   const { user } = useContext(AuthContext);
 
   const { sizes, handleDrag, mobileView } = useContext(ResizeContext);
 
-  const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
+  // const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
+  const activeConvoId = useActiveConvoIdStore((state) => state.activeConvoId);
 
   return (
     <>

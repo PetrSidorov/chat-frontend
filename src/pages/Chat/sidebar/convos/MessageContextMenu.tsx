@@ -3,6 +3,7 @@ import { MessageContext } from "@/context/MessageProvider";
 import useGetUser from "@/hooks/react-query/useGetUser";
 import { useDeleteMessage } from "@/hooks/react-query/useHandleMessage";
 import useMessage from "@/hooks/useMessage";
+import useActiveConvoIdStore from "@/store";
 import { useContext } from "react";
 
 export default function MessageContextMenu({
@@ -17,10 +18,11 @@ export default function MessageContextMenu({
   uuid: string;
 }) {
   const { user, isError, isFetching, error } = useGetUser();
-  const [convoId, handleActiveConvoId] =
-    useContext(AllConvoContext).activeConvoId;
+  // const [convoId, handleActiveConvoId] =
+  //   useContext(AllConvoContext).activeConvoId;
+  const activeConvoId = useActiveConvoIdStore((state) => state.activeConvoId);
   const { mutate: deleteMessage, isPending } = user
-    ? useDeleteMessage(convoId)
+    ? useDeleteMessage(activeConvoId)
     : // TODO: #ask-artem is this even a ghood option,
       // i guess i can throw errors here
       { mutate: () => {}, isPending: false };

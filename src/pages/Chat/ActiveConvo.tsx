@@ -18,11 +18,16 @@ import MonthAndYear from "./message/MonthAndYear";
 import isSameDayAsPreviousMessage from "@/utils/isSameDayAsPreviousMessage";
 import React from "react";
 import { flattenMessages } from "@/utils/flattenMessages";
+import useActiveConvoIdStore from "@/store";
 // TODO:active convo - error when convos are deleted (sometimes)
 export default function ActiveConvo() {
   const queryClient = useQueryClient();
-  const [convoContextId, handleActiveConvoId] =
-    useContext(AllConvoContext).activeConvoId;
+  // const [convoContextId, handleActiveConvoId] =
+  //   useContext(AllConvoContext).activeConvoId;
+  const activeConvoId = useActiveConvoIdStore((state) => state.activeConvoId);
+  const handleActiveConvoId = useActiveConvoIdStore(
+    (state) => state.updateActiveConvoId
+  );
 
   const { user } = useGetUser();
   const { fullWidthMessagesInActiveConvo } = useContext(ResizeContext);
@@ -48,7 +53,7 @@ export default function ActiveConvo() {
 
   // TODO: this should be memoized on another level
 
-  const convoId = useMemo(() => convoContextId, [convoContextId]);
+  // const convoId = useMemo(() => convoContextId, [convoContextId]);
 
   // const { ref } = useInView({
   //   threshold: 0,
@@ -73,11 +78,14 @@ export default function ActiveConvo() {
     fetchPreviousPage,
     isSuccess,
   } = useInfiniteQuery({
-    queryKey: ["messages", { convoId }],
-    queryFn: ({ pageParam = 1 }) => getMessages(pageParam, convoContextId),
+    queryKey: ["messages", { convoId: activeConvoId }],
+    queryFn: ({ pageParam = 1 }) => getMessages(pageParam, activeConvoId),
     initialPageParam: 1,
-    enabled: !!convoContextId,
-    initialData: queryClient.getQueryData(["messages", { convoId }]),
+    enabled: !!activeConvoId,
+    initialData: queryClient.getQueryData([
+      "messages",
+      { convoId: activeConvoId },
+    ]),
     getNextPageParam: ({ currentPage, totalPages }) => {
       // console.log("currentPage totalPages ", currentPage, totalPages);
       const nextPage = currentPage + 1;

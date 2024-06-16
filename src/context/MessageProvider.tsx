@@ -11,6 +11,7 @@ import { AllConvoContext } from "./AllConvoProvider";
 import { socket } from "@/utils/socket";
 import { AuthContext } from "./AuthProvider";
 import useGetUser from "@/hooks/react-query/useGetUser";
+import useActiveConvoIdStore from "@/store";
 
 type MessageProviderProps = {
   children: ReactNode;
@@ -36,7 +37,9 @@ export const MessageContext = createContext<TMessageContext | null>(null);
 export default function MessageProvider({ children }: MessageProviderProps) {
   // const { user } = useContext(AuthContext);
   const { user } = useGetUser();
-  const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
+  // const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
+  const activeConvoId = useActiveConvoIdStore((state) => state.activeConvoId);
+
   // const [createdMessageContent, setCreatedMessageContent] = useState("");
   const [editMessageMode, setEditMessageMode] = useState(false);
   const [messageEdited, setMessageEdited] = useState({

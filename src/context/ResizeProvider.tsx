@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { AllConvoContext } from "./AllConvoProvider";
+import useActiveConvoIdStore from "@/store";
 
 type TinitialContext = {
   showOnlyAvatars: boolean;
@@ -41,8 +42,9 @@ export default function ResizeProvider({ children }: { children: ReactNode }) {
   const [fullWidthMessagesInActiveConvo, setFullWidthMessagesInActiveConvo] =
     useState(false);
   const [mobileView, setMobileView] = useState(false);
-  const [activeConvoId, handleActiveConvoId] =
-    useContext(AllConvoContext).activeConvoId;
+  // const [activeConvoId, handleActiveConvoId] =
+  //   useContext(AllConvoContext).activeConvoId;
+  const activeConvoId = useActiveConvoIdStore((state) => state.activeConvoId);
   const [sizes, setSizes] = useState<[number, number]>([35, 65]);
 
   useEffect(() => {
