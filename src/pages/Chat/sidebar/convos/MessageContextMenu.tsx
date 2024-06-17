@@ -8,12 +8,12 @@ import { useContext } from "react";
 
 export default function MessageContextMenu({
   yours,
-  // handleRemoveMessage,
+
   content,
   uuid,
 }: {
   yours: boolean;
-  // handleRemoveMessage: Function;
+
   content: string;
   uuid: string;
 }) {

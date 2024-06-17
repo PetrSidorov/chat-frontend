@@ -1,4 +1,5 @@
 // import { AllConvoContext } from "@/context/AllConvoProvider";
+import useActiveConvoIdStore from "@/store";
 import axios from "axios";
 import { useContext } from "react";
 
@@ -9,8 +10,7 @@ interface ConvoContextMenuProps {
 export default function ConvoContextMenu({ id }: ConvoContextMenuProps) {
   const { removeConvo: removeConvoLocally } = useContext(AllConvoContext);
   console.log("removeConvo ", removeConvo);
-  const [activeConvoId, handleActiveConvoId] =
-    useContext(AllConvoContext).activeConvoId;
+  const activeConvoId = useActiveConvoIdStore((state) => state.activeConvoId);
 
   async function removeConvo(
     e: React.MouseEvent<HTMLButtonElement>,

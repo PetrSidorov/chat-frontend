@@ -42,7 +42,16 @@ export default function ConvosList() {
     isFetchingNextPage,
     status,
     fetchNextPage,
-  } = useInfiniteQuery(infiniteConvosConfig);
+  } = useInfiniteQuery({
+    queryKey: ["convos"],
+    queryFn: ({ pageParam = 1 }) => getConvos(pageParam),
+    placeholderData: (oldData) => oldData,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const nextPage = lastPage.currentPage + 1;
+      return nextPage <= lastPage.totalPages ? nextPage : undefined;
+    },
+  });
 
   const convos = data?.pages[0].convos;
 

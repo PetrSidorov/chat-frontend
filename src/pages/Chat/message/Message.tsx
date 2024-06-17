@@ -21,12 +21,12 @@ export default function Message({
   content: string;
   createdAt: string;
   username: string;
-  avatarUrl: string | null;
+  avatarUrl: string | undefined | null;
   showOnlyAvatars?: boolean;
   style?: TCSSclampLines;
   prevMessageSender?: string;
   popup: JSX.Element;
-  onMouseEnter: () => void;
+  onMouseEnter?: () => void;
 }) {
   // const { handleRemoveMessage, animationType } =
   //   useContext(AllConvoContext).convoContext;

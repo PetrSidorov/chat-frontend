@@ -66,14 +66,13 @@ export default function MessageManager() {
   //   : // TODO: #ask-artem is this even a ghood option,
   //     // i guess i can throw errors here
   //     { mutate: () => {}, isPending: false };
-  // test
+
   const { mutate: edit, isPending: isEditMessagePending } = useEditMessage(
     activeConvoId,
     messageEdited.messageId,
     messageEdited.content
   );
 
-  // test
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   // TODO: #important the editing mode is still not fully working on mobile
   // the whole magic 250px thing should be revisited

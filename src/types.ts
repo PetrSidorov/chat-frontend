@@ -75,6 +75,7 @@ export type PaginatedResponse<T> = {
 
 export type GetConvosResponse = AxiosResponse<PaginatedResponse<TConvo[]>>;
 export type GetMessagesResponse = PaginatedResponse<TMessage[]>;
+// export type GetMessagesResponse = PaginatedResponse<TMessage[]>;
 
 export type TOnlineStatuses = {
   [convoId: string]: string[];
@@ -127,6 +128,13 @@ export type TConvoContext = {
 } | null;
 
 type TypeHttpHeaders = Record<string, string>;
+
+export type TPage<TData> = {
+  messages: TData[];
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+};
 
 export type TDataBaseRequestData = {
   method: string;
