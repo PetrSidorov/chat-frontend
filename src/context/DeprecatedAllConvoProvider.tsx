@@ -6,10 +6,10 @@ import {
   useReducer,
   useState,
 } from "react";
-import { TConvoContext, TConvo, TMessage } from "../types";
+import { TConvo, TMessage } from "../types";
 import { socket } from "../utils/socket";
 
-export const AllConvoContext = createContext<TConvoContext>(null);
+export const AllConvoContext = createContext(null);
 
 type AnimationType =
   | "enter"
