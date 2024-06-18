@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Loader, Mail, UserCheck, UserPlus } from "lucide-react"; // Replace these with appropriate icons
 import { useContext, useEffect, useState } from "react";
 import { AllConvoContext } from "../../../context/AllConvoProvider";
-import useCreateConvo from "@/hooks/react-query/useCreateConvo";
+import { useCreateConvo } from "@/hooks/react-query/useHandleConvo";
 import useGetUser from "@/hooks/react-query/useGetUser";
 
 type Tuser = {

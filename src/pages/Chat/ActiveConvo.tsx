@@ -67,7 +67,7 @@ export default function ActiveConvo() {
     },
   });
 
-  const messages = flattenInfiniteData(data?.pages);
+  const messages = flattenInfiniteData("messages", data?.pages);
   const lastMessaageId = data?.pages[0]?.messages[0]?.uuid;
 
   const { ref } = useInView({

@@ -27,13 +27,6 @@ const useGetUser = () => {
       return {
         ...query,
         user: null,
-        // {
-        //   id: null,
-        //   name: null,
-        //   username: null,
-        //   email: null,
-        //   avatarUrl: null,
-        // },
       };
     }
 
@@ -43,7 +36,6 @@ const useGetUser = () => {
       user: userData,
     };
   }, [query.data, query.isLoading, query.isError]);
-  // return query;
 };
 
 export default useGetUser;

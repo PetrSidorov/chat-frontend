@@ -1,21 +1,17 @@
-import { useContext, useEffect, useState } from "react";
-
-import useRoomUsersStatus from "@/hooks/useRoomUsersStatus";
-import axios from "axios";
-import { AllConvoContext } from "../../../../context/AllConvoProvider";
-import { AuthContext } from "../../../../context/DeprecatedAuthProvider";
-import ConvoPreview from "./ConvoPreview";
-import { socket } from "@/utils/socket";
 import FullScreenLoading from "@/components/FullScreenLoading";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import getConvos from "@/utils/getConvos";
 import getMessages from "@/hooks/react-query/getMessages";
-import {
-  generateInfiniteMessagesConfig,
-  infiniteConvosConfig,
-} from "@/hooks/react-query/config";
-import { TConvo } from "@/types";
 import useActiveConvoIdStore from "@/store";
+import { TConvo, TPage } from "@/types";
+import getConvos from "@/utils/getConvos";
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  UseInfiniteQueryResult,
+  useQueryClient,
+} from "@tanstack/react-query";
+import ConvoPreview from "./ConvoPreview";
+import { flattenInfiniteData } from "@/utils/flattenInfiniteData";
+import { useEffect, useState } from "react";
 
 export default function ConvosList() {
   // TODO: convos shouldn't be mounted here,
@@ -28,11 +24,7 @@ export default function ConvosList() {
     (state) => state.updateActiveConvoId
   );
 
-  // const { user } = useContext(AuthContext);
   // const onlineStatuses = useRoomUsersStatus();
-  // const [loaded, setLoaded] = useState(false);
-  // const [prefetchedConvosMap, setPrefetchedConvosMap] = useState(null);
-  // --------
   const {
     data,
     isFetching,
@@ -42,20 +34,28 @@ export default function ConvosList() {
     isFetchingNextPage,
     status,
     fetchNextPage,
-  } = useInfiniteQuery({
+  }: UseInfiniteQueryResult<InfiniteData<TPage<TConvo>>> = useInfiniteQuery({
     queryKey: ["convos"],
     queryFn: ({ pageParam = 1 }) => getConvos(pageParam),
     placeholderData: (oldData) => oldData,
     initialPageParam: 1,
-    getNextPageParam: (lastPage) => {
-      const nextPage = lastPage.currentPage + 1;
-      return nextPage <= lastPage.totalPages ? nextPage : undefined;
+    getNextPageParam: ({
+      currentPage,
+      totalPages,
+    }: {
+      currentPage: number;
+      totalPages: number;
+    }) => {
+      const nextPage = currentPage + 1;
+      return nextPage <= totalPages ? nextPage : undefined;
+    },
+    getPreviousPageParam: ({ currentPage }) => {
+      const previousPage = currentPage - 1;
+      return previousPage > 0 ? previousPage : undefined;
     },
   });
 
-  const convos = data?.pages[0].convos;
-
-  // }
+  const convos = flattenInfiniteData("convos", data?.pages);
 
   // useEffect(() => {
   //   const getConvos = async () => {
@@ -125,7 +125,7 @@ export default function ConvosList() {
   // if (!loaded) return <FullScreenLoading />;
 
   // TODO: different states should be managed better that this
-  if (isLoading) {
+  if (isLoading || !convos) {
     return <FullScreenLoading />;
   }
 
@@ -143,7 +143,7 @@ export default function ConvosList() {
     <>
       {convos ? (
         <ul className="font-semibold">
-          {convos.map((convo: TConvo) => {
+          {convos?.map((convo: TConvo) => {
             return (
               <div
                 className="h-auto max-h-[132px] overflow-hidden w-full "

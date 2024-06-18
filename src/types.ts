@@ -44,9 +44,8 @@ export type PaginatedResponse<T> = {
   totalItems: number;
 };
 
-export type GetConvosResponse = AxiosResponse<PaginatedResponse<TConvo[]>>;
+export type GetConvosResponse = PaginatedResponse<TConvo[]>;
 export type GetMessagesResponse = PaginatedResponse<TMessage[]>;
-// export type GetMessagesResponse = PaginatedResponse<TMessage[]>;
 
 export type TOnlineStatuses = {
   [convoId: string]: string[];
@@ -74,8 +73,11 @@ export interface AxiosResponse<T = any> {
 
 type TypeHttpHeaders = Record<string, string>;
 
-export type TPage<TData> = {
-  messages: TData[];
+export type TDataKey = "messages" | "convos";
+type TdataRecord<TData> = Record<TDataKey, TData[]>;
+
+// #ask-artem any less lengthy ways to do this?
+export type TPage<TData> = TdataRecord<TData> & {
   currentPage: number;
   totalPages: number;
   totalItems: number;
