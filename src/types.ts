@@ -74,7 +74,10 @@ export interface AxiosResponse<T = any> {
 type TypeHttpHeaders = Record<string, string>;
 
 export type TDataKey = "messages" | "convos";
+export type TMessageToSend = Omit<TMessage, "createdAt">;
+
 type TdataRecord<TData> = Record<TDataKey, TData[]>;
+export type TUserInteraction = TMessage | TConvo | TMessageToSend;
 
 // #ask-artem any less lengthy ways to do this?
 export type TPage<TData> = TdataRecord<TData> & {
