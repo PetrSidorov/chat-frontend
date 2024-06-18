@@ -8,7 +8,7 @@ import {
 } from "react";
 
 import useGetUser from "@/hooks/react-query/useGetUser";
-import useActiveConvoIdStore from "@/store";
+import { useActiveConvoIdStore } from "@/store";
 import { socket } from "@/utils/socket";
 
 type MessageProviderProps = {

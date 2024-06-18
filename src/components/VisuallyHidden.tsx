@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 
-// import React from "react";
-const hiddenStyles = {
+// #ask-artem or figure out react css properties interface
+const hiddenStyles: React.CSSProperties = {
   display: "inline-block",
   position: "absolute",
   overflow: "hidden",

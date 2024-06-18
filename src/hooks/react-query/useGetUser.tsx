@@ -10,13 +10,15 @@ const useGetUser = () => {
   // const cachedUser = queryClient.getQueryData(["user"]);
   const query = useQuery({
     queryKey: ["user"],
-    queryFn: (): Promise<AxiosResponse<TUser>> =>
-      axios.get("http://localhost:3007/api/me", {
+    queryFn: (): Promise<AxiosResponse<TUser>> => {
+      return axios.get("http://localhost:3007/api/me", {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",
         },
-      }),
+      });
+    },
+
     retry: false,
 
     // initialData: { data: { data: cachedUser } },
@@ -35,7 +37,7 @@ const useGetUser = () => {
       ...query,
       user: userData,
     };
-  }, [query.data, query.isLoading, query.isError]);
+  }, [query]);
 };
 
 export default useGetUser;

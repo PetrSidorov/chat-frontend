@@ -1,5 +1,5 @@
 // import { AllConvoContext } from "@/context/AllConvoProvider";
-import useActiveConvoIdStore from "@/store";
+import { useActiveConvoIdStore } from "@/store";
 import axios from "axios";
 import { useContext } from "react";
 

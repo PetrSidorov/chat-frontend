@@ -1,6 +1,6 @@
 import FullScreenLoading from "@/components/FullScreenLoading";
 import getMessages from "@/hooks/react-query/getMessages";
-import useActiveConvoIdStore from "@/store";
+import { useActiveConvoIdStore } from "@/store";
 import { TConvo, TPage } from "@/types";
 import getConvos from "@/utils/getConvos";
 import {

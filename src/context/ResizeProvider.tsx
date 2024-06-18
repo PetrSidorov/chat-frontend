@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { AllConvoContext } from "./AllConvoProvider";
-import useActiveConvoIdStore from "@/store";
+import { useActiveConvoIdStore } from "@/store";
 
 type TinitialContext = {
   showOnlyAvatars: boolean;

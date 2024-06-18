@@ -11,7 +11,7 @@ import { AuthContext } from "../../context/DeprecatedAuthProvider";
 import { ResizeContext } from "../../context/ResizeProvider";
 import Sidebar from "./sidebar/Sidebar";
 import NoActiveConvo from "./NoActiveConvo";
-import useActiveConvoIdStore from "@/store";
+import { useActiveConvoIdStore } from "@/store";
 import useGetUser from "@/hooks/react-query/useGetUser";
 
 export default function ChatMain() {

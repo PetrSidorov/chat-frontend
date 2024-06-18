@@ -1,23 +1,25 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import useMessage from "../../hooks/useMessage";
-// import { AllConvoContext } from "@/context/AllConvoProvider";
+import {
+  FormEvent,
+  KeyboardEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import { MessageContext } from "@/context/MessageProvider";
-import { AnimatePresence, motion } from "framer-motion";
 import { animations } from "@/utils/animations";
-// import { CircleX } from "lucide-react";
-import VisuallyHidden from "@/components/VisuallyHidden";
+import { AnimatePresence, motion } from "framer-motion";
+
 import CloseXCircleButton from "@/components/ui/closeXCircleButton";
+import useGetUser from "@/hooks/react-query/useGetUser";
 import {
   useEditMessage,
   useSendMessage,
 } from "@/hooks/react-query/useHandleMessage";
-import useGetUser from "@/hooks/react-query/useGetUser";
-import useActiveConvoIdStore from "@/store";
-import { useNavigate } from "react-router-dom";
+import { useActiveConvoIdStore } from "@/store";
 
 export default function MessageManager() {
-  // const [convoContextId, handleActiveConvoId] =
-  //   useContext(AllConvoContext).activeConvoId;
   const activeConvoId = useActiveConvoIdStore((state) => state.activeConvoId);
 
   const { user, isError, isFetching, isSuccess } = useGetUser();
@@ -32,10 +34,6 @@ export default function MessageManager() {
   // }, [user, isFetching, navigate]);
 
   const {
-    // createdMessageContent,
-    // setCreatedMessageContent,
-    // send,
-    // edit,
     messageEdited,
     editMessageMode,
     setEditMessageMode,
@@ -97,7 +95,9 @@ export default function MessageManager() {
     adjustTextareaHeight();
   }, [editMessageMode, createdMessageContent]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (
+    e: FormEvent<HTMLFormElement> | KeyboardEvent<HTMLTextAreaElement>
+  ) => {
     if (!textareaRef.current) return;
     e.preventDefault();
     editMessageMode ? edit() : send();
@@ -129,7 +129,7 @@ export default function MessageManager() {
             </motion.div>
           )}
         </AnimatePresence>
-        <div onSubmit={handleSubmit} className="flex wat">
+        <div className="flex wat">
           <textarea
             ref={textareaRef}
             value={

@@ -2,7 +2,7 @@
 import { MessageContext } from "@/context/MessageProvider";
 import useGetUser from "@/hooks/react-query/useGetUser";
 import { useDeleteMessage } from "@/hooks/react-query/useHandleMessage";
-import useActiveConvoIdStore from "@/store";
+import { useActiveConvoIdStore } from "@/store";
 import { useContext } from "react";
 
 export default function MessageContextMenu({

@@ -1,6 +1,6 @@
 import getMessages from "@/hooks/react-query/getMessages";
 import useGetUser from "@/hooks/react-query/useGetUser";
-import useActiveConvoIdStore from "@/store";
+import { useActiveConvoIdStore } from "@/store";
 import { flattenInfiniteData } from "@/utils/flattenInfiniteData";
 import isSameDayAsPreviousMessage from "@/utils/isSameDayAsPreviousMessage";
 import {
