@@ -56,43 +56,6 @@ const useDeleteMessage = (convoId: string) => {
     ["messages", { convoId }],
     setQueryDataFn
   );
-
-  // return useMutation({
-  //   mutationFn: (id: string) => deleteRequest(`/message/${id}`),
-  //   onMutate: async (uuid) => {
-  //     await queryClient.cancelQueries({
-  //       queryKey: ["messages", { convoId }],
-  //     });
-
-  //     const snapshot = queryClient.getQueryData(["messages", { convoId }]);
-
-  //     queryClient.setQueryData(
-  //       ["messages", { convoId }],
-  //       (oldData: InfiniteData<{ messages: TMessage[] }>) => {
-  //         const newData = oldData
-  //           ? { ...oldData }
-  //           : { pages: [{ messages: [] }] };
-  //         newData.pages[0].messages = newData.pages[0].messages.filter(
-  //           (msg) => msg.uuid !== uuid
-  //         );
-  //         return newData;
-  //       }
-  //     );
-
-  //     return () => {
-  //       queryClient.setQueryData(["messages", { convoId }], snapshot);
-  //     };
-  //   },
-  //   onError: (error, messageId, rollback) => {
-  //     console.log("error", error);
-  //     rollback?.();
-  //   },
-  //   onSettled: () => {
-  //     return queryClient.invalidateQueries({
-  //       queryKey: ["messages", { convoId }],
-  //     });
-  //   },
-  // });
 };
 
 const useEditMessage = (convoId: string, id: string, content: string) => {
