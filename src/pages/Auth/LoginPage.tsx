@@ -45,35 +45,6 @@ export default function LoginPage() {
   // const { setUser, user, setStatus } = useContext(AuthContext);
   const loginUser = useLoginUser();
 
-  // useEffect(() => {
-  //   if (user) {
-  //     navigate("/messages");
-  //   }
-  // }, [user]);
-
-  // function waitForSocketConnection() {
-  //   return new Promise((resolve, reject) => {
-  //     const onConnect = () => {
-  //       socket.off("connect", onConnect);
-  //       socket.off("connect_error", onConnectError);
-  //       resolve(null);
-  //     };
-  //     const onConnectError = (error: any) => {
-  //       socket.off("connect", onConnect);
-  //       socket.off("connect_error", onConnectError);
-  //       reject(error);
-  //     };
-
-  //     if (socket.connected) {
-  //       resolve(null);
-  //     } else {
-  //       socket.on("connect", onConnect);
-  //       socket.on("connect_error", onConnectError);
-  //       socket.connect();
-  //     }
-  //   });
-  // }
-
   async function onSubmit(values: LoginFormValues) {
     loginUser.mutate(values, {
       onSuccess: () => navigate("/messages"),

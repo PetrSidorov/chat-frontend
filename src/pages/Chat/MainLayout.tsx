@@ -13,6 +13,7 @@ import Sidebar from "./sidebar/Sidebar";
 import NoActiveConvo from "./NoActiveConvo";
 import { useActiveConvoIdStore } from "@/store";
 import useGetUser from "@/hooks/react-query/useGetUser";
+import useSockets from "@/hooks/react-query/useSockets";
 
 export default function ChatMain() {
   // const { user } = useContext(AuthContext);
@@ -22,7 +23,7 @@ export default function ChatMain() {
 
   // const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
   const activeConvoId = useActiveConvoIdStore((state) => state.activeConvoId);
-
+  useSockets();
   return (
     <>
       {!user ? (
