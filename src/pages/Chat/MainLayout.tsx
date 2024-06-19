@@ -1,19 +1,16 @@
 import Split from "react-split";
-import { AllConvoContext } from "../../context/AllConvoProvider";
 import ActiveConvo from "./ActiveConvo";
 import MessageManager from "./MessageManager";
 
+import useGetUser from "@/hooks/react-query/useGetUser";
+import { useActiveConvoIdStore } from "@/store";
 import clsx from "clsx";
-import { useContext, useEffect, useRef } from "react";
+import { useContext } from "react";
 import { Outlet } from "react-router-dom";
 import FullScreenLoading from "../../components/FullScreenLoading";
-import { AuthContext } from "../../context/DeprecatedAuthProvider";
 import { ResizeContext } from "../../context/ResizeProvider";
-import Sidebar from "./sidebar/Sidebar";
 import NoActiveConvo from "./NoActiveConvo";
-import { useActiveConvoIdStore } from "@/store";
-import useGetUser from "@/hooks/react-query/useGetUser";
-import useSockets from "@/hooks/react-query/useSockets";
+import Sidebar from "./sidebar/Sidebar";
 
 export default function ChatMain() {
   // const { user } = useContext(AuthContext);
@@ -23,7 +20,7 @@ export default function ChatMain() {
 
   // const [activeConvoId] = useContext(AllConvoContext).activeConvoId;
   const activeConvoId = useActiveConvoIdStore((state) => state.activeConvoId);
-  useSockets();
+
   return (
     <>
       {!user ? (

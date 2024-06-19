@@ -12,8 +12,10 @@ import {
 import ConvoPreview from "./ConvoPreview";
 import { flattenInfiniteData } from "@/utils/flattenInfiniteData";
 import { useEffect, useState } from "react";
+import useSockets from "@/hooks/react-query/useSockets";
 
 export default function ConvosList() {
+  const [newMessage, setNewMessage] = useSockets();
   // TODO: convos shouldn't be mounted here,
   // because it's a sidebar component which isn't mounted in all cases
   const queryClient = useQueryClient();
@@ -23,6 +25,13 @@ export default function ConvosList() {
   const setActiveConvoId = useActiveConvoIdStore(
     (state) => state.updateActiveConvoId
   );
+
+  useEffect(() => {
+    if (newMessage) {
+      queryClient.invalidateQueries({ queryKey: ["convos"] });
+      setNewMessage(false);
+    }
+  }, [newMessage]);
 
   // const onlineStatuses = useRoomUsersStatus();
   const {
@@ -132,10 +141,11 @@ export default function ConvosList() {
   if (isError) {
     return <div>Error fetching data 😔</div>;
   }
-
-  if (isFetching) {
-    return <div>Fetching data in progress 😔</div>;
-  }
+  // #ask-artem no fetching screen works good with fast connection,
+  // should i think about slow connection as well
+  // if (isFetching) {
+  //   return <div>Fetching data in progress 😔</div>;
+  // }
 
   // TODO: typescript fix
 

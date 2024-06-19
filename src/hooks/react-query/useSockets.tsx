@@ -1,18 +1,35 @@
+import { TMessage } from "@/types";
 import { socket } from "@/utils/socket";
-import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
-const handleNewMessage = (data: any) => {
-  console.log("newMessage ", data);
+const useHandleNewMessage = ({
+  message,
+  convoId,
+}: {
+  convoId: string;
+  message: TMessage;
+}) => {
+  console.log("newMessage ", message, convoId);
+  // queryClient.invalidateQueries({ queryKey: ["messages", { convoId }] });
 };
 
-const useSockets = () => {
+const useSockets = (): [
+  boolean,
+  React.Dispatch<React.SetStateAction<boolean>>
+] => {
+  const [newMessage, setNewMessage] = useState(false);
+  // const queryClient = useQueryClient();
+  // queryClient.invalidateQueries({ queryKey: ["convos"] });
   socket.connect();
   useEffect(() => {
     console.log("socket.connected ", socket.connected);
-    socket.on("msg:return", handleNewMessage);
+    socket.on("msg:return", () => setNewMessage(true));
     return () => {
-      socket.off("msg:return", handleNewMessage);
+      socket.off("msg:return", () => setNewMessage(true));
     };
   }, [socket.connected]);
+
+  return [newMessage, setNewMessage];
 };
 export default useSockets;

@@ -10,6 +10,8 @@ const useGetUser = () => {
   // const cachedUser = queryClient.getQueryData(["user"]);
   const query = useQuery({
     queryKey: ["user"],
+    // #ask-artem if i remove stale Time infinity, i get infinite rerenders
+    staleTime: Infinity,
     queryFn: (): Promise<AxiosResponse<TUser>> => {
       return axios.get("http://localhost:3007/api/me", {
         withCredentials: true,

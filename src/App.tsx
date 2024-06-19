@@ -16,9 +16,9 @@ const queryClient = new QueryClient({
   // TODO: I use websockets for the most part,
   // but not sure if it's a good idea, research needed
   defaultOptions: {
-    queries: {
-      staleTime: Infinity,
-    },
+    // queries: {
+    //   staleTime: Infinity,
+    // },
   },
 });
 
