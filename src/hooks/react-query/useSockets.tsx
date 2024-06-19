@@ -2,18 +2,7 @@ import { TMessage } from "@/types";
 import { socket } from "@/utils/socket";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-
-const useHandleNewMessage = ({
-  message,
-  convoId,
-}: {
-  convoId: string;
-  message: TMessage;
-}) => {
-  console.log("newMessage ", message, convoId);
-  // queryClient.invalidateQueries({ queryKey: ["messages", { convoId }] });
-};
-
+// TODO: this is a very much temporary stuff
 const useSockets = (): [
   boolean,
   React.Dispatch<React.SetStateAction<boolean>>
